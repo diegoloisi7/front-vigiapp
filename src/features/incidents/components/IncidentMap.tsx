@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import L from 'leaflet'
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import type { Incident } from '../types'
-
+/*dfd*/
 const categoryColors: Record<Incident['category'], string> = {
   robo: '#dc5c4c',
   'actividad-sospechosa': '#d89a35',
