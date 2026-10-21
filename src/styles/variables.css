@@ -1,0 +1,79 @@
+/* ===== Variables globales (design tokens) ===== */
+:root {
+  /* Marca */
+  --color-primary: #1F4E79;
+  --color-primary-dark: #163A5A;
+  --color-primary-soft: #E8F0F7;
+
+  /* Colores semánticos (cada nivel tiene: color base, fondo suave y texto con contraste AA) */
+  --color-emergency: #C62828;       /* SOLO pedidos de ayuda activos */
+  --color-emergency-bg: #FDECEC;
+  --color-emergency-text: #8E1B1B;
+
+  --color-alert: #E8590C;           /* Alertas de seguridad prioritarias */
+  --color-alert-bg: #FFF1E8;
+  --color-alert-text: #9A3412;
+
+  --color-incident: #F2B705;        /* Incidencias que requieren atención */
+  --color-incident-bg: #FFF8DB;
+  --color-incident-text: #6B5000;
+
+  --color-info: #2F7DC1;            /* Avisos de la comunidad */
+  --color-info-bg: #E9F2FB;
+  --color-info-text: #1F4E79;
+
+  --color-success: #2E7D32;         /* Resuelto / normal */
+  --color-success-bg: #E8F5E9;
+  --color-success-text: #1B5E20;
+
+  /* Neutros */
+  --color-bg: #FFFFFF;
+  --color-bg-soft: #F6F8FB;
+  --color-surface: #FFFFFF;
+  --color-text: #1B2733;
+  --color-text-muted: #556575;
+  --color-border: #E1E7ED;
+  --color-border-strong: #7C8A99;   /* bordes de campos de formulario (contraste 3:1) */
+  --color-focus: #2F7DC1;
+
+  /* Tipografía (del sistema) */
+  --font-base: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+
+  /* Espaciados */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* Sombras sutiles (teñidas con el azul de marca) */
+  --shadow-sm: 0 1px 2px rgba(31, 78, 121, 0.06), 0 1px 3px rgba(31, 78, 121, 0.08);
+  --shadow-md: 0 4px 12px rgba(31, 78, 121, 0.10);
+  --shadow-lg: 0 8px 24px rgba(31, 78, 121, 0.16);
+
+  /* Medidas de layout */
+  --topbar-h: 56px;
+  --bottom-nav-h: 64px;
+  --sidebar-w: 256px;
+  --tap-min: 44px;                  /* objetivo táctil mínimo */
+  --container: 1120px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --transition: 150ms ease;
+}

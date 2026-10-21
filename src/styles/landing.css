@@ -1,0 +1,134 @@
+/* ===== Landing (Mobile First) ===== */
+
+/* Secciones */
+.section { padding-block: var(--space-7); }
+.section--soft { background: var(--color-bg-soft); }
+.section__head { max-width: 680px; margin-bottom: var(--space-6); }
+.section-lead { color: var(--color-text-muted); font-size: var(--text-lg); }
+
+/* Niveles semánticos: cada clase define 3 variables que usan las tarjetas, etiquetas y leyenda */
+.nivel-emergencia { --nivel: var(--color-emergency); --nivel-bg: var(--color-emergency-bg); --nivel-text: var(--color-emergency-text); }
+.nivel-alerta     { --nivel: var(--color-alert);     --nivel-bg: var(--color-alert-bg);     --nivel-text: var(--color-alert-text); }
+.nivel-incidencia { --nivel: var(--color-incident);  --nivel-bg: var(--color-incident-bg);  --nivel-text: var(--color-incident-text); }
+.nivel-aviso      { --nivel: var(--color-info);      --nivel-bg: var(--color-info-bg);      --nivel-text: var(--color-info-text); }
+.nivel-resuelto   { --nivel: var(--color-success);   --nivel-bg: var(--color-success-bg);   --nivel-text: var(--color-success-text); }
+
+/* Hero */
+.hero { padding-block: var(--space-7) var(--space-8); }
+.hero__inner { display: grid; gap: var(--space-7); align-items: center; }
+.hero h1 { font-size: 2.125rem; line-height: 1.1; }
+.hero__lead { font-size: var(--text-lg); color: var(--color-text-muted); max-width: 52ch; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+.hero__hint { margin: var(--space-4) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* Celular hecho con CSS */
+.phone { width: min(100%, 280px); margin-inline: auto; padding: 10px; background: #12263A; border-radius: 38px; box-shadow: var(--shadow-lg); }
+.phone__screen { display: flex; flex-direction: column; min-height: 460px; background: var(--color-bg); border-radius: 29px; overflow: hidden; }
+.phone__bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--color-border);
+  color: var(--color-primary); font-weight: 700; font-size: 0.95rem;
+}
+.phone__body { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 12px; margin: 0; list-style: none; overflow: hidden; }
+.phone__tabs { display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; text-align: center; padding: 8px 8px 12px; border-top: 1px solid var(--color-border); }
+.phone__fab {
+  width: 36px; height: 36px; margin: -20px auto 0; display: grid; place-items: center;
+  background: var(--color-primary); border: 3px solid var(--color-bg); border-radius: 50%; box-shadow: var(--shadow-md); font-size: 0.9rem;
+}
+
+/* Mapa de ejemplo con calles dibujadas en CSS */
+.mini-map {
+  position: relative; height: 160px; overflow: hidden;
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background-color: #E6EEF5;
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,0.95) 0 7px, transparent 7px),
+    linear-gradient(0deg, rgba(255,255,255,0.95) 0 7px, transparent 7px);
+  background-size: 74px 74px; background-position: 18px 10px;
+}
+.pin {
+  position: absolute; width: 18px; height: 18px;
+  border: 2px solid #fff; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: var(--shadow-sm);
+}
+.pin-alerta { background: var(--color-alert); }
+.pin-incidencia { background: var(--color-incident); }
+.pin-resuelto { background: var(--color-success); }
+.pin-aviso { background: var(--color-info); }
+
+/* Tarjetas dentro del celular */
+.mini-card {
+  display: flex; flex-direction: column; gap: 2px; padding: 10px 12px;
+  background: var(--nivel-bg); border: 1px solid var(--color-border); border-left: 5px solid var(--nivel);
+  border-radius: var(--radius-md); font-size: 0.85rem;
+}
+.mini-card strong { color: var(--color-text); }
+.mini-card span:not(.nivel-tag) { color: var(--color-text-muted); font-size: 0.78rem; }
+.nivel-tag { color: var(--nivel-text); font-size: 0.75rem; font-weight: 700; }
+
+/* El problema */
+.problems { display: grid; gap: var(--space-4); }
+.problem__icon { display: block; margin-bottom: var(--space-3); font-size: 1.75rem; }
+.problems .card p { margin: 0; color: var(--color-text-muted); }
+
+/* Cómo funciona */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
+.step { display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: start; }
+.step__num {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  background: var(--color-primary); color: #fff; border-radius: 50%; font-weight: 700; font-size: var(--text-lg);
+}
+.step p { margin: 0; color: var(--color-text-muted); }
+
+/* Alertas en vivo */
+.live { display: grid; gap: var(--space-6); align-items: center; }
+.legend { list-style: none; margin: 0 0 var(--space-5); padding: 0; display: grid; gap: var(--space-2); }
+.legend li { display: flex; align-items: center; gap: var(--space-3); }
+.legend__dot { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--nivel); }
+.live__controls { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.live__note { margin: var(--space-4) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.notif-badge { padding: 2px 10px; background: var(--color-primary); color: #fff; border-radius: var(--radius-full); font-size: 0.8rem; }
+.live-feed { align-content: flex-start; }
+.live-item { animation: entra 350ms ease-out; }
+.live-item--push { box-shadow: var(--shadow-md); }
+@keyframes entra { from { opacity: 0; transform: translateY(-12px); } }
+@media (prefers-reduced-motion: reduce) { .live-item { animation: none; } }
+
+/* Funcionalidades */
+.features { list-style: none; margin: 0; padding: 0; display: grid; column-gap: var(--space-7); }
+.feature { display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); padding-block: var(--space-5); border-top: 1px solid var(--color-border); }
+.feature__icon { width: 48px; height: 48px; display: grid; place-items: center; background: var(--color-primary-soft); border-radius: 14px; font-size: 1.5rem; }
+.feature p { margin: 0; color: var(--color-text-muted); }
+
+/* Nosotros */
+.team { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+.team__member { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); text-align: center; padding: var(--space-4); }
+.team__member span:last-child { color: var(--color-text-muted); font-size: var(--text-sm); }
+.team__avatar { width: 64px; height: 64px; display: grid; place-items: center; margin-bottom: var(--space-2); background: var(--color-primary-soft); border-radius: 50%; font-size: 1.75rem; }
+
+/* Llamado a la acción final */
+.cta { padding-block: var(--space-7); background: var(--color-primary); color: #fff; text-align: center; }
+.cta h2 { color: #fff; }
+.cta p { max-width: 52ch; margin-inline: auto; color: rgba(255, 255, 255, 0.92); }
+.cta__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-5); }
+.btn-light { background: #fff; color: var(--color-primary); }
+.btn-light:hover { background: var(--color-primary-soft); }
+.btn-outline-light { background: transparent; color: #fff; border-color: #fff; }
+.btn-outline-light:hover { background: rgba(255, 255, 255, 0.14); }
+.cta :focus-visible { outline-color: #fff; }
+
+@media (min-width: 768px) {
+  .section { padding-block: var(--space-8); }
+  .hero { padding-block: var(--space-8); }
+  .hero h1 { font-size: 3rem; }
+  .hero__inner { grid-template-columns: 1.15fr 0.85fr; }
+  .problems { grid-template-columns: repeat(2, 1fr); }
+  .steps { grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+  .step { grid-template-columns: 1fr; }
+  .live { grid-template-columns: 1.1fr 0.9fr; gap: var(--space-7); }
+  .features { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .problems { grid-template-columns: repeat(4, 1fr); }
+  .team { grid-template-columns: repeat(4, 1fr); }
+}
