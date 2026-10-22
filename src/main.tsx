@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CategoriasProvider } from './context/CategoriasContext'
 import { GruposProvider } from './context/GruposContext'
-import App from './App.tsx'
+import App from './App'
 
 // Orden de estilos: variables → base → layout → componentes
 import './styles/variables.css'

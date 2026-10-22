@@ -17,7 +17,7 @@ const PASOS = [
 ]
 
 const FUNCIONALIDADES = [
-  { icono: '🗺️', titulo: 'Mapa colaborativo', texto: 'Mirá las incidencias de tu zona en un mapa y filtralas por categoría y estado. También podés verlas como lista y buscar por texto.' },
+  { icono: '🗺️', titulo: 'Mapa colaborativo', texto: 'Mirá los incidentes de tu zona en un mapa y filtralas por categoría y estado. También podés verlas como lista y buscar por texto.' },
   { icono: '🔔', titulo: 'Alertas de seguridad', texto: 'Las situaciones prioritarias aparecen arriba de todo, separadas de los avisos comunes, hasta que un administrador las cierra.' },
   { icono: '🆘', titulo: 'Botón de ayuda', texto: 'Pedí ayuda a tu comunidad eligiendo el tipo de emergencia y manteniendo presionado 3 segundos, para evitar activaciones accidentales. No reemplaza al 911.' },
   { icono: '📢', titulo: 'Avisos de la comunidad', texto: 'Cortes programados, reuniones y recomendaciones, con prioridad normal o importante.' },
@@ -67,7 +67,7 @@ export default function Landing() {
           <div>
             <h1>Tu barrio, organizado y más seguro</h1>
             <p className="hero__lead">
-              Reportá incidencias, mirá qué pasa cerca tuyo en el mapa y seguí cada problema
+              Reportá incidentes, mirá qué pasa cerca tuyo en el mapa y seguí cada problema
               hasta que se resuelve. Todo en un solo lugar, sin perderte entre mensajes.
             </p>
             <div className="hero__actions">
@@ -157,7 +157,7 @@ export default function Landing() {
               Vecinal es un proyecto de la materia Programación 4. Parte de algo que pasa en
               cualquier barrio: los avisos importantes se pierden en los grupos de mensajería.
               Lo resolvemos con una aplicación pensada para que reportar, confirmar y seguir una
-              incidencia sea simple para cualquier vecino.
+              incidente sea simple para cualquier vecino.
             </p>
           </div>
           <h3>El equipo</h3>

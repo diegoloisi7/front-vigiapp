@@ -12,7 +12,7 @@ import Login from './pages/public/Login'
 import Contacto from './pages/public/Contacto'
 
 import Inicio from './pages/app/Inicio'
-import Mapa from './pages/app/Mapa'
+import Incidentes from './pages/app/Incidentes'
 import DetalleIncidencia from './pages/app/DetalleIncidencia'
 import Reportar from './pages/app/Reportar'
 import Alertas from './pages/app/Alertas'
@@ -52,7 +52,8 @@ export default function App() {
         {/* Sin grupo, estas pantallas muestran "No tenés grupo aún" */}
         <Route element={<RequiereGrupo />}>
           <Route index element={<Inicio />} />
-          <Route path="mapa" element={<Mapa />} />
+          <Route path="incidentes" element={<Incidentes />} />
+          <Route path="mapa" element={<Navigate to="/app/incidentes" replace />} />
           <Route path="incidencias/:id" element={<DetalleIncidencia />} />
           <Route path="reportar" element={<Reportar />} />
           <Route path="alertas" element={<Alertas />} />

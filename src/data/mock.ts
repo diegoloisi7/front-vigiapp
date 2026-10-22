@@ -3,16 +3,18 @@ import type {
 } from '../types'
 
 // Datos de prueba. Por ahora solo usuarios; en los bloques siguientes se suman
-// categorías, incidencias, alertas, avisos y contactos.
+// categorías, incidentes, alertas, avisos y contactos.
 
 export const USUARIOS_MOCK: Record<Exclude<Rol, 'VISITANTE'>, Usuario> = {
   VECINO: {
+    id: 1,
     nombre: 'Lucía',
     apellido: 'Fernández',
     email: 'lucia@ejemplo.com',
     comunidad: 'Barrio Los Álamos',
   },
   ADMINISTRADOR: {
+    id: 2,
     nombre: 'Martín',
     apellido: 'Gómez',
     email: 'admin@ejemplo.com',
@@ -53,9 +55,9 @@ export const ESTADOS: Record<EstadoIncidencia, string> = {
   EN_SEGUIMIENTO: 'En seguimiento',
   RESUELTO: 'Resuelto',
   DESCARTADO: 'Descartado',
+  EXPIRADO: 'Expirado',
 }
 
-export const TIPOS_AYUDA: string[] = ['Robo', 'Actividad sospechosa', 'Incendio', 'Accidente', 'Situación peligrosa']
 
 export const CATEGORIAS_MOCK: Categoria[] = [
   { id: 'seguridad', nombre: 'Seguridad', icono: '🛡️', activa: true },
@@ -70,68 +72,75 @@ export const CATEGORIAS_MOCK: Categoria[] = [
 ]
 export const categoriaPorId = (id: string): Categoria | undefined => CATEGORIAS_MOCK.find((c) => c.id === id)
 
-// esMia: la incidencia la reportó el usuario de prueba (para "Mis reportes")
 export const INCIDENCIAS_MOCK: Incidencia[] = [
-  { id: 1, grupoId: 1, titulo: 'Luz quemada en la plaza', categoriaId: 'alumbrado', estado: 'REPORTADO', creada: hace(35),
-    ubicacion: 'Plaza Central, esquina Los Olmos', lat: -34.6029, lng: -58.3799, vecinos: 6, distancia: 120, esMia: true,
+  { id: 1, grupoId: 1, tipo: 'NORMAL', autorId: 1, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Luz quemada en la plaza', categoriaId: 'alumbrado', estado: 'REPORTADO', creada: hace(35),
+    ubicacion: 'Plaza Central, esquina Los Olmos', lat: -34.6029, lng: -58.3799, vecinos: 6, distancia: 120,
     descripcion: 'Los tres faroles del sector de juegos están apagados desde anoche. Por la noche la plaza queda completamente a oscuras.',
     historial: [{ estado: 'REPORTADO', cuando: hace(35), nota: 'Reportado por un vecino' }] },
-  { id: 2, grupoId: 1, titulo: 'Bache profundo en Av. Mitre', categoriaId: 'baches', estado: 'EN_SEGUIMIENTO', creada: hace(300),
-    ubicacion: 'Av. Mitre y Sarmiento', lat: -34.6052, lng: -58.3832, vecinos: 14, distancia: 260, esMia: false,
+  { id: 2, grupoId: 1, tipo: 'NORMAL', autorId: 22, fechaExpiracion: hace(-1500), vecinosYaResuelto: 3, titulo: 'Bache profundo en Av. Mitre', categoriaId: 'baches', estado: 'EN_SEGUIMIENTO', creada: hace(300),
+    ubicacion: 'Av. Mitre y Sarmiento', lat: -34.6052, lng: -58.3832, vecinos: 14, distancia: 260,
     descripcion: 'Bache de unos 40 cm de ancho sobre el carril derecho. Ya hubo dos autos con las cubiertas dañadas.',
     historial: [
       { estado: 'REPORTADO', cuando: hace(300), nota: 'Reportado por un vecino' },
       { estado: 'EN_SEGUIMIENTO', cuando: hace(120), nota: 'Derivado al área de obras' },
     ] },
-  { id: 3, grupoId: 1, titulo: 'Pérdida de agua en la vereda', categoriaId: 'agua', estado: 'REPORTADO', creada: hace(130),
-    ubicacion: 'Calle Los Pinos 340', lat: -34.6015, lng: -58.3841, vecinos: 4, distancia: 340, esMia: false,
+  { id: 3, grupoId: 1, tipo: 'NORMAL', autorId: 23, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Pérdida de agua en la vereda', categoriaId: 'agua', estado: 'REPORTADO', creada: hace(130),
+    ubicacion: 'Calle Los Pinos 340', lat: -34.6015, lng: -58.3841, vecinos: 4, distancia: 340,
     descripcion: 'Sale agua de una grieta de la vereda desde la mañana y ya formó un charco que llega a la calle.',
     historial: [{ estado: 'REPORTADO', cuando: hace(130), nota: 'Reportado por un vecino' }] },
-  { id: 4, grupoId: 1, titulo: 'Árbol caído bloquea la vereda', categoriaId: 'arboles', estado: 'EN_SEGUIMIENTO', creada: hace(1500),
-    ubicacion: 'Calle Los Ceibos 85', lat: -34.6068, lng: -58.379, vecinos: 9, distancia: 480, esMia: true,
+  { id: 4, grupoId: 1, tipo: 'NORMAL', autorId: 1, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Árbol caído bloquea la vereda', categoriaId: 'arboles', estado: 'EN_SEGUIMIENTO', creada: hace(1500),
+    ubicacion: 'Calle Los Ceibos 85', lat: -34.6068, lng: -58.379, vecinos: 9, distancia: 480,
     descripcion: 'Tras la tormenta cayó una rama grande que ocupa toda la vereda. Hay que cruzar por la calle para pasar.',
     historial: [
       { estado: 'REPORTADO', cuando: hace(1500), nota: 'Reportado por un vecino' },
       { estado: 'EN_SEGUIMIENTO', cuando: hace(900), nota: 'Se avisó a la cuadrilla de espacios verdes' },
     ] },
-  { id: 5, grupoId: 2, titulo: 'Basura acumulada en la esquina', categoriaId: 'basura', estado: 'REPORTADO', creada: hace(4300),
-    ubicacion: 'Calle Las Rosas y Belgrano', lat: -34.6044, lng: -58.3862, vecinos: 11, distancia: 520, esMia: false,
+  { id: 5, grupoId: 2, tipo: 'NORMAL', autorId: 25, fechaExpiracion: hace(60), vecinosYaResuelto: 0, titulo: 'Basura acumulada en la esquina', categoriaId: 'basura', estado: 'REPORTADO', creada: hace(4300),
+    ubicacion: 'Calle Las Rosas y Belgrano', lat: -34.6044, lng: -58.3862, vecinos: 11, distancia: 520,
     descripcion: 'Hace tres días que no se retira la basura y los contenedores desbordan sobre la calle.',
     historial: [{ estado: 'REPORTADO', cuando: hace(4300), nota: 'Reportado por un vecino' }] },
-  { id: 6, grupoId: 1, titulo: 'Semáforo sin funcionar', categoriaId: 'transito', estado: 'RESUELTO', creada: hace(2900),
-    ubicacion: 'Av. Mitre y Belgrano', lat: -34.6039, lng: -58.3815, vecinos: 21, distancia: 210, esMia: true,
+  { id: 6, grupoId: 1, tipo: 'NORMAL', autorId: 1, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Semáforo sin funcionar', categoriaId: 'transito', estado: 'RESUELTO', creada: hace(2900),
+    ubicacion: 'Av. Mitre y Belgrano', lat: -34.6039, lng: -58.3815, vecinos: 21, distancia: 210,
     descripcion: 'El semáforo estaba apagado en hora pico y los autos cruzaban sin ver quién tenía paso.',
     historial: [
       { estado: 'REPORTADO', cuando: hace(2900), nota: 'Reportado por un vecino' },
       { estado: 'EN_SEGUIMIENTO', cuando: hace(2600), nota: 'Tránsito envió a un técnico' },
       { estado: 'RESUELTO', cuando: hace(1900), nota: 'Semáforo reparado' },
     ] },
-  { id: 7, grupoId: 2, titulo: 'Humo en terreno baldío', categoriaId: 'incendios', estado: 'EN_SEGUIMIENTO', creada: hace(360),
-    ubicacion: 'Calle Los Olmos al 300', lat: -34.602, lng: -58.377, vecinos: 8, distancia: 380, esMia: false,
+  { id: 7, grupoId: 2, tipo: 'NORMAL', autorId: 27, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Humo en terreno baldío', categoriaId: 'incendios', estado: 'EN_SEGUIMIENTO', creada: hace(360),
+    ubicacion: 'Calle Los Olmos al 300', lat: -34.602, lng: -58.377, vecinos: 8, distancia: 380,
     descripcion: 'Salía humo de pasto quemado en el baldío. Los vecinos de al lado lo apagaron, pero conviene que alguien lo revise.',
     historial: [
       { estado: 'REPORTADO', cuando: hace(360), nota: 'Reportado por un vecino' },
       { estado: 'EN_SEGUIMIENTO', cuando: hace(300), nota: 'Se pidió una inspección' },
     ] },
-  { id: 8, grupoId: 1, titulo: 'Auto sospechoso estacionado de noche', categoriaId: 'seguridad', estado: 'REPORTADO', creada: hace(50),
-    ubicacion: 'Calle Las Rosas 150', lat: -34.6071, lng: -58.3829, vecinos: 5, distancia: 300, esMia: false,
+  { id: 8, grupoId: 1, tipo: 'NORMAL', autorId: 28, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Auto sospechoso estacionado de noche', categoriaId: 'seguridad', estado: 'REPORTADO', creada: hace(50),
+    ubicacion: 'Calle Las Rosas 150', lat: -34.6071, lng: -58.3829, vecinos: 5, distancia: 300,
     descripcion: 'Un auto sin patente visible estuvo estacionado con gente adentro durante más de una hora.',
     historial: [{ estado: 'REPORTADO', cuando: hace(50), nota: 'Reportado por un vecino' }] },
-  { id: 9, grupoId: 2, titulo: 'Cartel de obra caído', categoriaId: 'otros', estado: 'DESCARTADO', creada: hace(5800),
-    ubicacion: 'Av. Mitre 900', lat: -34.6058, lng: -58.3774, vecinos: 1, distancia: 600, esMia: false,
+  { id: 9, grupoId: 2, tipo: 'NORMAL', autorId: 29, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Cartel de obra caído', categoriaId: 'otros', estado: 'DESCARTADO', creada: hace(5800),
+    ubicacion: 'Av. Mitre 900', lat: -34.6058, lng: -58.3774, vecinos: 1, distancia: 600,
     descripcion: 'Un cartel de obra quedó apoyado sobre la vereda.',
     historial: [
       { estado: 'REPORTADO', cuando: hace(5800), nota: 'Reportado por un vecino' },
       { estado: 'DESCARTADO', cuando: hace(5600), nota: 'Duplicado de otro reporte' },
     ] },
-  { id: 10, grupoId: 2, titulo: 'Poste de luz inclinado', categoriaId: 'alumbrado', estado: 'RESUELTO', creada: hace(7200),
-    ubicacion: 'Calle Los Pinos y Mitre', lat: -34.6046, lng: -58.385, vecinos: 17, distancia: 430, esMia: false,
+  { id: 10, grupoId: 2, tipo: 'NORMAL', autorId: 30, fechaExpiracion: hace(-10080), vecinosYaResuelto: 0, titulo: 'Poste de luz inclinado', categoriaId: 'alumbrado', estado: 'RESUELTO', creada: hace(7200),
+    ubicacion: 'Calle Los Pinos y Mitre', lat: -34.6046, lng: -58.385, vecinos: 17, distancia: 430,
     descripcion: 'El poste estaba inclinado luego de un choque y los cables quedaron bajos.',
     historial: [
       { estado: 'REPORTADO', cuando: hace(7200), nota: 'Reportado por un vecino' },
       { estado: 'EN_SEGUIMIENTO', cuando: hace(6800), nota: 'La empresa de energía fue notificada' },
       { estado: 'RESUELTO', cuando: hace(5000), nota: 'Poste enderezado y cables asegurados' },
     ] },
+  { id: 11, grupoId: 1, tipo: 'URGENTE', autorId: 21, fechaExpiracion: hace(-1300), vecinosYaResuelto: 0,
+    titulo: 'Reporte urgente', categoriaId: '', estado: 'REPORTADO', creada: hace(8),
+    ubicacion: 'Ubicación compartida en vivo', lat: -34.6049, lng: -58.3821, vecinos: 3, distancia: 90, descripcion: '',
+    historial: [{ estado: 'REPORTADO', cuando: hace(8), nota: 'Reporte urgente enviado por un vecino' }] },
+  { id: 12, grupoId: 1, tipo: 'URGENTE', autorId: 1, fechaExpiracion: hace(-1350), vecinosYaResuelto: 0,
+    titulo: 'Reporte urgente', categoriaId: '', estado: 'REPORTADO', creada: hace(90),
+    ubicacion: 'Ubicación compartida en vivo', lat: -34.6035, lng: -58.3805, vecinos: 1, distancia: 0, descripcion: '',
+    historial: [{ estado: 'REPORTADO', cuando: hace(90), nota: 'Reporte urgente enviado por vos' }] },
 ]
 
 // nivel: EMERGENCIA (pedido de ayuda, rojo) | ALERTA (naranja). estado: ACTIVA | CERRADA

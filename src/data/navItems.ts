@@ -13,7 +13,7 @@ export interface ItemNav {
 export const NAV_VECINO: ItemNav[] = [
   { to: '/app', icono: '🏠', texto: 'Inicio', end: true },
   // "tambien": el Mapa queda activo al ver el detalle de una incidencia
-  { to: '/app/mapa', icono: '🗺️', texto: 'Mapa', tambien: '/app/incidencias' },
+  { to: '/app/incidentes', icono: '📋', texto: 'Incidentes', tambien: '/app/incidencias' },
   { to: '/app/reportar', icono: '🚨', texto: 'Reportar', destacado: true },
   { to: '/app/alertas', icono: '🔔', texto: 'Alertas' },
   { to: '/app/perfil', icono: '👤', texto: 'Perfil' },

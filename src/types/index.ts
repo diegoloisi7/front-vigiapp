@@ -7,6 +7,7 @@ export type Rol = 'VISITANTE' | 'VECINO' | 'ADMINISTRADOR'
 export type RolGrupo = 'OWNER' | 'MIEMBRO'
 
 export interface Usuario {
+  id: number
   nombre: string
   apellido: string
   email: string
@@ -36,7 +37,7 @@ export interface Categoria {
   activa: boolean
 }
 
-export type EstadoIncidencia = 'REPORTADO' | 'EN_SEGUIMIENTO' | 'RESUELTO' | 'DESCARTADO'
+export type EstadoIncidencia = 'REPORTADO' | 'EN_SEGUIMIENTO' | 'RESUELTO' | 'DESCARTADO' | 'EXPIRADO'
 export type TipoIncidencia = 'URGENTE' | 'NORMAL'
 
 export interface EventoHistorial {
@@ -48,23 +49,24 @@ export interface EventoHistorial {
 export interface Incidencia {
   id: number
   titulo: string
-  categoriaId: string
+  categoriaId: string // '' = sin categoría (reporte urgente todavía sin completar)
   estado: EstadoIncidencia
   creada: string // fecha ISO
   ubicacion: string
-  lat: number
-  lng: number
+  lat: number | null // null si no se pudo obtener la ubicación
+  lng: number | null
   descripcion: string
   vecinos: number // "vecinos que lo vieron"
   distancia: number // en metros
-  esMia: boolean
   historial: EventoHistorial[]
-  // Campos de las reglas de negocio nuevas: opcionales hasta conectar la API
-  tipo?: TipoIncidencia
+  tipo: TipoIncidencia // URGENTE (sin campos obligatorios) o NORMAL
+  autorId: number // creador: junto con el owner del grupo, puede cerrarlo o actualizarlo
   grupoId?: number
-  autorId?: number
-  fechaExpiracion?: string
-  vecinosYaResuelto?: number // "ya lo vi resuelto"
+  fechaExpiracion: string // al vencer, si sigue abierto pasa a EXPIRADO
+  vecinosYaResuelto: number // "ya lo vi resuelto"
+  // Lo que el usuario actual ya hizo (lo informa la API)
+  yoConfirme?: boolean
+  yoMarqueResuelto?: boolean
 }
 
 export type NivelAlerta = 'EMERGENCIA' | 'ALERTA'
@@ -96,7 +98,7 @@ export interface Aviso {
 }
 
 /** Valores que puede mostrar el componente Badge. */
-export type TipoBadge = EstadoIncidencia | EstadoAlerta | PrioridadAviso | EstadoInvitacion | RolGrupo | 'ACTIVO'
+export type TipoBadge = EstadoIncidencia | EstadoAlerta | PrioridadAviso | EstadoInvitacion | RolGrupo | 'ACTIVO' | 'URGENTE'
 
 // Landing
 export type TipoEvento = 'EMERGENCIA' | 'ALERTA' | 'INCIDENCIA' | 'AVISO' | 'RESUELTO'

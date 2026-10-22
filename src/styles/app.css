@@ -284,3 +284,31 @@
 .invitar .campo { flex: 1 1 240px; margin: 0; }
 .fila-invitacion { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
 .fila-invitacion__estado { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+/* ---------- Incidentes: urgentes, gestión y ciclo de vida ---------- */
+.badge--urgente { background: var(--color-emergency); color: #fff; }
+.dot--DESCARTADO, .dot--EXPIRADO { --dot: var(--color-border-strong); }
+.incident-card--urgente { border-left: 6px solid var(--color-emergency); }
+.incident-card__icon--urgente { background: var(--color-emergency-bg); }
+
+.incidente-item { display: flex; flex-direction: column; gap: var(--space-2); }
+.incidente-item__aviso { margin: 0 var(--space-2); padding: 6px 10px; background: var(--color-incident-bg); color: var(--color-incident-text); border-radius: var(--radius-sm); font-size: var(--text-sm); font-weight: 600; }
+.incidente-item__acciones { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); padding-inline: var(--space-2); }
+
+.confirmar__botones { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.sugerencia { display: grid; gap: var(--space-2); justify-items: start; margin-top: var(--space-4); padding: var(--space-3) var(--space-4); background: var(--color-success-bg); color: var(--color-success-text); border: 1px solid var(--color-success); border-radius: var(--radius-md); }
+.sugerencia p { margin: 0; }
+.panel-gestion { display: grid; gap: var(--space-3); margin-top: var(--space-4); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+.panel-gestion h3 { margin: 0; }
+.panel-gestion .detalle__meta { margin: 0; }
+
+.opcion-radio--detalle { align-items: flex-start; padding-block: var(--space-3); }
+.opcion-radio--detalle input { margin-top: 2px; }
+.opcion-radio__ayuda { display: block; color: var(--color-text-muted); font-size: var(--text-sm); font-weight: 400; }
+.ayuda-enviando { margin: var(--space-5) 0; text-align: center; font-weight: 700; }
+
+/* Filtros de la lista: se acomodan solos según el ancho */
+@media (min-width: 768px) { .filtros { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); } }
+
+/* "Reportar" al final del menú lateral */
+.sidenav__cta-final { margin-top: auto; }

@@ -1,42 +1,36 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useGrupos } from '../../context/GruposContext'
 import Card from '../../components/Card'
 import Campo from '../../components/Campo'
 import Modal from '../../components/Modal'
-import IncidentCard from '../../components/IncidentCard'
-import EmptyState from '../../components/EmptyState'
-import EstadoConsulta from '../../components/EstadoConsulta'
-import { api } from '../../api'
-import { useConsulta } from '../../hooks/useConsulta'
-import { useGrupos } from '../../context/GruposContext'
 
 interface Claves {
   actual: string
   nueva: string
   repetir: string
 }
+type ErroresClaves = Partial<Record<keyof Claves, string>>
 
 const CLAVES_VACIAS: Claves = { actual: '', nueva: '', repetir: '' }
 
 export default function Perfil() {
   const { usuario, esAdmin, cerrarSesion } = useAuth()
-  const navigate = useNavigate()
   const { grupoActivo } = useGrupos()
+  const navigate = useNavigate()
   const [claveAbierta, setClaveAbierta] = useState(false)
-  const [claves, setClaves] = useState(CLAVES_VACIAS)
-  const [errores, setErrores] = useState<Partial<Record<keyof Claves, string>>>({})
+  const [claves, setClaves] = useState<Claves>(CLAVES_VACIAS)
+  const [errores, setErrores] = useState<ErroresClaves>({})
   const [claveOk, setClaveOk] = useState(false)
 
-  const { datos, cargando, error, recargar } = useConsulta(() => api.incidencias.listarMias(), [])
-  const misReportes = datos ?? []
   const iniciales = `${usuario?.nombre?.[0] ?? ''}${usuario?.apellido?.[0] ?? ''}`
 
   function abrirClave() { setClaves(CLAVES_VACIAS); setErrores({}); setClaveOk(false); setClaveAbierta(true) }
 
   function guardarClave(e: FormEvent) {
     e.preventDefault()
-    const nuevos: Partial<Record<keyof Claves, string>> = {}
+    const nuevos: ErroresClaves = {}
     if (!claves.actual) nuevos.actual = 'Ingresá tu contraseña actual.'
     if (claves.nueva.length < 8) nuevos.nueva = 'La nueva contraseña debe tener al menos 8 caracteres.'
     if (claves.repetir !== claves.nueva) nuevos.repetir = 'Las contraseñas no coinciden.'
@@ -95,19 +89,6 @@ export default function Perfil() {
           </Card>
         )}
       </div>
-
-      <section className="bloque" aria-labelledby="p-reportes">
-        <div className="bloque__head"><h2 id="p-reportes">Mis reportes</h2></div>
-        <EstadoConsulta cargando={cargando} error={error} onReintentar={recargar}>
-        {misReportes.length === 0 ? (
-          <EmptyState icono="📝" titulo="Todavía no reportaste nada" texto="Cuando reportes una incidencia, la vas a ver acá.">
-            <Link to="/app/reportar" className="btn btn-primary">Reportar incidencia</Link>
-          </EmptyState>
-        ) : (
-          <div className="stack-list">{misReportes.map((i) => <IncidentCard key={i.id} incidencia={i} />)}</div>
-        )}
-        </EstadoConsulta>
-      </section>
 
       <nav className="lista-acciones" aria-label="Más opciones">
         {esAdmin && <Link to="/admin">⚙️ Panel de administración</Link>}

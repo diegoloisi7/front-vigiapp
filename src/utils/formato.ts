@@ -22,3 +22,5 @@ export function normalizar(texto: string): string {
 export const textoVecinos = (n: number): string => (n === 1 ? '1 vecino lo vio' : `${n} vecinos lo vieron`)
 export const textoConfirmaciones = (n: number): string => (n === 1 ? '1 vecino lo confirmó' : `${n} vecinos lo confirmaron`)
 export const textoDistancia = (m: number): string => (m < 1000 ? `a ${m} m` : `a ${(m / 1000).toFixed(1)} km`)
+export const textoYaResuelto = (n: number): string =>
+  n === 0 ? '' : n === 1 ? '1 vecino dice que ya está resuelto' : `${n} vecinos dicen que ya está resuelto`

@@ -1,7 +1,8 @@
 import { ApiError } from './cliente'
 import type { Api } from './tipos'
 import { ALERTAS_MOCK, AVISOS_MOCK, CATEGORIAS_MOCK, CENTRO_MAPA, INCIDENCIAS_MOCK, USUARIOS_MOCK } from '../data/mock'
-import type { GrupoVecinal, Incidencia, InvitacionGrupo, MiembroGrupo, RolGrupo } from '../types'
+import { TRANSICIONES, esAbierto } from '../utils/permisos'
+import type { EstadoIncidencia, GrupoVecinal, Incidencia, InvitacionGrupo, MiembroGrupo, RolGrupo } from '../types'
 
 // Implementación de ejemplo: responde con los datos de data/mock.ts y una demora simulada.
 // Guarda los cambios en memoria (se pierden al recargar la página).
@@ -13,6 +14,22 @@ const deGrupo = <T extends { grupoId?: number }>(lista: T[], grupoId?: number) =
 
 // ---------- Incidencias ----------
 const incidencias: Incidencia[] = INCIDENCIAS_MOCK.map(copia)
+const vistos = new Set<number>() // incidentes que el usuario ya confirmó ("Yo también lo vi")
+const resueltosPorMi = new Set<number>() // incidentes que marcó como "Ya lo vi resuelto"
+
+// Lo que haría el backend: al vencer la fecha de expiración, el incidente abierto pasa a EXPIRADO
+function expirarVencidos() {
+  const ahora = Date.now()
+  for (const i of incidencias) {
+    if (esAbierto(i) && new Date(i.fechaExpiracion).getTime() < ahora) {
+      i.estado = 'EXPIRADO'
+      i.historial.push({ estado: 'EXPIRADO', cuando: i.fechaExpiracion, nota: 'Venció la fecha de expiración' })
+    }
+  }
+}
+
+// Copia del incidente con lo que el usuario actual ya hizo
+const vista = (i: Incidencia): Incidencia => ({ ...i, yoConfirme: vistos.has(i.id), yoMarqueResuelto: resueltosPorMi.has(i.id) })
 
 // ---------- Grupos ----------
 interface GrupoInterno {
@@ -96,27 +113,52 @@ function grupoComoOwner(id: number): GrupoInterno {
   return g
 }
 
+// Pueden gestionar un incidente su creador y el owner de su grupo
+const puedeGestionarMock = (i: Incidencia) =>
+  i.autorId === YO || grupos.some((g) => g.id === i.grupoId && miRol(g) === 'OWNER')
+
+function incidenteGestionable(id: number): Incidencia {
+  const i = incidencias.find((x) => x.id === id)
+  if (!i) throw new ApiError('No encontramos ese incidente.', 404)
+  if (!puedeGestionarMock(i)) throw new ApiError('Solo el creador o el owner del grupo puede modificarlo.', 403)
+  if (!esAbierto(i)) throw new ApiError('El incidente ya está cerrado.', 409)
+  return i
+}
+
 export const apiMock: Api = {
   categorias: {
     listar: async () => { await esperar(150); return CATEGORIAS_MOCK.map(copia) },
   },
   incidencias: {
-    listar: async (grupoId) => { await esperar(); return deGrupo(incidencias, grupoId).map(copia) },
-    listarMias: async () => { await esperar(); return incidencias.filter((i) => i.esMia).map(copia) },
+    listar: async (grupoId) => { await esperar(); expirarVencidos(); return deGrupo(incidencias, grupoId).map(vista) },
+    listarMias: async () => { await esperar(); expirarVencidos(); return incidencias.filter((i) => i.autorId === YO).map(vista) },
     obtener: async (id) => {
       await esperar()
+      expirarVencidos()
       const encontrada = incidencias.find((i) => i.id === id)
-      return encontrada ? copia(encontrada) : null
+      return encontrada ? vista(encontrada) : null
     },
     confirmar: async (id) => {
       await esperar()
+      expirarVencidos()
       const encontrada = incidencias.find((i) => i.id === id)
-      if (!encontrada) throw new ApiError('No encontramos esa incidencia.', 404)
-      if (encontrada.estado === 'RESUELTO' || encontrada.estado === 'DESCARTADO') {
-        throw new ApiError('La incidencia ya está cerrada.', 409)
-      }
+      if (!encontrada) throw new ApiError('No encontramos ese incidente.', 404)
+      if (!esAbierto(encontrada)) throw new ApiError('El incidente ya está cerrado.', 409)
+      if (vistos.has(id)) throw new ApiError('Ya confirmaste este incidente.', 409)
+      vistos.add(id)
       encontrada.vecinos += 1
-      return copia(encontrada)
+      return vista(encontrada)
+    },
+    confirmarResuelto: async (id) => {
+      await esperar()
+      expirarVencidos()
+      const encontrada = incidencias.find((i) => i.id === id)
+      if (!encontrada) throw new ApiError('No encontramos ese incidente.', 404)
+      if (!esAbierto(encontrada)) throw new ApiError('El incidente ya está cerrado.', 409)
+      if (resueltosPorMi.has(id)) throw new ApiError('Ya avisaste que está resuelto.', 409)
+      resueltosPorMi.add(id)
+      encontrada.vecinosYaResuelto += 1
+      return vista(encontrada)
     },
     crear: async (datos) => {
       await esperar(500)
@@ -134,11 +176,60 @@ export const apiMock: Api = {
         descripcion: datos.descripcion,
         vecinos: 1,
         distancia: 0,
-        esMia: true,
+        tipo: 'NORMAL',
+        autorId: YO,
+        fechaExpiracion: new Date(Date.now() + datos.vigenciaDias * 86400000).toISOString(),
+        vecinosYaResuelto: 0,
         historial: [{ estado: 'REPORTADO', cuando: ahora, nota: 'Reportado por vos' }],
       }
       incidencias.unshift(nueva)
-      return copia(nueva)
+      return vista(nueva)
+    },
+    crearUrgente: async (datos) => {
+      await esperar(400)
+      const ahora = new Date().toISOString()
+      const nueva: Incidencia = {
+        id: Math.max(0, ...incidencias.map((i) => i.id)) + 1,
+        grupoId: datos.grupoId,
+        tipo: 'URGENTE',
+        autorId: YO,
+        titulo: 'Reporte urgente',
+        categoriaId: '',
+        estado: 'REPORTADO',
+        creada: ahora,
+        ubicacion: datos.lat === null ? 'Ubicación no disponible' : 'Ubicación compartida en vivo',
+        lat: datos.lat,
+        lng: datos.lng,
+        descripcion: '',
+        vecinos: 1,
+        distancia: 0,
+        fechaExpiracion: new Date(Date.now() + 24 * 3600000).toISOString(), // los urgentes duran 24 h
+        vecinosYaResuelto: 0,
+        historial: [{ estado: 'REPORTADO', cuando: ahora, nota: 'Reporte urgente enviado por vos' }],
+      }
+      incidencias.unshift(nueva)
+      return vista(nueva)
+    },
+    actualizar: async (id, cambios) => {
+      await esperar()
+      expirarVencidos()
+      const i = incidenteGestionable(id)
+      if (cambios.titulo !== undefined) i.titulo = cambios.titulo.trim()
+      if (cambios.categoriaId !== undefined) i.categoriaId = cambios.categoriaId
+      if (cambios.descripcion !== undefined) i.descripcion = cambios.descripcion.trim()
+      if (cambios.ubicacion !== undefined) i.ubicacion = cambios.ubicacion.trim()
+      return vista(i)
+    },
+    cambiarEstado: async (id, estado, nota) => {
+      await esperar()
+      expirarVencidos()
+      const i = incidenteGestionable(id)
+      if (!TRANSICIONES[i.estado].includes(estado as EstadoIncidencia)) {
+        throw new ApiError('No se puede pasar el incidente a ese estado.', 409)
+      }
+      i.estado = estado
+      i.historial.push({ estado, cuando: new Date().toISOString(), nota: nota?.trim() || 'Estado actualizado' })
+      return vista(i)
     },
   },
   alertas: {

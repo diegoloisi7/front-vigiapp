@@ -23,6 +23,10 @@ export const apiReal: Api = {
     confirmar: (id) => pedir<Incidencia>(`/incidencias/${id}/confirmaciones`, { metodo: 'POST' }),
     // TODO: la foto todavía no se envía; falta definir con el back cómo se sube (multipart o URL).
     crear: (datos) => pedir<Incidencia>('/incidencias', { metodo: 'POST', cuerpo: datos }),
+    crearUrgente: (datos) => pedir<Incidencia>('/incidencias/urgentes', { metodo: 'POST', cuerpo: datos }),
+    actualizar: (id, cambios) => pedir<Incidencia>(`/incidencias/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
+    cambiarEstado: (id, estado, nota) => pedir<Incidencia>(`/incidencias/${id}/estado`, { metodo: 'PATCH', cuerpo: { estado, nota } }),
+    confirmarResuelto: (id) => pedir<Incidencia>(`/incidencias/${id}/ya-resuelto`, { metodo: 'POST' }),
   },
   alertas: {
     listar: (grupoId) => pedir<Alerta[]>(`/alertas${filtroGrupo(grupoId)}`),

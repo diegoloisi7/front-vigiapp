@@ -5,7 +5,7 @@ import { EVENTOS_DEMO } from '../data/mock'
 const ETIQUETAS: Record<TipoEvento, string> = {
   EMERGENCIA: 'Emergencia',
   ALERTA: 'Alerta',
-  INCIDENCIA: 'Incidencia',
+  INCIDENCIA: 'Incidente',
   AVISO: 'Aviso',
   RESUELTO: 'Resuelto',
 }

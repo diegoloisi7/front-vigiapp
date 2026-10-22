@@ -10,7 +10,6 @@ export default function SelectorGrupo() {
   const { grupos, grupoActivo, invitaciones, cargando, cambiarGrupoActivo } = useGrupos()
   const [abierto, setAbierto] = useState(false)
 
-
   if (esAdmin || cargando) return null
   if (!grupoActivo) {
     return <Link to="/app/grupos" className="selector-grupo"><span aria-hidden="true">🏘️</span> Sin grupo</Link>

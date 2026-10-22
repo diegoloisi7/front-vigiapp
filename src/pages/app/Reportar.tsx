@@ -1,32 +1,39 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import Campo from '../../components/Campo'
-import Modal from '../../components/Modal'
-import MapaEmbed from '../../components/MapaEmbed'
-import PedirAyudaModal from '../../components/PedirAyudaModal'
 import { api } from '../../api'
 import { mensajeDeError } from '../../api/cliente'
 import { useCategorias } from '../../context/CategoriasContext'
 import { useGrupos } from '../../context/GruposContext'
+import Campo from '../../components/Campo'
+import Modal from '../../components/Modal'
+import MapaEmbed from '../../components/MapaEmbed'
+import PedirAyudaModal from '../../components/PedirAyudaModal'
 import { CENTRO_MAPA } from '../../data/mock'
+import { obtenerUbicacion } from '../../utils/ubicacion'
 
-interface FormIncidencia {
+interface FormIncidente {
   titulo: string
   categoria: string
   descripcion: string
   ubicacion: string
 }
-type Errores = Partial<Record<keyof FormIncidencia, string>>
+type Errores = Partial<Record<keyof FormIncidente, string>>
 interface Foto {
   nombre: string
   url: string
 }
 
-const FORM_INICIAL: FormIncidencia = { titulo: '', categoria: '', descripcion: '', ubicacion: '' }
+const FORM_INICIAL: FormIncidente = { titulo: '', categoria: '', descripcion: '', ubicacion: '' }
 const MAX_FOTO_MB = 5
+const VIGENCIAS = [
+  { dias: 1, texto: '24 horas' },
+  { dias: 3, texto: '3 días' },
+  { dias: 7, texto: '7 días' },
+  { dias: 30, texto: '30 días' },
+]
 
-// Validación en el front: devuelve un objeto { campo: mensaje }
-function validar(v: FormIncidencia): Errores {
+// Validación en el front de un incidente NORMAL (todos los datos son obligatorios)
+function validar(v: FormIncidente): Errores {
   const e: Errores = {}
   if (v.titulo.trim().length < 5) e.titulo = 'Escribí un título de al menos 5 caracteres.'
   if (!v.categoria) e.categoria = 'Elegí una categoría.'
@@ -37,7 +44,8 @@ function validar(v: FormIncidencia): Errores {
 
 export default function Reportar() {
   const [vista, setVista] = useState<'opciones' | 'formulario' | 'enviado'>('opciones')
-  const [valores, setValores] = useState(FORM_INICIAL)
+  const [valores, setValores] = useState<FormIncidente>(FORM_INICIAL)
+  const [vigenciaDias, setVigenciaDias] = useState(7)
   const [errores, setErrores] = useState<Errores>({})
   const [foto, setFoto] = useState<Foto | null>(null)
   const [errorFoto, setErrorFoto] = useState('')
@@ -50,30 +58,19 @@ export default function Reportar() {
   const { categorias } = useCategorias()
   const { grupoActivo } = useGrupos()
 
-  function cambiar(campo: keyof FormIncidencia, valor: string) {
+  function cambiar(campo: keyof FormIncidente, valor: string) {
     setValores((v) => ({ ...v, [campo]: valor }))
     if (errores[campo]) setErrores((e) => ({ ...e, [campo]: undefined }))
   }
 
   // Pide la ubicación real al navegador
-  function usarMiUbicacion() {
+  async function usarMiUbicacion() {
     setAvisoUbicacion('')
-    if (!('geolocation' in navigator)) {
-      setAvisoUbicacion('Tu navegador no permite obtener la ubicación. Escribila a mano.')
-      return
-    }
     setBuscando(true)
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        cambiar('ubicacion', `Mi ubicación actual (${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)})`)
-        setBuscando(false)
-      },
-      () => {
-        setBuscando(false)
-        setAvisoUbicacion('No pudimos obtener tu ubicación. Revisá el permiso del navegador o escribila a mano.')
-      },
-      { enableHighAccuracy: true, timeout: 10000 },
-    )
+    const posicion = await obtenerUbicacion(10000)
+    setBuscando(false)
+    if (posicion) cambiar('ubicacion', `Mi ubicación actual (${posicion.lat.toFixed(5)}, ${posicion.lng.toFixed(5)})`)
+    else setAvisoUbicacion('No pudimos obtener tu ubicación. Revisá el permiso del navegador o escribila a mano.')
   }
 
   function elegirFoto(e: ChangeEvent<HTMLInputElement>) {
@@ -105,6 +102,7 @@ export default function Reportar() {
         descripcion: valores.descripcion.trim(),
         ubicacion: valores.ubicacion.trim(),
         grupoId: grupoActivo?.id,
+        vigenciaDias,
       })
       setVista('enviado')
     } catch (error) {
@@ -116,6 +114,7 @@ export default function Reportar() {
 
   function reiniciar() {
     setValores(FORM_INICIAL)
+    setVigenciaDias(7)
     setErrores({})
     setFoto(null)
     setVista('opciones')
@@ -125,11 +124,11 @@ export default function Reportar() {
     return (
       <div className="ayuda-ok" role="status">
         <span className="ayuda-ok__icon" aria-hidden="true">✅</span>
-        <h2>Incidencia enviada</h2>
-        <p>Tus vecinos ya pueden verla en el mapa y confirmarla.</p>
+        <h2>Incidente enviado</h2>
+        <p>Tu grupo ya puede verlo en el mapa y confirmarlo. Lo vas a encontrar en «Mis incidentes» para actualizarlo o cerrarlo.</p>
         <div className="stack">
-          <Link to="/app/mapa" className="btn btn-primary">Ver el mapa</Link>
-          <button type="button" className="btn btn-outline" onClick={reiniciar}>Reportar otra</button>
+          <Link to="/app/incidentes" className="btn btn-primary">Ver incidentes</Link>
+          <button type="button" className="btn btn-outline" onClick={reiniciar}>Reportar otro</button>
         </div>
       </div>
     )
@@ -143,13 +142,13 @@ export default function Reportar() {
           <div className="opciones-reporte">
             <button type="button" className="opcion-grande" onClick={() => setVista('formulario')}>
               <span className="opcion-grande__icono" aria-hidden="true">📝</span>
-              <strong>Incidencia</strong>
-              <span>Un problema del barrio: luz, baches, basura, un árbol caído…</span>
+              <strong>Incidente normal</strong>
+              <span>Un problema del barrio: luz, baches, basura, un árbol caído… Completás los datos ahora.</span>
             </button>
             <button type="button" className="opcion-grande" onClick={() => setAyudaAbierta(true)}>
               <span className="opcion-grande__icono" aria-hidden="true">🆘</span>
-              <strong>Emergencia / Pedir ayuda</strong>
-              <span>Aviso inmediato a tu comunidad ante un peligro real.</span>
+              <strong>Urgente · Pedir ayuda</strong>
+              <span>Mantenés presionado 3 s y avisás a tu grupo con tu ubicación en vivo. Los datos se completan después.</span>
             </button>
           </div>
         </>
@@ -158,7 +157,7 @@ export default function Reportar() {
       {vista === 'formulario' && (
         <form className="formulario" onSubmit={enviar} noValidate>
           <button type="button" className="volver" onClick={() => setVista('opciones')}>← Cambiar tipo de reporte</button>
-          <h2>Reportar una incidencia</h2>
+          <h2>Reportar un incidente</h2>
 
           <Campo id="campo-titulo" etiqueta="Título" error={errores.titulo}>
             <input id="campo-titulo" className="input" type="text" maxLength={80} value={valores.titulo}
@@ -195,6 +194,13 @@ export default function Reportar() {
             <button type="button" className="btn btn-outline" onClick={() => setMapaAbierto(true)}>🗺️ Elegir en el mapa</button>
           </div>
           {avisoUbicacion && <p className="campo__error" role="alert">{avisoUbicacion}</p>}
+
+          <Campo id="campo-vigencia" etiqueta="Vigencia" ayuda="Pasado ese tiempo, si no se resolvió, el incidente expira.">
+            <select id="campo-vigencia" className="input" value={vigenciaDias} aria-describedby="campo-vigencia-ayuda"
+              onChange={(e) => setVigenciaDias(Number(e.target.value))}>
+              {VIGENCIAS.map((v) => <option key={v.dias} value={v.dias}>{v.texto}</option>)}
+            </select>
+          </Campo>
 
           <Campo id="campo-foto" etiqueta="Foto (opcional)" error={errorFoto} ayuda={`Una imagen de hasta ${MAX_FOTO_MB} MB.`}>
             <input id="campo-foto" className="input input--archivo" type="file" accept="image/*"

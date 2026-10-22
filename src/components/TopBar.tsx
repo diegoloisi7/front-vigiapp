@@ -3,8 +3,8 @@ import SelectorGrupo from './SelectorGrupo'
 
 // Se busca de arriba hacia abajo; "/app" va último porque matchea todo lo que empieza con /app
 const TITULOS = [
-  ['/app/mapa', 'Mapa'],
-  ['/app/incidencias', 'Incidencia'],
+  ['/app/incidentes', 'Incidentes'],
+  ['/app/incidencias', 'Incidente'],
   ['/app/reportar', 'Reportar'],
   ['/app/alertas', 'Alertas y avisos'],
   ['/app/grupos', 'Mis grupos'],

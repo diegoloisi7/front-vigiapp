@@ -16,6 +16,8 @@ const BADGES: Record<TipoBadge, [string, string]> = {
   OWNER: ['Owner', 'badge--seguimiento'],
   MIEMBRO: ['Miembro', 'badge--muted'],
   ACTIVO: ['Grupo activo', 'badge--activo'],
+  EXPIRADO: ['Expirado', 'badge--muted'],
+  URGENTE: ['Urgente', 'badge--urgente'],
 }
 
 export default function Badge({ tipo }: { tipo: TipoBadge }) {

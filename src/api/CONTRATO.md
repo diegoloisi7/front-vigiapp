@@ -33,3 +33,21 @@ Reglas: el creador de un grupo es su **owner**; un usuario puede pertenecer a **
 | POST | `/invitaciones/:id/respuesta` | Body: `{ aceptar: boolean }`. Si acepta devuelve el `GrupoVecinal`; si rechaza, 204 · 409 si ya fue respondida |
 
 Para el esquema de datos: `group_memberships` debe permitir varias filas por usuario (único por `user_id + group_id`) y su rol debe ser `OWNER` / `MIEMBRO`.
+
+## Incidentes: tipos y ciclo de vida
+
+Tipos: `URGENTE` (sin campos obligatorios, toma la ubicación en vivo, dura 24 h) y `NORMAL` (título, categoría, descripción y ubicación obligatorios, con vigencia elegida).
+Estados: `REPORTADO` → `EN_SEGUIMIENTO` → `RESUELTO` / `DESCARTADO`; si vence `fechaExpiracion` sin cerrarse pasa a `EXPIRADO` (lo hace el backend). Los estados finales no admiten cambios.
+Pueden actualizar o cerrar un incidente **su creador (`autorId`) y el owner de su grupo**. La API informa `yoConfirme` y `yoMarqueResuelto` para el usuario actual.
+
+| Método | Ruta | Detalle |
+|---|---|---|
+| POST | `/incidencias` | Incidente normal. Body: `{ titulo, categoriaId, descripcion, ubicacion, grupoId, vigenciaDias }` |
+| POST | `/incidencias/urgentes` | Reporte urgente. Body: `{ lat, lng, grupoId }` (`lat`/`lng` pueden ser `null`) |
+| PATCH | `/incidencias/:id` | Editar datos. Body: `{ titulo?, categoriaId?, descripcion?, ubicacion? }` · 403 si no es creador ni owner · 409 si está cerrado |
+| PATCH | `/incidencias/:id/estado` | Body: `{ estado, nota? }` · 409 si la transición no es válida |
+| POST | `/incidencias/:id/confirmaciones` | "Yo también lo vi" · 409 si ya confirmó o está cerrado |
+| POST | `/incidencias/:id/ya-resuelto` | "Ya lo vi resuelto" · 409 si ya lo marcó o está cerrado |
+
+Con 3 o más "ya lo vi resuelto" el front le sugiere al owner cerrarlo (no se cierra solo).
+Para el esquema de datos: en `incidents` hacen falta `autor` (user_id), `expires_at`, el contador de "ya lo vi resuelto", y tablas de confirmaciones por usuario (lo vi / ya lo vi resuelto) y de historial de estados.
