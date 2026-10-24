@@ -1,4 +1,6 @@
-import type { Alerta, Aviso, Categoria, EstadoIncidencia, GrupoDetalle, GrupoVecinal, Incidencia, InvitacionGrupo } from '../types'
+import type {
+  Aviso, Categoria, Contacto, EstadisticasAdmin, EstadoIncidencia, GrupoAdmin, GrupoDetalle, GrupoVecinal, Incidencia, InvitacionGrupo, PrioridadAviso, UsuarioAdmin,
+} from '../types'
 
 // Datos para crear una incidencia normal
 export interface NuevaIncidencia {
@@ -25,10 +27,47 @@ export interface CambiosIncidencia {
   ubicacion?: string
 }
 
+// Datos para crear un aviso
+export interface NuevoAviso {
+  titulo: string
+  cuerpo: string
+  prioridad: PrioridadAviso
+  vigenciaDias: number | null // null = sin vencimiento
+  grupoId?: number
+}
+
+// Lo que puede modificar el creador del aviso o el owner del grupo
+export interface CambiosAviso {
+  titulo?: string
+  cuerpo?: string
+  prioridad?: PrioridadAviso
+}
+
 // Datos para crear un grupo vecinal (el creador queda como owner)
 export interface NuevoGrupo {
   nombre: string
   zona: string
+}
+
+// Panel de administración (solo el administrador global)
+export interface CambiosGrupo {
+  nombre?: string
+  zona?: string
+}
+export interface CambiosUsuario {
+  nombre?: string
+  apellido?: string
+  email?: string
+  rol?: 'VECINO' | 'ADMINISTRADOR'
+}
+export interface NuevaCategoria {
+  nombre: string
+  icono: string
+}
+export interface CambiosCategoria {
+  nombre?: string
+  icono?: string
+  activa?: boolean
 }
 
 // Contrato de la API. Lo cumplen tanto la implementación real (fetch) como la de ejemplo (mock).
@@ -48,11 +87,13 @@ export interface Api {
     cambiarEstado(id: number, estado: EstadoIncidencia, nota?: string): Promise<Incidencia> // creador u owner del grupo
     confirmarResuelto(id: number): Promise<Incidencia> // "Ya lo vi resuelto"
   }
-  alertas: {
-    listar(grupoId?: number): Promise<Alerta[]>
-  }
+  // Las alertas son los reportes urgentes (tipo URGENTE): se obtienen con incidencias.listar / listarMias
   avisos: {
     listar(grupoId?: number): Promise<Aviso[]>
+    listarMios(): Promise<Aviso[]>
+    crear(datos: NuevoAviso): Promise<Aviso>
+    actualizar(id: number, cambios: CambiosAviso): Promise<Aviso> // creador u owner del grupo
+    cerrar(id: number): Promise<Aviso> // creador u owner del grupo
   }
   grupos: {
     listarMios(): Promise<GrupoVecinal[]>
@@ -64,5 +105,34 @@ export interface Api {
   invitaciones: {
     listarMias(): Promise<InvitacionGrupo[]> // pendientes recibidas por el usuario
     responder(invitacionId: number, aceptar: boolean): Promise<GrupoVecinal | null> // devuelve el grupo si aceptó
+  }
+  // El administrador global no pertenece a grupos y ve todo. Nunca ve ni define contraseñas.
+  admin: {
+    estadisticas(): Promise<EstadisticasAdmin>
+    grupos: {
+      listar(): Promise<GrupoAdmin[]>
+      actualizar(id: number, cambios: CambiosGrupo): Promise<GrupoAdmin>
+      eliminar(id: number): Promise<void> // borra también sus incidentes y avisos
+    }
+    usuarios: {
+      listar(): Promise<UsuarioAdmin[]>
+      actualizar(id: number, cambios: CambiosUsuario): Promise<UsuarioAdmin>
+      eliminar(id: number): Promise<void> // 409 si es owner de un grupo o es el propio admin
+      blanquearClave(id: number): Promise<void> // el usuario recibe un enlace para crear una contraseña nueva
+    }
+    incidentes: {
+      eliminar(id: number): Promise<void>
+    }
+    avisos: {
+      eliminar(id: number): Promise<void>
+    }
+    categorias: {
+      crear(datos: NuevaCategoria): Promise<Categoria>
+      actualizar(id: string, cambios: CambiosCategoria): Promise<Categoria>
+    }
+    contactos: {
+      listar(): Promise<Contacto[]>
+      marcarLeido(id: number): Promise<Contacto>
+    }
   }
 }

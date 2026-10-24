@@ -91,7 +91,6 @@ export default function Perfil() {
       </div>
 
       <nav className="lista-acciones" aria-label="Más opciones">
-        {esAdmin && <Link to="/admin">⚙️ Panel de administración</Link>}
         {!esAdmin && <Link to="/app/grupos">🏘️ Mis grupos</Link>}
         <Link to="/contacto">✉️ Contacto</Link>
         <button type="button" onClick={salir}>↩︎ Cerrar sesión</button>

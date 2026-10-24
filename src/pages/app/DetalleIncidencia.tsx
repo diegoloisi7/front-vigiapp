@@ -14,7 +14,7 @@ import EstadoIncidenteModal from '../../components/EstadoIncidenteModal'
 import MapaEmbed from '../../components/MapaEmbed'
 import { ESTADOS } from '../../data/mock'
 import { fechaLarga, textoVecinos, textoYaResuelto } from '../../utils/formato'
-import { UMBRAL_YA_RESUELTO, esAbierto, esUrgenteActivo, estaIncompleto, puedeGestionar } from '../../utils/permisos'
+import { esAbierto, esUrgenteActivo, estaIncompleto, puedeGestionar } from '../../utils/permisos'
 import type { EstadoIncidencia } from '../../types'
 
 export default function DetalleIncidencia() {
@@ -69,7 +69,6 @@ export default function DetalleIncidencia() {
   const categoria = categoriaPorId(incidencia.categoriaId)
   const abierto = esAbierto(incidencia)
   const puede = puedeGestionar(incidencia, usuario, grupos)
-  const sugerirCierre = puede && abierto && incidencia.vecinosYaResuelto >= UMBRAL_YA_RESUELTO
 
   return (
     <article className="detalle">
@@ -96,14 +95,6 @@ export default function DetalleIncidencia() {
             {incidencia.estado === 'EXPIRADO' ? '⌛ Expiró el ' : '⏳ Vigente hasta el '}{fechaLarga(incidencia.fechaExpiracion)}
           </p>
           {incidencia.descripcion ? <p>{incidencia.descripcion}</p> : <p className="detalle__meta">Todavía no tiene descripción.</p>}
-
-          {/* Cierre sugerido: varios vecinos dicen que ya se resolvió */}
-          {sugerirCierre && (
-            <div className="sugerencia" role="status">
-              <p><strong>{textoYaResuelto(incidencia.vecinosYaResuelto)}.</strong> ¿Querés cerrarlo?</p>
-              <button type="button" className="btn btn-primary" onClick={() => abrirEstado('RESUELTO')}>Cerrar como resuelto</button>
-            </div>
-          )}
 
           <div className="confirmar">
             <p className="confirmar__cuenta">👀 <strong>{textoVecinos(incidencia.vecinos)}</strong></p>

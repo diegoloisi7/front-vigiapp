@@ -69,36 +69,25 @@ export interface Incidencia {
   yoMarqueResuelto?: boolean
 }
 
-export type NivelAlerta = 'EMERGENCIA' | 'ALERTA'
-export type EstadoAlerta = 'ACTIVA' | 'CERRADA'
-
-export interface Alerta {
-  id: number
-  nivel: NivelAlerta
-  estado: EstadoAlerta
-  tipo: string
-  ubicacion: string
-  descripcion: string
-  creada: string
-  confirmaciones: number
-  cierre?: string // "Resuelta" | "Falsa alarma"
-  grupoId?: number
-}
-
 export type PrioridadAviso = 'NORMAL' | 'IMPORTANTE'
+
+export type EstadoAviso = 'VIGENTE' | 'CERRADO' | 'EXPIRADO'
 
 export interface Aviso {
   id: number
+  grupoId?: number
   prioridad: PrioridadAviso
   titulo: string
   cuerpo: string
-  fecha: string
-  vence: string | null
-  grupoId?: number
+  fecha: string // creación
+  vence: string | null // al vencer pasa a EXPIRADO
+  estado: EstadoAviso
+  autorId: number // creador: junto con el owner del grupo, puede editarlo o cerrarlo
+  autorNombre: string
 }
 
 /** Valores que puede mostrar el componente Badge. */
-export type TipoBadge = EstadoIncidencia | EstadoAlerta | PrioridadAviso | EstadoInvitacion | RolGrupo | 'ACTIVO' | 'URGENTE'
+export type TipoBadge = EstadoIncidencia | EstadoAviso | PrioridadAviso | EstadoInvitacion | RolGrupo | 'ACTIVO' | 'URGENTE' | 'VECINO' | 'ADMINISTRADOR' | 'NUEVO' | 'LEIDO' | 'ACTIVA' | 'INACTIVA'
 
 // Landing
 export type TipoEvento = 'EMERGENCIA' | 'ALERTA' | 'INCIDENCIA' | 'AVISO' | 'RESUELTO'
@@ -145,4 +134,51 @@ export interface InvitacionGrupo {
 export interface GrupoDetalle extends GrupoVecinal {
   miembros: MiembroGrupo[]
   invitaciones: InvitacionGrupo[]
+}
+
+// ---------- Administración (admin global) ----------
+export interface UsuarioAdmin {
+  id: number
+  nombre: string
+  apellido: string
+  email: string
+  rol: 'VECINO' | 'ADMINISTRADOR'
+  creado: string // fecha ISO
+  cantidadGrupos: number
+}
+
+export interface GrupoAdmin {
+  id: number
+  nombre: string
+  zona: string
+  ownerId: number
+  ownerNombre: string
+  cantidadVecinos: number
+  cantidadIncidentes: number
+  cantidadAvisos: number
+  creado: string // fecha ISO
+}
+
+export interface Contacto {
+  id: number
+  nombre: string
+  email: string
+  asunto: string
+  mensaje: string
+  fecha: string // fecha ISO
+  leido: boolean
+}
+
+export interface EstadisticasAdmin {
+  totalGrupos: number
+  totalUsuarios: number
+  totalVecinos: number
+  usuariosNuevos30d: number
+  urgentesActivos: number
+  avisosVigentes: number
+  contactosSinLeer: number
+  incidentesPorEstado: Record<EstadoIncidencia, number>
+  ultimos7dias: { etiqueta: string; cantidad: number }[]
+  porCategoria: { categoriaId: string; nombre: string; icono: string; cantidad: number }[]
+  topGrupos: { grupoId: number; nombre: string; vecinos: number; incidentes: number }[]
 }

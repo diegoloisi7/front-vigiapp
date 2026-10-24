@@ -20,12 +20,13 @@ export const NAV_VECINO: ItemNav[] = [
 ]
 
 export const NAV_ADMIN: ItemNav[] = [
-  { to: '/admin', texto: 'Dashboard', end: true },
-  { to: '/admin/incidencias', texto: 'Incidencias' },
-  { to: '/admin/categorias', texto: 'Categorías' },
-  { to: '/admin/avisos', texto: 'Avisos' },
-  { to: '/admin/alertas', texto: 'Alertas' },
-  { to: '/admin/contactos', texto: 'Contactos' },
+  { to: '/admin', icono: '📊', texto: 'Dashboard', end: true },
+  { to: '/admin/grupos', icono: '🏘️', texto: 'Grupos' },
+  { to: '/admin/usuarios', icono: '👥', texto: 'Usuarios' },
+  { to: '/admin/incidencias', icono: '📋', texto: 'Incidentes' },
+  { to: '/admin/categorias', icono: '🏷️', texto: 'Categorías' },
+  { to: '/admin/avisos', icono: '📢', texto: 'Avisos' },
+  { to: '/admin/contactos', icono: '✉️', texto: 'Contactos' },
 ]
 
 // Devuelve true si el ítem debe verse activo

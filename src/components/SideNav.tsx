@@ -1,11 +1,9 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import Logo from './Logo'
-import { useAuth } from '../context/AuthContext'
-import { NAV_VECINO, NAV_ADMIN, itemActivo } from '../data/navItems'
+import { NAV_VECINO, itemActivo } from '../data/navItems'
 
-// Menú lateral fijo (tablet y escritorio). Las secciones van arriba y "Reportar" queda al final del menú.
+// Menú lateral fijo del vecino (tablet y escritorio). Las secciones van arriba y "Reportar" queda al final.
 export default function SideNav() {
-  const { esAdmin } = useAuth()
   const { pathname } = useLocation()
   const secciones = NAV_VECINO.filter((item) => !item.destacado)
   const reportar = NAV_VECINO.find((item) => item.destacado)
@@ -31,26 +29,6 @@ export default function SideNav() {
           </li>
         ))}
       </ul>
-
-      {/* Bloque extra solo para el administrador */}
-      {esAdmin && (
-        <div>
-          <p className="sidenav__group-title" id="grupo-admin">Administración</p>
-          <ul className="sidenav__list" aria-labelledby="grupo-admin">
-            {NAV_ADMIN.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  end={item.end}
-                  className={({ isActive }) => `sidenav__link ${isActive ? 'is-active' : ''}`}
-                >
-                  {item.texto}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       {reportar && (
         <NavLink

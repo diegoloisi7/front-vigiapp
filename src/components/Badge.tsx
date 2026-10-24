@@ -6,8 +6,8 @@ const BADGES: Record<TipoBadge, [string, string]> = {
   EN_SEGUIMIENTO: ['En seguimiento', 'badge--seguimiento'],
   RESUELTO: ['Resuelto', 'badge--resuelto'],
   DESCARTADO: ['Descartado', 'badge--muted'],
-  ACTIVA: ['Activa', 'badge--alerta'],
-  CERRADA: ['Cerrada', 'badge--resuelto'],
+  VIGENTE: ['Vigente', 'badge--aviso'],
+  CERRADO: ['Cerrado', 'badge--muted'],
   IMPORTANTE: ['Importante', 'badge--aviso'],
   NORMAL: ['Normal', 'badge--muted'],
   PENDIENTE: ['Pendiente', 'badge--incidencia'],
@@ -18,6 +18,12 @@ const BADGES: Record<TipoBadge, [string, string]> = {
   ACTIVO: ['Grupo activo', 'badge--activo'],
   EXPIRADO: ['Expirado', 'badge--muted'],
   URGENTE: ['Urgente', 'badge--urgente'],
+  VECINO: ['Vecino', 'badge--muted'],
+  ADMINISTRADOR: ['Administrador', 'badge--seguimiento'],
+  NUEVO: ['Nuevo', 'badge--incidencia'],
+  LEIDO: ['Leído', 'badge--muted'],
+  ACTIVA: ['Activa', 'badge--resuelto'],
+  INACTIVA: ['Inactiva', 'badge--muted'],
 }
 
 export default function Badge({ tipo }: { tipo: TipoBadge }) {

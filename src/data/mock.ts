@@ -1,5 +1,5 @@
 import type {
-  Alerta, Aviso, Categoria, EstadoIncidencia, EventoDemo, Incidencia, MiembroEquipo, Rol, Usuario,
+  Aviso, Categoria, EstadoIncidencia, EventoDemo, Incidencia, MiembroEquipo, Rol, Usuario,
 } from '../types'
 
 // Datos de prueba. Por ahora solo usuarios; en los bloques siguientes se suman
@@ -143,28 +143,21 @@ export const INCIDENCIAS_MOCK: Incidencia[] = [
     historial: [{ estado: 'REPORTADO', cuando: hace(90), nota: 'Reporte urgente enviado por vos' }] },
 ]
 
-// nivel: EMERGENCIA (pedido de ayuda, rojo) | ALERTA (naranja). estado: ACTIVA | CERRADA
-export const ALERTAS_MOCK: Alerta[] = [
-  { id: 1, grupoId: 1, nivel: 'EMERGENCIA', estado: 'ACTIVA', tipo: 'Incendio', ubicacion: 'Calle Los Olmos 120',
-    descripcion: 'Un vecino pidió ayuda: se ve humo saliendo de una vivienda.', creada: hace(4), confirmaciones: 3 },
-  { id: 2, grupoId: 1, nivel: 'ALERTA', estado: 'ACTIVA', tipo: 'Actividad sospechosa', ubicacion: 'Calle Las Rosas al 150',
-    descripcion: 'Personas probando puertas de autos durante la madrugada.', creada: hace(50), confirmaciones: 5 },
-  { id: 3, grupoId: 2, nivel: 'ALERTA', estado: 'ACTIVA', tipo: 'Situación peligrosa', ubicacion: 'Av. Mitre y Sarmiento',
-    descripcion: 'Cable de luz caído sobre la calzada. Evitá la zona.', creada: hace(90), confirmaciones: 7 },
-  { id: 4, grupoId: 1, nivel: 'ALERTA', estado: 'CERRADA', tipo: 'Robo', ubicacion: 'Calle Los Pinos 200',
-    descripcion: 'Robo de una bicicleta frente a un comercio.', creada: hace(1600), confirmaciones: 2, cierre: 'Resuelta' },
-  { id: 5, grupoId: 2, nivel: 'EMERGENCIA', estado: 'CERRADA', tipo: 'Accidente', ubicacion: 'Av. Mitre y Belgrano',
-    descripcion: 'Choque leve entre dos autos en la esquina.', creada: hace(2800), confirmaciones: 1, cierre: 'Falsa alarma' },
-]
-
-// prioridad: NORMAL | IMPORTANTE. vence: fecha opcional
+// prioridad: NORMAL | IMPORTANTE. estado: VIGENTE | CERRADO | EXPIRADO. vence: fecha opcional.
+// autorId: creador del aviso; junto con el owner del grupo, puede editarlo o cerrarlo.
 export const AVISOS_MOCK: Aviso[] = [
-  { id: 1, grupoId: 1, prioridad: 'IMPORTANTE', titulo: 'Corte de agua programado', fecha: hace(180), vence: hace(-2880),
+  { id: 1, grupoId: 1, prioridad: 'IMPORTANTE', titulo: 'Corte de agua programado', fecha: hace(180), vence: hace(-2880), estado: 'VIGENTE', autorId: 10, autorNombre: 'Carlos Ruiz',
     cuerpo: 'El jueves de 9 a 12 no habrá servicio en las manzanas 3 y 4. Guardá agua con anticipación.' },
-  { id: 2, grupoId: 1, prioridad: 'IMPORTANTE', titulo: 'Reunión de seguridad vecinal', fecha: hace(1200), vence: hace(-4320),
+  { id: 2, grupoId: 1, prioridad: 'IMPORTANTE', titulo: 'Reunión de seguridad vecinal', fecha: hace(1200), vence: hace(-4320), estado: 'VIGENTE', autorId: 10, autorNombre: 'Carlos Ruiz',
     cuerpo: 'El sábado a las 18:00 en el salón comunal. Vamos a acordar rondas y un protocolo de aviso.' },
-  { id: 3, grupoId: 2, prioridad: 'NORMAL', titulo: 'Feria de la plaza', fecha: hace(2000), vence: null,
+  { id: 3, grupoId: 2, prioridad: 'NORMAL', titulo: 'Feria de la plaza', fecha: hace(2000), vence: null, estado: 'VIGENTE', autorId: 1, autorNombre: 'Lucía Fernández',
     cuerpo: 'Los domingos de 10 a 16 hay feria de productores en la plaza central.' },
-  { id: 4, grupoId: 2, prioridad: 'NORMAL', titulo: 'Nuevo horario de recolección', fecha: hace(3000), vence: null,
+  { id: 4, grupoId: 2, prioridad: 'NORMAL', titulo: 'Nuevo horario de recolección', fecha: hace(3000), vence: null, estado: 'VIGENTE', autorId: 15, autorNombre: 'Marcos Díaz',
     cuerpo: 'Desde la semana próxima, la recolección de residuos pasa martes y viernes por la noche.' },
+  { id: 5, grupoId: 1, prioridad: 'NORMAL', titulo: 'Se busca perro perdido', fecha: hace(240), vence: hace(-2880), estado: 'VIGENTE', autorId: 1, autorNombre: 'Lucía Fernández',
+    cuerpo: 'Se perdió un labrador color miel cerca de la plaza. Si lo ves, avisá por este grupo.' },
+  { id: 6, grupoId: 1, prioridad: 'NORMAL', titulo: 'Corte de luz del martes', fecha: hace(4000), vence: null, estado: 'CERRADO', autorId: 12, autorNombre: 'Pedro Gómez',
+    cuerpo: 'Se restableció el servicio en toda la zona. Gracias por avisar.' },
+  { id: 7, grupoId: 1, prioridad: 'NORMAL', titulo: 'Jornada de limpieza', fecha: hace(2600), vence: hace(120), estado: 'VIGENTE', autorId: 13, autorNombre: 'Marta Silva',
+    cuerpo: 'Nos juntamos a limpiar la plaza. Llevá guantes y bolsas.' },
 ]

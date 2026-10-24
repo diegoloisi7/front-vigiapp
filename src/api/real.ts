@@ -1,6 +1,6 @@
 import { ApiError, pedir } from './cliente'
 import type { Api } from './tipos'
-import type { Alerta, Aviso, Categoria, GrupoDetalle, GrupoVecinal, Incidencia, InvitacionGrupo } from '../types'
+import type { Aviso, Categoria, Contacto, EstadisticasAdmin, GrupoAdmin, GrupoDetalle, GrupoVecinal, Incidencia, InvitacionGrupo, UsuarioAdmin } from '../types'
 
 const filtroGrupo = (grupoId?: number) => (grupoId === undefined ? '' : `?grupoId=${grupoId}`)
 
@@ -28,11 +28,12 @@ export const apiReal: Api = {
     cambiarEstado: (id, estado, nota) => pedir<Incidencia>(`/incidencias/${id}/estado`, { metodo: 'PATCH', cuerpo: { estado, nota } }),
     confirmarResuelto: (id) => pedir<Incidencia>(`/incidencias/${id}/ya-resuelto`, { metodo: 'POST' }),
   },
-  alertas: {
-    listar: (grupoId) => pedir<Alerta[]>(`/alertas${filtroGrupo(grupoId)}`),
-  },
   avisos: {
     listar: (grupoId) => pedir<Aviso[]>(`/avisos${filtroGrupo(grupoId)}`),
+    listarMios: () => pedir<Aviso[]>('/avisos/mios'),
+    crear: (datos) => pedir<Aviso>('/avisos', { metodo: 'POST', cuerpo: datos }),
+    actualizar: (id, cambios) => pedir<Aviso>(`/avisos/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
+    cerrar: (id) => pedir<Aviso>(`/avisos/${id}/cierre`, { metodo: 'POST' }),
   },
   grupos: {
     listarMios: () => pedir<GrupoVecinal[]>('/grupos/mios'),
@@ -54,5 +55,33 @@ export const apiReal: Api = {
     listarMias: () => pedir<InvitacionGrupo[]>('/invitaciones/mias'),
     responder: async (invitacionId, aceptar) =>
       (await pedir<GrupoVecinal | undefined>(`/invitaciones/${invitacionId}/respuesta`, { metodo: 'POST', cuerpo: { aceptar } })) ?? null,
+  },
+  admin: {
+    estadisticas: () => pedir<EstadisticasAdmin>('/admin/estadisticas'),
+    grupos: {
+      listar: () => pedir<GrupoAdmin[]>('/admin/grupos'),
+      actualizar: (id, cambios) => pedir<GrupoAdmin>(`/admin/grupos/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
+      eliminar: (id) => pedir<void>(`/admin/grupos/${id}`, { metodo: 'DELETE' }),
+    },
+    usuarios: {
+      listar: () => pedir<UsuarioAdmin[]>('/admin/usuarios'),
+      actualizar: (id, cambios) => pedir<UsuarioAdmin>(`/admin/usuarios/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
+      eliminar: (id) => pedir<void>(`/admin/usuarios/${id}`, { metodo: 'DELETE' }),
+      blanquearClave: (id) => pedir<void>(`/admin/usuarios/${id}/blanqueo-clave`, { metodo: 'POST' }),
+    },
+    incidentes: {
+      eliminar: (id) => pedir<void>(`/admin/incidencias/${id}`, { metodo: 'DELETE' }),
+    },
+    avisos: {
+      eliminar: (id) => pedir<void>(`/admin/avisos/${id}`, { metodo: 'DELETE' }),
+    },
+    categorias: {
+      crear: (datos) => pedir<Categoria>('/admin/categorias', { metodo: 'POST', cuerpo: datos }),
+      actualizar: (id, cambios) => pedir<Categoria>(`/admin/categorias/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
+    },
+    contactos: {
+      listar: () => pedir<Contacto[]>('/admin/contactos'),
+      marcarLeido: (id) => pedir<Contacto>(`/admin/contactos/${id}/leido`, { metodo: 'POST' }),
+    },
   },
 }
