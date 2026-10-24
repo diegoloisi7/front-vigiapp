@@ -2,10 +2,28 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0f766e" />
-    <meta name="description" content="VigiAPP: información de seguridad compartida por vecinos." />
-    <title>VigiAPP | Seguridad vecinal</title>
+    <!-- viewport-fit=cover permite usar safe-area-inset en celulares con notch -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1F4E79" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Alertas e incidencias de tu barrio, organizadas en un solo lugar." />
+    <!-- Para agregar la app a la pantalla de inicio del celular -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="VigiApp" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>VigiApp — Alertas e incidencias de tu barrio</title>
+    <!-- Aplica el modo noche antes de que se dibuje la página, para que no parpadee en blanco -->
+    <script>
+      try {
+        var t = localStorage.getItem('vigiapp_tema');
+        if (t !== 'claro' && t !== 'oscuro') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+        document.documentElement.dataset.tema = t;
+        if (t === 'oscuro') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0F1B28');
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

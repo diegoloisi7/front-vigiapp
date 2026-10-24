@@ -1,34 +1,16 @@
-# VigiAPP · Frontend
+# React + Vite
 
-Frontend web inicial de VigiAPP, una aplicación académica para compartir información de seguridad vecinal.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Stack
+Currently, two official plugins are available:
 
-- React + TypeScript
-- Vite
-- Leaflet + OpenStreetMap
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Ejecutar
+## React Compiler
 
-Requiere Node.js y npm.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-```bash
-npm install
-npm run dev
-```
+## Expanding the ESLint configuration
 
-Para generar la versión de producción: `npm run build`.
-
-## Organización
-
-```text
-src/
-  app/                 composición y entrada de la aplicación
-  pages/               pantallas
-  features/incidents/  tipos, datos y componentes de incidentes
-  styles.css           estilos globales y diseño adaptable
-```
-
-La pantalla de incidentes usa datos de ejemplo locales. Se reemplazarán por servicios HTTP cuando esté disponible la API NestJS. La URL base se configura con `VITE_API_URL` (ver `.env.example`). La PWA, la autenticación y las actualizaciones en tiempo real quedan para etapas posteriores, siguiendo el orden de desarrollo acordado.
-
-El mapa consume teselas de OpenStreetMap y requiere conexión a internet.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
