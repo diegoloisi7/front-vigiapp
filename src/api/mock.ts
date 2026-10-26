@@ -228,6 +228,13 @@ export const apiMock: Api = {
       encontrada.vecinos += 1
       return vista(encontrada)
     },
+    desconfirmar: async (id) => {
+      await esperar()
+      const encontrada = incidencias.find((i) => i.id === id)
+      if (!encontrada) throw new ApiError('No encontramos ese incidente.', 404)
+      if (vistos.delete(id)) encontrada.vecinos -= 1
+      return vista(encontrada)
+    },
     confirmarResuelto: async (id) => {
       await esperar()
       expirarVencidos()

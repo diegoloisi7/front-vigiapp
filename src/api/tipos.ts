@@ -15,11 +15,11 @@ export interface NuevaIncidencia {
   vigenciaDias: number // cuánto tiempo sigue vigente antes de expirar
 }
 
-// Reporte urgente: sin campos obligatorios. Toma la ubicación en vivo (null si no se pudo obtener).
+// Reporte urgente: requiere la ubicación actual y un grupo activo.
 export interface NuevaIncidenciaUrgente {
-  lat: number | null
-  lng: number | null
-  grupoId?: number
+  lat: number
+  lng: number
+  grupoId: number
 }
 
 // Lo que puede modificar el creador del incidente o el owner del grupo
@@ -50,6 +50,8 @@ export interface CambiosAviso {
 export interface NuevoGrupo {
   nombre: string
   zona: string
+  centro?: { lat: number; lng: number }
+  radioMetros?: number
 }
 
 // Panel de administración (solo el administrador global)
@@ -84,6 +86,7 @@ export interface Api {
     listarMias(): Promise<Incidencia[]>
     obtener(id: number): Promise<Incidencia | null> // null si no existe
     confirmar(id: number): Promise<Incidencia> // "Yo también lo vi"
+    desconfirmar(id: number): Promise<Incidencia>
     crear(datos: NuevaIncidencia): Promise<Incidencia> // incidente normal
     crearUrgente(datos: NuevaIncidenciaUrgente): Promise<Incidencia>
     actualizar(id: number, cambios: CambiosIncidencia): Promise<Incidencia> // creador u owner del grupo

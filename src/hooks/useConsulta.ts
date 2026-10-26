@@ -37,5 +37,11 @@ export function useConsulta<T>(consulta: () => Promise<T>, dependencias: unknown
     setVersion((v) => v + 1)
   }
 
+  useEffect(() => {
+    const onUpdate = () => recargar()
+    window.addEventListener('vigiapp:refrescar', onUpdate)
+    return () => window.removeEventListener('vigiapp:refrescar', onUpdate)
+  }, [])
+
   return { datos, cargando, error, recargar }
 }

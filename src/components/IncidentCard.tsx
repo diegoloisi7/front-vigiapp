@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Badge from './Badge'
+import IconoCategoria from './IconoCategoria'
 import { useCategorias } from '../context/CategoriasContext'
 import { esUrgenteActivo } from '../utils/permisos'
 import { tiempoRelativo, textoVecinos, textoDistancia } from '../utils/formato'
@@ -20,7 +21,7 @@ export default function IncidentCard({ incidencia: i, mostrarDistancia = false }
   return (
     <Link to={`/app/incidencias/${i.id}`} className={`incident-card ${urgente ? 'incident-card--urgente' : ''}`}>
       <span className={`incident-card__icon ${urgente ? 'incident-card__icon--urgente' : ''}`} aria-hidden="true">
-        {categoria?.icono ?? (i.tipo === 'URGENTE' ? '🆘' : '📌')}
+        <IconoCategoria icono={categoria?.icono ?? (i.tipo === 'URGENTE' ? '🆘' : '📌')} />
       </span>
       <span className="incident-card__body">
         <span className="incident-card__title">{i.titulo}</span>

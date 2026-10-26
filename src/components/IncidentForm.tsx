@@ -3,6 +3,7 @@ import { api } from '../api'
 import { USAR_MOCK } from '../api/config'
 import { mensajeDeError } from '../api/cliente'
 import Campo from './Campo'
+import IconoCategoria from './IconoCategoria'
 import { colorDeCategoria } from '../data/incidentTypes'
 import { nombreDeUbicacion, textoCoordenadas } from '../utils/geocodificacion'
 import { obtenerUbicacion, type Coordenadas } from '../utils/ubicacion'
@@ -80,7 +81,7 @@ export default function IncidentForm({ categorias, grupoId, punto, onCambiarPunt
     const archivo = e.target.files?.[0]
     setErrores((x) => ({ ...x, foto: undefined }))
     if (!archivo) return
-    if (!archivo.type.startsWith('image/')) return setErrores((x) => ({ ...x, foto: 'El archivo tiene que ser una imagen.' }))
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(archivo.type)) return setErrores((x) => ({ ...x, foto: 'Elegí una imagen JPG, PNG, WebP o GIF.' }))
     if (archivo.size > MAX_FOTO_MB * 1024 * 1024) return setErrores((x) => ({ ...x, foto: `La foto no puede pesar más de ${MAX_FOTO_MB} MB.` }))
     if (foto) URL.revokeObjectURL(foto.url)
     setFoto({ nombre: archivo.name, url: URL.createObjectURL(archivo), archivo })
@@ -148,7 +149,7 @@ export default function IncidentForm({ categorias, grupoId, punto, onCambiarPunt
               <button key={c.id} type="button" className={`categoria-op ${categoriaId === c.id ? 'is-active' : ''}`}
                 style={{ '--pin': colorDeCategoria(c.id) } as CSSProperties}
                 aria-pressed={categoriaId === c.id} onClick={() => setCategoriaId(c.id)}>
-                <span aria-hidden="true">{c.icono}</span>{c.nombre}
+                <IconoCategoria icono={c.icono} />{c.nombre}
               </button>
             ))}
           </div>
@@ -213,7 +214,7 @@ export default function IncidentForm({ categorias, grupoId, punto, onCambiarPunt
         <>
           <p className="lead">Revisá antes de enviar</p>
           <dl className="panel-incidente__datos">
-            <div><dt>Categoría</dt><dd>{categoria?.icono} {categoria?.nombre}</dd></div>
+            <div><dt>Categoría</dt><dd><IconoCategoria icono={categoria?.icono} /> {categoria?.nombre}</dd></div>
             <div><dt>Título</dt><dd>{titulo.trim()}</dd></div>
             <div><dt>Descripción</dt><dd>{descripcion.trim()}</dd></div>
             <div><dt>📍 Ubicación</dt><dd>{ubicacionTexto}</dd></div>

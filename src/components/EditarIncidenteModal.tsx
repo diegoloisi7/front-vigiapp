@@ -4,6 +4,7 @@ import { mensajeDeError } from '../api/cliente'
 import { useCategorias } from '../context/CategoriasContext'
 import type { Incidencia } from '../types'
 import Campo from './Campo'
+import IconoCategoria, { emojiDeCategoria } from './IconoCategoria'
 import Modal from './Modal'
 
 type Campos = 'titulo' | 'categoriaId' | 'descripcion' | 'ubicacion'
@@ -84,12 +85,15 @@ function FormEditar({ incidencia, onCerrar, onGuardado }: { incidencia: Incidenc
       </Campo>
 
       <Campo id="editar-categoriaId" etiqueta="Categoría" error={errores.categoriaId}>
-        <select id="editar-categoriaId" className="input" value={valores.categoriaId}
-          aria-invalid={!!errores.categoriaId} aria-describedby={errores.categoriaId ? 'editar-categoriaId-error' : undefined}
-          onChange={(e) => cambiar('categoriaId', e.target.value)}>
-          <option value="">Sin categoría</option>
-          {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{c.icono} {c.nombre}</option>)}
-        </select>
+        <div className="categoria-seleccion">
+          <select id="editar-categoriaId" className="input" value={valores.categoriaId}
+            aria-invalid={!!errores.categoriaId} aria-describedby={errores.categoriaId ? 'editar-categoriaId-error' : undefined}
+            onChange={(e) => cambiar('categoriaId', e.target.value)}>
+            <option value="">Sin categoría</option>
+            {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{emojiDeCategoria(c.icono)} {c.nombre}</option>)}
+          </select>
+          {valores.categoriaId && <IconoCategoria icono={categorias.find((c) => c.id === valores.categoriaId)?.icono} />}
+        </div>
       </Campo>
 
       <Campo id="editar-descripcion" etiqueta="Descripción" error={errores.descripcion}>

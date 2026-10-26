@@ -4,6 +4,7 @@ import { leerVecinoNuevo, simularVecinoNuevo } from '../api/mock'
 import { useAuth, ROLES } from '../context/AuthContext'
 import { useGrupos } from '../context/GruposContext'
 import type { Rol } from '../types'
+import { USAR_MOCK } from '../api/config'
 
 type Opcion = Rol | 'VECINO_NUEVO'
 
@@ -29,6 +30,8 @@ export default function RoleSwitcher() {
     else if (opcion === ROLES.ADMINISTRADOR) navigate('/admin')
     else navigate('/app')
   }
+
+  if (!USAR_MOCK) return null
 
   return (
     <div className="role-switcher">

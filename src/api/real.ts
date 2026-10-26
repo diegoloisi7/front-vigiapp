@@ -21,6 +21,7 @@ export const apiReal: Api = {
       }
     },
     confirmar: (id) => pedir<Incidencia>(`/incidencias/${id}/confirmaciones`, { metodo: 'POST' }),
+    desconfirmar: (id) => pedir<Incidencia>(`/incidencias/${id}/confirmaciones`, { metodo: 'DELETE' }),
     // Sin foto se envía JSON como siempre; con foto, multipart/form-data (campo "foto"). Ver CONTRATO.md.
     crear: ({ foto, ...datos }) => {
       if (!foto) return pedir<Incidencia>('/incidencias', { metodo: 'POST', cuerpo: datos })
@@ -53,7 +54,10 @@ export const apiReal: Api = {
         throw error
       }
     },
-    crear: (datos) => pedir<GrupoVecinal>('/grupos', { metodo: 'POST', cuerpo: datos }),
+    crear: (datos) => pedir<GrupoVecinal>('/grupos', { metodo: 'POST', cuerpo: {
+      name: datos.nombre, description: datos.zona,
+      centerLatitude: datos.centro?.lat, centerLongitude: datos.centro?.lng, radiusMeters: datos.radioMetros,
+    } }),
     invitar: (grupoId, email) =>
       pedir<InvitacionGrupo>(`/grupos/${grupoId}/invitaciones`, { metodo: 'POST', cuerpo: { email } }),
     cancelarInvitacion: (grupoId, invitacionId) =>

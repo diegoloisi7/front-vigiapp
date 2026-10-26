@@ -5,6 +5,7 @@ import { mensajeDeError } from '../../api/cliente'
 import { useCategorias } from '../../context/CategoriasContext'
 import { useGrupos } from '../../context/GruposContext'
 import Campo from '../../components/Campo'
+import IconoCategoria, { emojiDeCategoria } from '../../components/IconoCategoria'
 import Modal from '../../components/Modal'
 import IncidentMap from '../../components/IncidentMap'
 import PedirAyudaModal from '../../components/PedirAyudaModal'
@@ -134,7 +135,7 @@ export default function Reportar() {
     const archivo = e.target.files?.[0]
     setErrorFoto('')
     if (!archivo) return
-    if (!archivo.type.startsWith('image/')) return setErrorFoto('El archivo tiene que ser una imagen.')
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(archivo.type)) return setErrorFoto('Elegí una imagen JPG, PNG, WebP o GIF.')
     if (archivo.size > MAX_FOTO_MB * 1024 * 1024) return setErrorFoto(`La foto no puede pesar más de ${MAX_FOTO_MB} MB.`)
     if (foto) URL.revokeObjectURL(foto.url)
     setFoto({ nombre: archivo.name, url: URL.createObjectURL(archivo), archivo })
@@ -149,6 +150,10 @@ export default function Reportar() {
       document.getElementById(`campo-${primero}`)?.focus() // lleva el foco al primer error
       return
     }
+    if (!coords) {
+      setErrorEnvio('Elegí un punto en el mapa o usá tu ubicación antes de enviar.')
+      return
+    }
     setEnviando(true)
     setErrorEnvio('')
     try {
@@ -157,8 +162,8 @@ export default function Reportar() {
         categoriaId: valores.categoria,
         descripcion: valores.descripcion.trim(),
         ubicacion: valores.ubicacion.trim(),
-        lat: coords?.lat ?? null,
-        lng: coords?.lng ?? null,
+        lat: coords.lat,
+        lng: coords.lng,
         foto: foto?.archivo ?? null,
         grupoId: grupoActivo?.id,
         vigenciaDias,
@@ -209,7 +214,7 @@ export default function Reportar() {
             <button type="button" className="opcion-grande" onClick={() => setAyudaAbierta(true)}>
               <span className="opcion-grande__icono" aria-hidden="true">🆘</span>
               <strong>Urgente · Pedir ayuda</strong>
-              <span>Mantenés presionado 3 s y avisás a tu grupo con tu ubicación en vivo. Los datos se completan después.</span>
+              <span>Mantenés presionado 3 s y avisás a tu grupo con tu ubicación actual. Los datos se completan después.</span>
             </button>
           </div>
         </>
@@ -227,12 +232,15 @@ export default function Reportar() {
           </Campo>
 
           <Campo id="campo-categoria" etiqueta="Categoría" error={errores.categoria}>
-            <select id="campo-categoria" className="input" value={valores.categoria}
-              aria-invalid={!!errores.categoria} aria-describedby={errores.categoria ? 'campo-categoria-error' : undefined}
-              onChange={(e) => cambiar('categoria', e.target.value)}>
-              <option value="">Elegí una categoría</option>
-              {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{c.icono} {c.nombre}</option>)}
-            </select>
+            <div className="categoria-seleccion">
+              <select id="campo-categoria" className="input" value={valores.categoria}
+                aria-invalid={!!errores.categoria} aria-describedby={errores.categoria ? 'campo-categoria-error' : undefined}
+                onChange={(e) => cambiar('categoria', e.target.value)}>
+                <option value="">Elegí una categoría</option>
+                {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{emojiDeCategoria(c.icono)} {c.nombre}</option>)}
+              </select>
+              {valores.categoria && <IconoCategoria icono={categorias.find((c) => c.id === valores.categoria)?.icono} />}
+            </div>
           </Campo>
 
           <Campo id="campo-descripcion" etiqueta="Descripción" error={errores.descripcion}>
@@ -280,7 +288,7 @@ export default function Reportar() {
       <PedirAyudaModal abierto={ayudaAbierta} onCerrar={() => setAyudaAbierta(false)} />
 
       <Modal abierto={mapaAbierto} onCerrar={cerrarMapa} titulo="Elegir en el mapa">
-        <IncidentMap incidencias={[]} centro={coords ?? CENTRO_MAPA} zoom={16} className="map-frame--selector"
+        <IncidentMap incidencias={[]} centro={coords ?? grupoActivo?.centro ?? CENTRO_MAPA} radioMetros={grupoActivo?.radioMetros} zoom={16} className="map-frame--selector"
           etiqueta="Mapa para elegir la ubicación: tocá el mapa o arrastrá el pin"
           eligiendo={{ punto: puntoMapa, onElegir: moverPin }} />
         <p className="map-lugar" role="status" aria-live="polite">

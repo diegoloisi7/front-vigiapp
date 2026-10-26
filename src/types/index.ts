@@ -1,4 +1,4 @@
-// Tipos del dominio. Pensados para coincidir con lo que devolverá la API del backend (Next).
+// Tipos del dominio compartidos por el cliente y el contrato NestJS.
 
 /** Rol global en el sistema. */
 export type Rol = 'VISITANTE' | 'VECINO' | 'ADMINISTRADOR'
@@ -21,6 +21,8 @@ export interface Grupo {
   zona: string
   ownerId: number
   cantidadVecinos: number
+  centro?: { lat: number; lng: number }
+  radioMetros?: number
 }
 
 /** Relación usuario ↔ grupo (un usuario puede tener varios grupos). */
@@ -120,7 +122,7 @@ export interface MiembroGrupo {
 
 export type EstadoInvitacion = 'PENDIENTE' | 'ACEPTADA' | 'RECHAZADA'
 
-/** Solicitud que envía el owner a un vecino (por email) para que se sume al grupo. */
+/** Invitación interna que el owner crea para un vecino identificado por email. */
 export interface InvitacionGrupo {
   id: number
   grupoId: number

@@ -12,7 +12,7 @@ import { tiempoRelativo } from '../../utils/formato'
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-// Detalle de un grupo: miembros y, si sos owner, las invitaciones (enviar, ver estado y cancelar).
+// Detalle de un grupo: miembros e invitaciones internas (crear, ver estado y cancelar).
 export default function DetalleGrupo() {
   const { id } = useParams()
   const { grupoActivo, cambiarGrupoActivo, recargar: recargarGrupos } = useGrupos()
@@ -38,7 +38,7 @@ export default function DetalleGrupo() {
     setEnviando(true)
     try {
       await api.grupos.invitar(Number(id), email)
-      setEnviada(email.trim())
+      setEnviada(`Invitación creada para ${email.trim()}. La verá al entrar a VigiAPP.`)
       setEmail('')
       recargar()
     } catch (err) {
@@ -108,19 +108,20 @@ export default function DetalleGrupo() {
         <section className="bloque" aria-labelledby="t-invitar">
           <div className="bloque__head"><h2 id="t-invitar">Invitar vecinos</h2></div>
           <form className="invitar" onSubmit={invitar} noValidate>
-            <Campo id="invitar-email" etiqueta="Email del vecino" error={errorEmail}>
+            <Campo id="invitar-email" etiqueta="Email del vecino" error={errorEmail}
+              ayuda="El email identifica a un usuario registrado. Verá la invitación al entrar a VigiAPP; no se envía correo.">
               <input id="invitar-email" className="input" type="email" inputMode="email" autoComplete="off" value={email}
-                aria-invalid={!!errorEmail} aria-describedby={errorEmail ? 'invitar-email-error' : undefined}
+                aria-invalid={!!errorEmail} aria-describedby={`invitar-email-ayuda${errorEmail ? ' invitar-email-error' : ''}`}
                 placeholder="vecino@correo.com" onChange={(e) => setEmail(e.target.value)} />
             </Campo>
-            <button type="submit" className="btn btn-primary" disabled={enviando}>{enviando ? 'Enviando…' : 'Enviar invitación'}</button>
+            <button type="submit" className="btn btn-primary" disabled={enviando}>{enviando ? 'Creando…' : 'Crear invitación'}</button>
           </form>
-          {enviada && <p role="status" className="detalle__meta">Invitación enviada a {enviada}.</p>}
+          {enviada && <p role="status" className="detalle__meta">{enviada}</p>}
           {errorAccion && <p className="campo__error" role="alert">{errorAccion}</p>}
 
-          <h3 className="subtitulo">Invitaciones enviadas</h3>
+          <h3 className="subtitulo">Invitaciones del grupo</h3>
           {grupo.invitaciones.length === 0 ? (
-            <p className="detalle__meta">Todavía no enviaste invitaciones.</p>
+            <p className="detalle__meta">Todavía no creaste invitaciones.</p>
           ) : (
             <ul className="lista-invitaciones">
               {grupo.invitaciones.map((inv) => (

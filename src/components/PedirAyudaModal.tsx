@@ -15,7 +15,7 @@ interface Props {
 }
 
 // Reporte urgente (SOS): solo se mantiene presionado 3 s. No pide ningún dato:
-// toma la ubicación en vivo y el vecino completa el resto después.
+// toma la ubicación actual y el vecino completa el resto después.
 export default function PedirAyudaModal({ abierto, onCerrar, onEnviado }: Props) {
   const { grupoActivo } = useGrupos()
   const [enviando, setEnviando] = useState(false)
@@ -32,13 +32,15 @@ export default function PedirAyudaModal({ abierto, onCerrar, onEnviado }: Props)
   async function enviar() {
     setEnviando(true)
     setError('')
-    const ubicacion = await obtenerUbicacion() // si no se puede, igual se envía el aviso
     try {
-      const creado = await api.incidencias.crearUrgente({ lat: ubicacion?.lat ?? null, lng: ubicacion?.lng ?? null, grupoId: grupoActivo?.id })
+      if (!grupoActivo) throw new Error('Seleccioná un grupo antes de pedir ayuda.')
+      const ubicacion = await obtenerUbicacion()
+      if (!ubicacion) throw new Error('No se pudo obtener una ubicación válida. Activá la ubicación e intentá de nuevo.')
+      const creado = await api.incidencias.crearUrgente({ lat: ubicacion.lat, lng: ubicacion.lng, grupoId: grupoActivo.id })
       setEnviado(creado)
       onEnviado?.()
     } catch (e) {
-      setError(mensajeDeError(e))
+      setError(e instanceof Error && (e.message.startsWith('No se pudo obtener') || e.message.startsWith('Seleccioná')) ? e.message : mensajeDeError(e))
     } finally {
       setEnviando(false)
     }
@@ -51,9 +53,7 @@ export default function PedirAyudaModal({ abierto, onCerrar, onEnviado }: Props)
           <span aria-hidden="true" className="ayuda-ok__icon">✅</span>
           <h3>Alerta enviada a tu grupo</h3>
           <p>
-            {enviado.lat === null
-              ? 'No pudimos obtener tu ubicación, así que el aviso salió sin ella. Podés completarla ahora.'
-              : 'Tu grupo recibió el aviso con tu ubicación en vivo. Podés completar los datos cuando puedas.'}
+            {'Tu grupo recibió el aviso con tu ubicación actual. Podés completar los datos cuando puedas.'}
             {' '}Si estás en peligro, llamá al 911.
           </p>
           <div className="stack">
@@ -64,7 +64,7 @@ export default function PedirAyudaModal({ abierto, onCerrar, onEnviado }: Props)
       ) : (
         <>
           <p className="ayuda-paso">Mantené presionado para avisar a tu grupo.</p>
-          <p className="campo__ayuda">Se envía tu ubicación en vivo. No hace falta completar nada ahora.</p>
+          <p className="campo__ayuda">Se envía tu ubicación actual. No hace falta completar nada ahora.</p>
           {enviando ? (
             <p className="ayuda-enviando" role="status">Enviando tu ubicación y el aviso…</p>
           ) : (

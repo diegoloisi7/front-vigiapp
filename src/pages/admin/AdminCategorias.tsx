@@ -5,6 +5,7 @@ import { useCategorias } from '../../context/CategoriasContext'
 import Badge from '../../components/Badge'
 import Campo from '../../components/Campo'
 import EmptyState from '../../components/EmptyState'
+import IconoCategoria, { emojiDeCategoria } from '../../components/IconoCategoria'
 import Modal from '../../components/Modal'
 import TablaAdmin from '../../components/TablaAdmin'
 import type { Categoria } from '../../types'
@@ -43,7 +44,7 @@ export default function AdminCategorias() {
         clave={(c) => c.id}
         vacio={<EmptyState icono="🏷️" titulo="No hay categorías" texto="Creá la primera con «Nueva categoría»." />}
         columnas={[
-          { clave: 'icono', titulo: 'Ícono', render: (c) => <span className="tabla__icono" aria-hidden="true">{c.icono}</span> },
+          { clave: 'icono', titulo: 'Ícono', render: (c) => <IconoCategoria className="tabla__icono" icono={c.icono} /> },
           { clave: 'nombre', titulo: 'Nombre', render: (c) => <strong>{c.nombre}</strong> },
           { clave: 'estado', titulo: 'Estado', render: (c) => <Badge tipo={c.activa ? 'ACTIVA' : 'INACTIVA'} /> },
         ]}
@@ -66,7 +67,7 @@ export default function AdminCategorias() {
 
 function FormCategoria({ categoria, onCerrar, onGuardado }: { categoria: Categoria | null; onCerrar: () => void; onGuardado: () => Promise<void> }) {
   const [nombre, setNombre] = useState(categoria?.nombre ?? '')
-  const [icono, setIcono] = useState(categoria?.icono ?? '')
+  const [icono, setIcono] = useState(categoria ? emojiDeCategoria(categoria.icono) : '')
   const [errores, setErrores] = useState<{ nombre?: string; icono?: string }>({})
   const [enviando, setEnviando] = useState(false)
   const [errorEnvio, setErrorEnvio] = useState('')
@@ -75,7 +76,8 @@ function FormCategoria({ categoria, onCerrar, onGuardado }: { categoria: Categor
     e.preventDefault()
     const nuevos: { nombre?: string; icono?: string } = {}
     if (nombre.trim().length < 3) nuevos.nombre = 'Escribí un nombre de al menos 3 caracteres.'
-    if (!icono.trim()) nuevos.icono = 'Elegí un ícono (un emoji).'
+    if (!icono.trim()) nuevos.icono = 'Elegí un emoji.'
+    else if (/^[a-z][a-z0-9 -]*$/i.test(icono.trim())) nuevos.icono = 'Pegá un emoji, no el nombre de un ícono.'
     setErrores(nuevos)
     const primero = Object.keys(nuevos)[0]
     if (primero) return document.getElementById(`categoria-${primero}`)?.focus()
@@ -99,10 +101,11 @@ function FormCategoria({ categoria, onCerrar, onGuardado }: { categoria: Categor
           aria-invalid={!!errores.nombre} aria-describedby={errores.nombre ? 'categoria-nombre-error' : undefined}
           placeholder="Ej.: Ruidos molestos" onChange={(e) => setNombre(e.target.value)} />
       </Campo>
-      <Campo id="categoria-icono" etiqueta="Ícono" error={errores.icono} ayuda="Pegá un emoji, por ejemplo 🔊.">
-        <input id="categoria-icono" className="input" type="text" maxLength={4} value={icono}
+      <Campo id="categoria-icono" etiqueta="Ícono" error={errores.icono} ayuda="Pegá un emoji, por ejemplo 🚧.">
+        <input id="categoria-icono" className="input" type="text" maxLength={16} value={icono}
           aria-invalid={!!errores.icono} aria-describedby={`categoria-icono-ayuda${errores.icono ? ' categoria-icono-error' : ''}`}
           onChange={(e) => setIcono(e.target.value)} />
+        <IconoCategoria icono={icono} />
       </Campo>
       {errorEnvio && <p className="campo__error" role="alert">{errorEnvio}</p>}
       <button type="submit" className="btn btn-primary btn-ancho" disabled={enviando}>{enviando ? 'Guardando…' : 'Guardar'}</button>

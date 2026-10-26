@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api'
+import { USAR_MOCK } from '../../api/config'
 import { useCategorias } from '../../context/CategoriasContext'
 import { useGrupos } from '../../context/GruposContext'
 import { useConsulta } from '../../hooks/useConsulta'
@@ -10,6 +11,7 @@ import IncidentCard from '../../components/IncidentCard'
 import IncidentForm from '../../components/IncidentForm'
 import IncidentMap from '../../components/IncidentMap'
 import IncidentPanel from '../../components/IncidentPanel'
+import IconoCategoria, { emojiDeCategoria } from '../../components/IconoCategoria'
 import EmptyState from '../../components/EmptyState'
 import EstadoConsulta from '../../components/EstadoConsulta'
 import MisIncidentes from '../../components/MisIncidentes'
@@ -18,7 +20,7 @@ import { colorDeCategoria, estiloIncidencia } from '../../data/incidentTypes'
 import { normalizar } from '../../utils/formato'
 import { esAbierto, esUrgenteActivo } from '../../utils/permisos'
 import type { Incidencia } from '../../types'
-import type { Coordenadas } from '../../utils/ubicacion'
+import { obtenerUbicacion, type Coordenadas } from '../../utils/ubicacion'
 
 const POR_PAGINA = 5
 
@@ -54,6 +56,14 @@ const OPCIONES_ORDEN: { valor: Orden; texto: string }[] = [
 ]
 
 const porFecha = (a: Incidencia, b: Incidencia) => new Date(b.creada).getTime() - new Date(a.creada).getTime()
+
+function distanciaMetros(a: Coordenadas, b: Coordenadas): number {
+  const radianes = (grados: number) => grados * Math.PI / 180
+  const dLat = radianes(b.lat - a.lat)
+  const dLng = radianes(b.lng - a.lng)
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(radianes(a.lat)) * Math.cos(radianes(b.lat)) * Math.sin(dLng / 2) ** 2
+  return 6371000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h))
+}
 
 function ordenar(lista: Incidencia[], orden: Orden): Incidencia[] {
   const copia = [...lista]
@@ -105,7 +115,7 @@ function ChipsCategorias({ opciones, elegidas, onCambiar }: {
         return (
           <button key={o.valor} type="button" className={`chip chip--categoria ${activa ? 'is-active' : ''}`}
             style={{ '--pin': colorDeCategoria(o.valor) } as CSSProperties} aria-pressed={activa} onClick={() => alternar(o.valor)}>
-            <span aria-hidden="true">{o.icono}</span>
+            <IconoCategoria icono={o.icono} />
             {o.texto}
           </button>
         )
@@ -147,6 +157,8 @@ function TodosLosIncidentes() {
   const [reportando, setReportando] = useState(false) // flujo "Reportar incidente" desde el mapa
   const [puntoNuevo, setPuntoNuevo] = useState<Coordenadas | null>(null) // marcador provisional
   const [aviso, setAviso] = useState('')
+  const [posicionCercania, setPosicionCercania] = useState<Coordenadas | null>(null)
+  const [errorCercania, setErrorCercania] = useState('')
   const panelRef = useRef<HTMLElement>(null)
 
   function cambiarFiltro<K extends keyof Filtros>(campo: K, valor: Filtros[K]) {
@@ -156,6 +168,18 @@ function TodosLosIncidentes() {
   function limpiar() {
     setFiltros(SIN_FILTROS)
     setPagina(1)
+  }
+  async function cambiarOrden(orden: Orden) {
+    setErrorCercania('')
+    if (orden === 'CERCANOS' && !USAR_MOCK) {
+      const posicion = await obtenerUbicacion(10000)
+      if (!posicion) {
+        setErrorCercania('Para ordenar por cercanía, permití el acceso a tu ubicación.')
+        return
+      }
+      setPosicionCercania(posicion)
+    }
+    cambiarFiltro('orden', orden)
   }
   const hayFiltros = filtros.texto || filtros.categorias.length > 0 || filtros.tipo || filtros.estado !== SIN_FILTROS.estado
 
@@ -176,8 +200,12 @@ function TodosLosIncidentes() {
       const campos = `${i.titulo} ${i.ubicacion} ${i.descripcion} ${categoriaPorId(i.categoriaId)?.nombre ?? ''}`
       return normalizar(campos).includes(buscado)
     })
-    return ordenar(resultado, filtros.orden)
-  }, [filtros, incidencias, categoriaPorId])
+    const ubicadas = posicionCercania ? resultado.map((i) => ({ ...i,
+      distancia: i.lat === null || i.lng === null ? Number.POSITIVE_INFINITY :
+        distanciaMetros(posicionCercania, { lat: i.lat, lng: i.lng }),
+    })) : resultado
+    return ordenar(ubicadas, filtros.orden)
+  }, [filtros, incidencias, categoriaPorId, posicionCercania])
 
   const seleccionada = filtradas.find((i) => i.id === seleccionId) ?? null // solo hay selección si el usuario la hizo
   const sinUbicacion = filtradas.filter((i) => i.lat === null || i.lng === null).length
@@ -247,7 +275,8 @@ function TodosLosIncidentes() {
                   seleccionId={seleccionada?.id ?? null}
                   onSeleccionar={seleccionar}
                   eligiendo={reportando ? { punto: puntoNuevo, onElegir: setPuntoNuevo } : undefined}
-                  centro={CENTRO_MAPA}
+                  centro={grupoActivo?.centro ?? CENTRO_MAPA}
+                  radioMetros={grupoActivo?.radioMetros}
                   ajustarAlCargar
                   className="map-frame--principal"
                   etiqueta="Mapa de incidentes del grupo. Cada marcador es un incidente."
@@ -275,7 +304,7 @@ function TodosLosIncidentes() {
                         return (
                           <li key={i.id}>
                             <button type="button" className="mini-lista__item" style={{ '--pin': estilo.color } as CSSProperties} onClick={() => seleccionar(i.id)}>
-                              <span className="mini-lista__icono" aria-hidden="true">{estilo.icono}</span>
+                              <IconoCategoria className="mini-lista__icono" icono={estilo.icono} />
                               <span className="mini-lista__texto">
                                 <strong>{i.titulo}</strong>
                                 <span>{estilo.nombre} · {i.ubicacion}</span>
@@ -300,9 +329,10 @@ function TodosLosIncidentes() {
               </div>
               <div className="campo">
                 <label htmlFor="f-orden">Ordenar por</label>
-                <select id="f-orden" className="input" value={filtros.orden} onChange={(e) => cambiarFiltro('orden', e.target.value as Orden)}>
+                <select id="f-orden" className="input" value={filtros.orden} onChange={(e) => { void cambiarOrden(e.target.value as Orden) }}>
                   {OPCIONES_ORDEN.map((o) => <option key={o.valor} value={o.valor}>{o.texto}</option>)}
                 </select>
+                {errorCercania && <p className="campo__error" role="alert">{errorCercania}</p>}
               </div>
               <div className="campo">
                 <label htmlFor="f-estado">Estado</label>
@@ -324,7 +354,7 @@ function TodosLosIncidentes() {
                   onChange={(e) => cambiarFiltro('categorias', e.target.value ? [e.target.value] : [])}>
                   <option value="">Todas</option>
                   {filtros.categorias.length > 1 && <option value="*" disabled>Varias ({filtros.categorias.length})</option>}
-                  {categoriasActivas.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+                  {categoriasActivas.map((c) => <option key={c.id} value={c.id}>{emojiDeCategoria(c.icono)} {c.nombre}</option>)}
                 </select>
               </div>
             </form>
@@ -337,7 +367,7 @@ function TodosLosIncidentes() {
             {filtradas.length === 0 ? vacio : (
               <>
                 <div className="stack-list">
-                  {visibles.map((i) => <IncidentCard key={i.id} incidencia={i} />)}
+                  {visibles.map((i) => <IncidentCard key={i.id} incidencia={i} mostrarDistancia={filtros.orden === 'CERCANOS' && Number.isFinite(i.distancia)} />)}
                 </div>
                 {totalPaginas > 1 && (
                   <nav className="paginacion" aria-label="Paginación">

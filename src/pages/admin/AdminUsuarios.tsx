@@ -86,8 +86,8 @@ export default function AdminUsuarios() {
         }}>
         {blanqueando && (
           <p>
-            Se anula la contraseña actual de <strong>{blanqueando.nombre} {blanqueando.apellido}</strong> y se le envía un enlace
-            a <strong>{blanqueando.email}</strong> para que cree una nueva. Vos no ves ni definís su contraseña.
+            Se envía un enlace a <strong>{blanqueando.email}</strong> para que <strong>{blanqueando.nombre} {blanqueando.apellido}</strong>
+            {' '}cree una contraseña nueva. La actual sigue funcionando hasta que use el enlace. Vos no ves ni definís su contraseña.
           </p>
         )}
       </ConfirmarModal>
@@ -98,7 +98,8 @@ export default function AdminUsuarios() {
         {eliminando && (
           <p>
             Vas a eliminar a <strong>{eliminando.nombre} {eliminando.apellido}</strong> ({eliminando.email}). Sale de sus
-            {' '}{eliminando.cantidadGrupos} {eliminando.cantidadGrupos === 1 ? 'grupo' : 'grupos'}. Si es owner de un grupo, primero hay que eliminar el grupo o cambiar de owner. No se puede deshacer.
+            {' '}{eliminando.cantidadGrupos} {eliminando.cantidadGrupos === 1 ? 'grupo' : 'grupos'} y se eliminan sus incidentes y avisos.
+            {' '}Si creó un grupo, primero hay que eliminarlo. No se puede deshacer.
           </p>
         )}
       </ConfirmarModal>

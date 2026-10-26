@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import Badge from './Badge'
+import IconoCategoria from './IconoCategoria'
 import { useCategorias } from '../context/CategoriasContext'
 import { estiloIncidencia } from '../data/incidentTypes'
 import { fechaLarga, textoVecinos, tiempoRelativo } from '../utils/formato'
@@ -19,7 +20,7 @@ export default function IncidentPanel({ incidencia: i, onCerrar }: Props) {
   return (
     <article className="panel-incidente" aria-label={`Detalle de ${i.titulo}`} style={{ '--pin': estilo.color } as CSSProperties}>
       <header className="panel-incidente__head">
-        <span className="panel-incidente__icono" aria-hidden="true">{estilo.icono}</span>
+        <IconoCategoria className="panel-incidente__icono" icono={estilo.icono} />
         <div className="panel-incidente__titulo">
           <span className="panel-incidente__cat">{estilo.nombre} · #{i.id}</span>
           <h3>{i.titulo}</h3>

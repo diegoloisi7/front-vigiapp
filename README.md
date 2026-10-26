@@ -1,16 +1,16 @@
-# React + Vite
+# VigiAPP web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend React y Vite de VigiAPP. La aplicación usa los datos de ejemplo si `VITE_API_URL` está vacío y la API real cuando apunta al backend NestJS.
 
-Currently, two official plugins are available:
+## Inicio local con backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Preparar MariaDB y la API según el README de `api-vigiapp`.
+2. Crear `.env.local` con `VITE_API_URL=http://localhost:3000/api`.
+3. Ejecutar `npm install` y `npm run dev`.
+4. Registrar dos usuarios y abrirlos en perfiles de navegador distintos. Uno crea un grupo circular e invita al otro. El invitado acepta desde «Mis grupos». Con ambos conectados, un SOS válido genera una alerta en la otra sesión y actualiza el mapa sin recargar.
 
-## React Compiler
+La sesión real usa el JWT que devuelve `/auth/login`; el backend también coloca una cookie HTTP-only para mostrar imágenes protegidas. El cliente Socket.IO envía el token al conectar. `RoleSwitcher` solo aparece en modo mock. Las páginas públicas de ingreso, registro y contacto usan la API real cuando está configurada.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Los mosaicos de OpenStreetMap pueden necesitar Internet aunque la API y MariaDB corran localmente. VigiAPP es una web responsive; no requiere instalación, Web Push ni despliegue público.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Para verificar el código: `npm run build`, `npm run lint` y `npm exec -- tsc --noEmit`.

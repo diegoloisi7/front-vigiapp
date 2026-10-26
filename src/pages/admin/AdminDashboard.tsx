@@ -1,10 +1,11 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api'
 import { useAuth } from '../../context/AuthContext'
 import { useConsulta } from '../../hooks/useConsulta'
 import Card from '../../components/Card'
 import EstadoConsulta from '../../components/EstadoConsulta'
+import IconoCategoria from '../../components/IconoCategoria'
 import { ESTADOS } from '../../data/mock'
 import type { EstadoIncidencia } from '../../types'
 
@@ -17,7 +18,7 @@ const COLOR_ESTADO: Record<EstadoIncidencia, string> = {
 }
 
 // Una barra horizontal: la etiqueta y el valor están en texto, la barra es solo apoyo visual
-function Barra({ etiqueta, valor, maximo, color }: { etiqueta: string; valor: number; maximo: number; color?: string }) {
+function Barra({ etiqueta, valor, maximo, color }: { etiqueta: ReactNode; valor: number; maximo: number; color?: string }) {
   return (
     <li className="barra">
       <span className="barra__etiqueta">{etiqueta}</span>
@@ -98,7 +99,7 @@ export default function AdminDashboard() {
               <h2 id="g-categorias">Incidentes por categoría</h2>
               <ul className="barras">
                 {e.porCategoria.map((c) => (
-                  <Barra key={c.categoriaId || 'sin'} etiqueta={`${c.icono} ${c.nombre}`} valor={c.cantidad}
+                  <Barra key={c.categoriaId || 'sin'} etiqueta={<><IconoCategoria icono={c.icono} /> {c.nombre}</>} valor={c.cantidad}
                     maximo={Math.max(1, ...e.porCategoria.map((x) => x.cantidad))} />
                 ))}
               </ul>

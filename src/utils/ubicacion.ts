@@ -3,7 +3,7 @@ export interface Coordenadas {
   lng: number
 }
 
-// Pide la ubicación en vivo al navegador. Devuelve null si no hay permiso, no hay señal o tarda demasiado.
+// Pide una posición puntual al navegador. Devuelve null si no hay permiso, no hay señal o tarda demasiado.
 export function obtenerUbicacion(tiempoMaximoMs = 6000): Promise<Coordenadas | null> {
   return new Promise((resolver) => {
     if (!('geolocation' in navigator)) return resolver(null)

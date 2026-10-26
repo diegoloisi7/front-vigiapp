@@ -12,6 +12,7 @@ import EmptyState from '../../components/EmptyState'
 import EstadoConsulta from '../../components/EstadoConsulta'
 import EstadoIncidenteModal from '../../components/EstadoIncidenteModal'
 import IncidentMap from '../../components/IncidentMap'
+import IconoCategoria from '../../components/IconoCategoria'
 import { ESTADOS } from '../../data/mock'
 import { fechaLarga, textoVecinos, textoYaResuelto } from '../../utils/formato'
 import { esAbierto, esUrgenteActivo, estaIncompleto, puedeGestionar } from '../../utils/permisos'
@@ -39,9 +40,12 @@ export default function DetalleIncidencia() {
     setErrorAccion('')
     setMensaje('')
     try {
-      if (tipo === 'visto') await api.incidencias.confirmar(incidencia.id)
+      if (tipo === 'visto') {
+        if (incidencia.yoConfirme) await api.incidencias.desconfirmar(incidencia.id)
+        else await api.incidencias.confirmar(incidencia.id)
+      }
       else await api.incidencias.confirmarResuelto(incidencia.id)
-      setMensaje(tipo === 'visto' ? 'Gracias, sumaste tu confirmación.' : 'Gracias, avisaste que ya está resuelto.')
+      setMensaje(tipo === 'visto' ? (incidencia.yoConfirme ? 'Quitaste tu confirmación.' : 'Gracias, sumaste tu confirmación.') : 'Gracias, avisaste que ya está resuelto.')
       recargar()
     } catch (e) {
       setErrorAccion(mensajeDeError(e))
@@ -84,7 +88,7 @@ export default function DetalleIncidencia() {
           </div>
         ) : (
           <div className="foto" role="img" aria-label="Este reporte no tiene foto">
-            <span aria-hidden="true">{categoria?.icono ?? (incidencia.tipo === 'URGENTE' ? '🆘' : '📌')}</span>
+            <IconoCategoria icono={categoria?.icono ?? (incidencia.tipo === 'URGENTE' ? '🆘' : '📌')} />
           </div>
         )}
 
@@ -93,7 +97,7 @@ export default function DetalleIncidencia() {
             {esUrgenteActivo(incidencia) && <Badge tipo="URGENTE" />}
             <Badge tipo={incidencia.estado} />
             <span className="tag-categoria">
-              <span aria-hidden="true">{categoria?.icono}</span> {categoria?.nombre ?? 'Sin categoría'}
+              <IconoCategoria icono={categoria?.icono} /> {categoria?.nombre ?? 'Sin categoría'}
             </span>
           </div>
           <h2>{incidencia.titulo}</h2>
@@ -107,17 +111,17 @@ export default function DetalleIncidencia() {
           <div className="confirmar">
             <p className="confirmar__cuenta">👀 <strong>{textoVecinos(incidencia.vecinos)}</strong></p>
             {incidencia.vecinosYaResuelto > 0 && <p className="confirmar__cuenta">✔️ {textoYaResuelto(incidencia.vecinosYaResuelto)}</p>}
-            {abierto ? (
+            {abierto && incidencia.autorId !== usuario?.id ? (
               <div className="confirmar__botones">
-                <button type="button" className="btn btn-primary" disabled={incidencia.yoConfirme || enviando !== null} onClick={() => confirmar('visto')}>
-                  {incidencia.yoConfirme ? 'Ya lo confirmaste ✓' : enviando === 'visto' ? 'Enviando…' : 'Yo también lo vi'}
+                <button type="button" className="btn btn-primary" disabled={enviando !== null} onClick={() => confirmar('visto')}>
+                  {incidencia.yoConfirme ? 'Desmarcar «Lo vi»' : enviando === 'visto' ? 'Enviando…' : 'Yo también lo vi'}
                 </button>
                 <button type="button" className="btn btn-outline" disabled={incidencia.yoMarqueResuelto || enviando !== null} onClick={() => confirmar('resuelto')}>
                   {incidencia.yoMarqueResuelto ? 'Avisaste que está resuelto ✓' : enviando === 'resuelto' ? 'Enviando…' : 'Ya lo vi resuelto'}
                 </button>
               </div>
             ) : (
-              <p className="detalle__meta">Este incidente ya está cerrado, no admite más confirmaciones.</p>
+              <p className="detalle__meta">{abierto ? 'No podés confirmar tu propio incidente.' : 'Este incidente ya está cerrado, no admite más confirmaciones.'}</p>
             )}
             {mensaje && <p role="status" className="detalle__meta">{mensaje}</p>}
             {errorAccion && <p className="campo__error" role="alert">{errorAccion}</p>}

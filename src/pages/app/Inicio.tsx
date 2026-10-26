@@ -15,7 +15,7 @@ import type { Aviso, Incidencia } from '../../types'
 // Inicio del vecino. Orden de prioridad: alerta urgente (rojo) → accesos → incidentes → avisos importantes.
 export default function Inicio() {
   const { usuario } = useAuth()
-  const { grupoActivo } = useGrupos()
+  const { grupoActivo, invitaciones } = useGrupos()
   const grupoId = grupoActivo?.id
   const [ayudaAbierta, setAyudaAbierta] = useState(false)
 
@@ -51,6 +51,16 @@ export default function Inicio() {
           </section>
         )
       })}
+
+      {invitaciones.length > 0 && (
+        <section className="bloque" aria-labelledby="t-invitaciones-inicio" aria-live="polite">
+          <div className="bloque__head">
+            <h2 id="t-invitaciones-inicio">Tenés {invitaciones.length} {invitaciones.length === 1 ? 'invitación pendiente' : 'invitaciones pendientes'}</h2>
+            <Link to="/app/grupos">Ver y responder</Link>
+          </div>
+          <p>Te invitaron a {invitaciones.map((invitacion) => invitacion.grupoNombre).join(', ')}.</p>
+        </section>
+      )}
 
       {/* Accesos rápidos: siempre disponibles, aunque los datos todavía estén cargando */}
       <section className="acciones" aria-label="Accesos rápidos">

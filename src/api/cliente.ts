@@ -19,8 +19,8 @@ interface Opciones {
 // Intenta leer el mensaje de error que mande el backend ({ mensaje } o { error })
 async function leerMensaje(respuesta: Response): Promise<string> {
   try {
-    const datos = (await respuesta.json()) as { mensaje?: string; error?: string }
-    return datos.mensaje ?? datos.error ?? `Error ${respuesta.status}`
+    const datos = (await respuesta.json()) as { mensaje?: string; message?: string | string[]; error?: string }
+    return datos.mensaje ?? (Array.isArray(datos.message) ? datos.message.join(', ') : datos.message) ?? datos.error ?? `Error ${respuesta.status}`
   } catch {
     return `Error ${respuesta.status}`
   }
@@ -34,7 +34,10 @@ export async function pedir<T>(ruta: string, { metodo = 'GET', cuerpo }: Opcione
     const esFormulario = cuerpo instanceof FormData
     respuesta = await fetch(`${API_URL}${ruta}`, {
       method: metodo,
-      headers: cuerpo !== undefined && !esFormulario ? { 'Content-Type': 'application/json' } : undefined,
+      headers: {
+        ...(cuerpo !== undefined && !esFormulario ? { 'Content-Type': 'application/json' } : {}),
+        ...(sessionStorage.getItem('vigiapp_token') ? { Authorization: `Bearer ${sessionStorage.getItem('vigiapp_token')}` } : {}),
+      },
       body: cuerpo === undefined ? undefined : esFormulario ? cuerpo : JSON.stringify(cuerpo),
       credentials: 'include',
     })

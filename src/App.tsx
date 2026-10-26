@@ -11,6 +11,7 @@ import Landing from './pages/public/Landing'
 import Registro from './pages/public/Registro'
 import Login from './pages/public/Login'
 import Contacto from './pages/public/Contacto'
+import RestablecerClave from './pages/public/RestablecerClave'
 
 import Inicio from './pages/app/Inicio'
 import Incidentes from './pages/app/Incidentes'
@@ -32,7 +33,8 @@ import AdminContactos from './pages/admin/AdminContactos'
 // Protege rutas: sin sesión → /login. Con soloAdmin, un vecino vuelve a /app.
 // Con soloVecino, el administrador global va a su panel (no pertenece a grupos).
 function RutaPrivada({ soloAdmin = false, soloVecino = false, children }: { soloAdmin?: boolean; soloVecino?: boolean; children: ReactElement }): ReactElement {
-  const { rol, esAdmin } = useAuth()
+  const { rol, esAdmin, cargando } = useAuth()
+  if (cargando) return <div role="status">Cargando sesión…</div>
   if (rol === ROLES.VISITANTE) return <Navigate to="/login" replace />
   if (soloAdmin && !esAdmin) return <Navigate to="/app" replace />
   if (soloVecino && esAdmin) return <Navigate to="/admin" replace />
@@ -48,6 +50,7 @@ export default function App() {
         <Route path="/registro" element={<Registro />} />
         <Route path="/login" element={<Login />} />
         <Route path="/contacto" element={<Contacto />} />
+      <Route path="/restablecer/:token" element={<RestablecerClave />} />
       </Route>
 
       {/* Vecino */}

@@ -4,6 +4,7 @@ import Contador from '../../components/Contador'
 import LiveAlertsDemo from '../../components/LiveAlertsDemo'
 import { colorDeCategoria } from '../../data/incidentTypes'
 import { CATEGORIAS_MOCK, EQUIPO_MOCK } from '../../data/mock'
+import IconoCategoria from '../../components/IconoCategoria'
 
 // Contenido de las secciones (datos estáticos de la página)
 const PROBLEMAS = [
@@ -165,7 +166,7 @@ export default function Landing() {
             <ul key={copia} className="marquee__lista" aria-hidden={copia === 1}>
               {categorias.map((c) => (
                 <li key={c.id} className="marquee__item" style={v('--pin', colorDeCategoria(c.id))}>
-                  <span aria-hidden="true">{c.icono}</span>{c.nombre}
+                  <IconoCategoria icono={c.icono} />{c.nombre}
                 </li>
               ))}
             </ul>

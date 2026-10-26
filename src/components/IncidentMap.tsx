@@ -3,6 +3,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useCategorias } from '../context/CategoriasContext'
 import { COLOR_PROVISIONAL, estiloIncidencia } from '../data/incidentTypes'
+import { iconoCategoriaHtml } from './IconoCategoria'
 import type { Incidencia } from '../types'
 import type { Coordenadas } from '../utils/ubicacion'
 
@@ -22,20 +23,19 @@ interface Props {
   onSeleccionar?: (id: number) => void
   eligiendo?: EleccionUbicacion // si se pasa, el mapa está en modo "elegir ubicación"
   centro: Coordenadas
+  radioMetros?: number
   zoom?: number
   ajustarAlCargar?: boolean // encuadra todos los marcadores la primera vez que hay datos
   className?: string
   etiqueta: string
 }
 
-const escapar = (t: string) => t.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
-
 function crearIcono(color: string, icono: string, seleccionado: boolean, urgente: boolean): L.DivIcon {
   const clases = `pin${seleccionado ? ' pin--sel' : ''}${urgente ? ' pin--urgente' : ''}`
   const tam = seleccionado ? 46 : 38
   return L.divIcon({
     className: 'pin-wrap',
-    html: `<div class="${clases}" style="--pin:${color}"><span class="pin__ico">${escapar(icono)}</span></div>`,
+    html: `<div class="${clases}" style="--pin:${color}"><span class="pin__ico">${iconoCategoriaHtml(icono)}</span></div>`,
     iconSize: [tam, tam + 8],
     iconAnchor: [tam / 2, tam + 6],
   })
@@ -55,7 +55,7 @@ interface Entrada {
 }
 
 export default function IncidentMap({
-  incidencias, seleccionId = null, onSeleccionar, eligiendo, centro, zoom = 15, ajustarAlCargar = false, className = '', etiqueta,
+  incidencias, seleccionId = null, onSeleccionar, eligiendo, centro, radioMetros, zoom = 15, ajustarAlCargar = false, className = '', etiqueta,
 }: Props) {
   const { categoriaPorId } = useCategorias()
   const contenedor = useRef<HTMLDivElement>(null)
@@ -63,6 +63,7 @@ export default function IncidentMap({
   const capa = useRef<L.LayerGroup | null>(null)
   const entradas = useRef(new Map<number, Entrada>())
   const provisional = useRef<L.Marker | null>(null)
+  const circulo = useRef<L.Circle | null>(null)
   const yaAjustado = useRef(false)
 
   // Lo último que llegó por props, para que los eventos de Leaflet no queden con valores viejos
@@ -109,6 +110,16 @@ export default function IncidentMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- el mapa se crea una sola vez
   }, [])
 
+  useEffect(() => {
+    const map = mapa.current
+    if (!map) return
+    map.setView([centro.lat, centro.lng], zoom)
+    circulo.current?.remove()
+    circulo.current = radioMetros ? L.circle([centro.lat, centro.lng], {
+      radius: radioMetros, color: '#2563eb', fillOpacity: 0.06, weight: 2,
+    }).addTo(map) : null
+  }, [centro.lat, centro.lng, radioMetros, zoom])
+
   // Sincroniza los marcadores con la lista: agrega, mueve, repinta o quita solo lo que cambió
   useEffect(() => {
     const grupo = capa.current
@@ -146,6 +157,7 @@ export default function IncidentMap({
       } else {
         previa.incidencia = i
       }
+
     }
 
     for (const [id, entrada] of entradas.current) {

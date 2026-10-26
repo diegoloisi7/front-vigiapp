@@ -5,6 +5,8 @@ import { useGrupos } from '../../context/GruposContext'
 import Card from '../../components/Card'
 import Campo from '../../components/Campo'
 import Modal from '../../components/Modal'
+import { pedir, mensajeDeError } from '../../api/cliente'
+import { USAR_MOCK } from '../../api/config'
 
 interface Claves {
   actual: string
@@ -28,7 +30,7 @@ export default function Perfil() {
 
   function abrirClave() { setClaves(CLAVES_VACIAS); setErrores({}); setClaveOk(false); setClaveAbierta(true) }
 
-  function guardarClave(e: FormEvent) {
+  async function guardarClave(e: FormEvent) {
     e.preventDefault()
     const nuevos: ErroresClaves = {}
     if (!claves.actual) nuevos.actual = 'Ingresá tu contraseña actual.'
@@ -37,7 +39,12 @@ export default function Perfil() {
     setErrores(nuevos)
     const primero = Object.keys(nuevos)[0]
     if (primero) return document.getElementById(`clave-${primero}`)?.focus()
-    setClaveOk(true) // simulado
+    try {
+      if (!USAR_MOCK) await pedir('/auth/password', { metodo: 'PATCH', cuerpo: { currentPassword: claves.actual, newPassword: claves.nueva } })
+      setClaveOk(true)
+    } catch (cause) {
+      setErrores({ actual: mensajeDeError(cause) })
+    }
   }
 
   function salir() { cerrarSesion(); navigate('/') }
@@ -101,7 +108,7 @@ export default function Perfil() {
           <div className="ayuda-ok" role="status">
             <span className="ayuda-ok__icon" aria-hidden="true">✅</span>
             <h3>Contraseña actualizada</h3>
-            <p>(Simulado: todavía no hay backend.)</p>
+            {USAR_MOCK && <p>Demostración con datos de ejemplo.</p>}
             <button type="button" className="btn btn-primary" onClick={() => setClaveAbierta(false)}>Listo</button>
           </div>
         ) : (
