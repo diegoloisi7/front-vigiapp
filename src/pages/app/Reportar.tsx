@@ -5,7 +5,7 @@ import { mensajeDeError } from '../../api/cliente'
 import { useCategorias } from '../../context/CategoriasContext'
 import { useGrupos } from '../../context/GruposContext'
 import Campo from '../../components/Campo'
-import IconoCategoria, { emojiDeCategoria } from '../../components/IconoCategoria'
+import IconoCategoria, { iconoDeCategoria } from '../../components/IconoCategoria'
 import Modal from '../../components/Modal'
 import IncidentMap from '../../components/IncidentMap'
 import PedirAyudaModal from '../../components/PedirAyudaModal'
@@ -237,7 +237,7 @@ export default function Reportar() {
                 aria-invalid={!!errores.categoria} aria-describedby={errores.categoria ? 'campo-categoria-error' : undefined}
                 onChange={(e) => cambiar('categoria', e.target.value)}>
                 <option value="">Elegí una categoría</option>
-                {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{emojiDeCategoria(c.icono)} {c.nombre}</option>)}
+                {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{iconoDeCategoria(c.icono)} {c.nombre}</option>)}
               </select>
               {valores.categoria && <IconoCategoria icono={categorias.find((c) => c.id === valores.categoria)?.icono} />}
             </div>

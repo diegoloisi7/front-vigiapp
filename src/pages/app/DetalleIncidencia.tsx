@@ -14,6 +14,7 @@ import EstadoIncidenteModal from '../../components/EstadoIncidenteModal'
 import IncidentMap from '../../components/IncidentMap'
 import IconoCategoria from '../../components/IconoCategoria'
 import { ESTADOS } from '../../data/mock'
+import { iconoDeIncidencia } from '../../data/incidentTypes'
 import { fechaLarga, textoVecinos, textoYaResuelto } from '../../utils/formato'
 import { esAbierto, esUrgenteActivo, estaIncompleto, puedeGestionar } from '../../utils/permisos'
 import type { EstadoIncidencia } from '../../types'
@@ -88,7 +89,7 @@ export default function DetalleIncidencia() {
           </div>
         ) : (
           <div className="foto" role="img" aria-label="Este reporte no tiene foto">
-            <IconoCategoria icono={categoria?.icono ?? (incidencia.tipo === 'URGENTE' ? '🆘' : '📌')} />
+            <IconoCategoria icono={iconoDeIncidencia(incidencia, categoria)} />
           </div>
         )}
 

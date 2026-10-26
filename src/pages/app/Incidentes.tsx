@@ -11,7 +11,7 @@ import IncidentCard from '../../components/IncidentCard'
 import IncidentForm from '../../components/IncidentForm'
 import IncidentMap from '../../components/IncidentMap'
 import IncidentPanel from '../../components/IncidentPanel'
-import IconoCategoria, { emojiDeCategoria } from '../../components/IconoCategoria'
+import IconoCategoria, { iconoDeCategoria } from '../../components/IconoCategoria'
 import EmptyState from '../../components/EmptyState'
 import EstadoConsulta from '../../components/EstadoConsulta'
 import MisIncidentes from '../../components/MisIncidentes'
@@ -354,7 +354,7 @@ function TodosLosIncidentes() {
                   onChange={(e) => cambiarFiltro('categorias', e.target.value ? [e.target.value] : [])}>
                   <option value="">Todas</option>
                   {filtros.categorias.length > 1 && <option value="*" disabled>Varias ({filtros.categorias.length})</option>}
-                  {categoriasActivas.map((c) => <option key={c.id} value={c.id}>{emojiDeCategoria(c.icono)} {c.nombre}</option>)}
+                  {categoriasActivas.map((c) => <option key={c.id} value={c.id}>{iconoDeCategoria(c.icono)} {c.nombre}</option>)}
                 </select>
               </div>
             </form>

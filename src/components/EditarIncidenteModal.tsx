@@ -4,7 +4,7 @@ import { mensajeDeError } from '../api/cliente'
 import { useCategorias } from '../context/CategoriasContext'
 import type { Incidencia } from '../types'
 import Campo from './Campo'
-import IconoCategoria, { emojiDeCategoria } from './IconoCategoria'
+import IconoCategoria, { iconoDeCategoria } from './IconoCategoria'
 import Modal from './Modal'
 
 type Campos = 'titulo' | 'categoriaId' | 'descripcion' | 'ubicacion'
@@ -90,7 +90,7 @@ function FormEditar({ incidencia, onCerrar, onGuardado }: { incidencia: Incidenc
             aria-invalid={!!errores.categoriaId} aria-describedby={errores.categoriaId ? 'editar-categoriaId-error' : undefined}
             onChange={(e) => cambiar('categoriaId', e.target.value)}>
             <option value="">Sin categoría</option>
-            {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{emojiDeCategoria(c.icono)} {c.nombre}</option>)}
+            {categorias.filter((c) => c.activa).map((c) => <option key={c.id} value={c.id}>{iconoDeCategoria(c.icono)} {c.nombre}</option>)}
           </select>
           {valores.categoriaId && <IconoCategoria icono={categorias.find((c) => c.id === valores.categoriaId)?.icono} />}
         </div>

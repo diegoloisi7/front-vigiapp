@@ -1,4 +1,5 @@
 import type { Categoria, Incidencia } from '../types'
+import { iconoDeCategoria } from '../components/IconoCategoria'
 
 // Configuración CENTRALIZADA de cómo se ve cada categoría en el mapa (marcadores, panel, formulario).
 // El ícono sale de la propia categoría (campo `icono`, que viene de la API), así que una categoría nueva
@@ -40,12 +41,16 @@ export interface EstiloIncidencia {
   urgente: boolean
 }
 
+export function iconoDeIncidencia(i: Pick<Incidencia, 'tipo'>, categoria?: Categoria): string {
+  return i.tipo === 'URGENTE' ? '🆘' : iconoDeCategoria(categoria?.icono)
+}
+
 // Cómo se dibuja un incidente: color + ícono + nombre de su categoría
 export function estiloIncidencia(i: Pick<Incidencia, 'categoriaId' | 'tipo' | 'estado'>, categoria?: Categoria): EstiloIncidencia {
   const urgente = i.tipo === 'URGENTE' && (i.estado === 'REPORTADO' || i.estado === 'EN_SEGUIMIENTO')
   return {
     color: urgente ? COLOR_URGENTE : colorDeCategoria(i.categoriaId),
-    icono: categoria?.icono ?? (i.tipo === 'URGENTE' ? '🆘' : '📌'),
+    icono: iconoDeIncidencia(i, categoria),
     nombre: categoria?.nombre ?? 'Sin categoría',
     urgente,
   }

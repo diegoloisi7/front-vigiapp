@@ -5,7 +5,7 @@ import { useCategorias } from '../../context/CategoriasContext'
 import Badge from '../../components/Badge'
 import Campo from '../../components/Campo'
 import EmptyState from '../../components/EmptyState'
-import IconoCategoria, { emojiDeCategoria } from '../../components/IconoCategoria'
+import IconoCategoria from '../../components/IconoCategoria'
 import Modal from '../../components/Modal'
 import TablaAdmin from '../../components/TablaAdmin'
 import type { Categoria } from '../../types'
@@ -67,7 +67,7 @@ export default function AdminCategorias() {
 
 function FormCategoria({ categoria, onCerrar, onGuardado }: { categoria: Categoria | null; onCerrar: () => void; onGuardado: () => Promise<void> }) {
   const [nombre, setNombre] = useState(categoria?.nombre ?? '')
-  const [icono, setIcono] = useState(categoria ? emojiDeCategoria(categoria.icono) : '')
+  const [icono, setIcono] = useState(categoria?.icono ?? '')
   const [errores, setErrores] = useState<{ nombre?: string; icono?: string }>({})
   const [enviando, setEnviando] = useState(false)
   const [errorEnvio, setErrorEnvio] = useState('')
