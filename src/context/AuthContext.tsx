@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { pedir } from '../api/cliente'
+import { EVENTO_SESION_EXPIRADA, pedir } from '../api/cliente'
 import { USAR_MOCK } from '../api/config'
 import { USUARIOS_MOCK } from '../data/mock'
 import type { Rol, Usuario } from '../types'
@@ -54,6 +54,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setRolReal('VISITANTE')
       setUsuarioReal(null)
     }).finally(() => setCargando(false))
+  }, [])
+
+  useEffect(() => {
+    if (USAR_MOCK) return
+    const alExpirar = () => {
+      setRolReal('VISITANTE')
+      setUsuarioReal(null)
+      setCargando(false)
+    }
+    window.addEventListener(EVENTO_SESION_EXPIRADA, alExpirar)
+    return () => window.removeEventListener(EVENTO_SESION_EXPIRADA, alExpirar)
   }, [])
 
   function cambiarRol(nuevoRol: Rol) {

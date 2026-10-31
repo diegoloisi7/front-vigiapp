@@ -110,10 +110,14 @@ export function NotificacionesProvider({ children }: { children: ReactNode }) {
     const token = sessionStorage.getItem('vigiapp_token')
     if (!token) return
     const socket = io(API_URL.replace(/\/api$/, ''), { auth: { token }, transports: ['websocket'] })
-    const refrescar = () => {
-      window.dispatchEvent(new Event('vigiapp:refrescar')) // las pantallas abiertas recargan sus datos
+    const cargarNotificaciones = () => {
       void pedir<Notificacion[]>('/notificaciones').then(setNotificaciones).catch(() => {})
     }
+    const refrescar = () => {
+      window.dispatchEvent(new Event('vigiapp:refrescar')) // las pantallas abiertas recargan sus datos
+      cargarNotificaciones()
+    }
+    cargarNotificaciones() // el historial REST también aparece si el socket todavía no conecta
     socket.on('connect', refrescar)
     socket.on('incident:urgent', (evento: EventoUrgente) => {
       void recibir(evento)

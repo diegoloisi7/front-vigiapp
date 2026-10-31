@@ -1,8 +1,22 @@
 import { ApiError, pedir } from './cliente'
+import { API_URL } from './config'
 import type { Api } from './tipos'
 import type { Aviso, Categoria, Contacto, EstadisticasAdmin, GrupoAdmin, GrupoDetalle, GrupoVecinal, Incidencia, InvitacionGrupo, UsuarioAdmin } from '../types'
 
 const filtroGrupo = (grupoId?: number) => (grupoId === undefined ? '' : `?grupoId=${grupoId}`)
+
+// El DTO y las columnas DECIMAL del grupo admiten hasta siete decimales.
+const coordenadaGrupo = (valor: number) => Number(valor.toFixed(7))
+
+// La foto es un recurso protegido por la cookie de sesión del mismo backend configurado.
+const incidenciaConFotoLocal = (incidencia: Incidencia): Incidencia => ({
+  ...incidencia,
+  fotoUrl: incidencia.fotoUrl ? `${API_URL}/incidencias/${incidencia.id}/foto` : null,
+})
+const pedirIncidencia = async (ruta: string, opciones?: Parameters<typeof pedir>[1]) =>
+  incidenciaConFotoLocal(await pedir<Incidencia>(ruta, opciones))
+const pedirIncidencias = async (ruta: string) =>
+  (await pedir<Incidencia[]>(ruta)).map(incidenciaConFotoLocal)
 
 // Implementación real: habla con la API del backend (ver CONTRATO.md).
 export const apiReal: Api = {
@@ -10,32 +24,32 @@ export const apiReal: Api = {
     listar: () => pedir<Categoria[]>('/categorias'),
   },
   incidencias: {
-    listar: (grupoId) => pedir<Incidencia[]>(`/incidencias${filtroGrupo(grupoId)}`),
-    listarMias: () => pedir<Incidencia[]>('/incidencias/mias'),
+    listar: (grupoId) => pedirIncidencias(`/incidencias${filtroGrupo(grupoId)}`),
+    listarMias: () => pedirIncidencias('/incidencias/mias'),
     obtener: async (id) => {
       try {
-        return await pedir<Incidencia>(`/incidencias/${id}`)
+        return await pedirIncidencia(`/incidencias/${id}`)
       } catch (error) {
         if (error instanceof ApiError && error.status === 404) return null
         throw error
       }
     },
-    confirmar: (id) => pedir<Incidencia>(`/incidencias/${id}/confirmaciones`, { metodo: 'POST' }),
-    desconfirmar: (id) => pedir<Incidencia>(`/incidencias/${id}/confirmaciones`, { metodo: 'DELETE' }),
+    confirmar: (id) => pedirIncidencia(`/incidencias/${id}/confirmaciones`, { metodo: 'POST' }),
+    desconfirmar: (id) => pedirIncidencia(`/incidencias/${id}/confirmaciones`, { metodo: 'DELETE' }),
     // Sin foto se envía JSON como siempre; con foto, multipart/form-data (campo "foto"). Ver CONTRATO.md.
     crear: ({ foto, ...datos }) => {
-      if (!foto) return pedir<Incidencia>('/incidencias', { metodo: 'POST', cuerpo: datos })
+      if (!foto) return pedirIncidencia('/incidencias', { metodo: 'POST', cuerpo: datos })
       const formulario = new FormData()
       for (const [clave, valor] of Object.entries(datos)) {
         if (valor !== undefined && valor !== null) formulario.append(clave, String(valor))
       }
       formulario.append('foto', foto)
-      return pedir<Incidencia>('/incidencias', { metodo: 'POST', cuerpo: formulario })
+      return pedirIncidencia('/incidencias', { metodo: 'POST', cuerpo: formulario })
     },
-    crearUrgente: (datos) => pedir<Incidencia>('/incidencias/urgentes', { metodo: 'POST', cuerpo: datos }),
-    actualizar: (id, cambios) => pedir<Incidencia>(`/incidencias/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
-    cambiarEstado: (id, estado, nota) => pedir<Incidencia>(`/incidencias/${id}/estado`, { metodo: 'PATCH', cuerpo: { estado, nota } }),
-    confirmarResuelto: (id) => pedir<Incidencia>(`/incidencias/${id}/ya-resuelto`, { metodo: 'POST' }),
+    crearUrgente: (datos) => pedirIncidencia('/incidencias/urgentes', { metodo: 'POST', cuerpo: datos }),
+    actualizar: (id, cambios) => pedirIncidencia(`/incidencias/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
+    cambiarEstado: (id, estado, nota) => pedirIncidencia(`/incidencias/${id}/estado`, { metodo: 'PATCH', cuerpo: { estado, nota } }),
+    confirmarResuelto: (id) => pedirIncidencia(`/incidencias/${id}/ya-resuelto`, { metodo: 'POST' }),
   },
   avisos: {
     listar: (grupoId) => pedir<Aviso[]>(`/avisos${filtroGrupo(grupoId)}`),
@@ -56,13 +70,17 @@ export const apiReal: Api = {
     },
     crear: (datos) => pedir<GrupoVecinal>('/grupos', { metodo: 'POST', cuerpo: {
       name: datos.nombre, description: datos.zona,
-      centerLatitude: datos.centro?.lat, centerLongitude: datos.centro?.lng, radiusMeters: datos.radioMetros,
+      centerLatitude: datos.centro && coordenadaGrupo(datos.centro.lat),
+      centerLongitude: datos.centro && coordenadaGrupo(datos.centro.lng),
+      radiusMeters: datos.radioMetros,
     } }),
     // Solo se envían los campos que cambiaron (los undefined no viajan en el JSON)
     actualizar: async (id, cambios) => {
       await pedir(`/grupos/${id}`, { metodo: 'PATCH', cuerpo: {
         name: cambios.nombre, description: cambios.zona,
-        centerLatitude: cambios.centro?.lat, centerLongitude: cambios.centro?.lng, radiusMeters: cambios.radioMetros,
+        centerLatitude: cambios.centro && coordenadaGrupo(cambios.centro.lat),
+        centerLongitude: cambios.centro && coordenadaGrupo(cambios.centro.lng),
+        radiusMeters: cambios.radioMetros,
       } })
     },
     invitar: (grupoId, email) =>

@@ -11,6 +11,8 @@ export class ApiError extends Error {
   }
 }
 
+export const EVENTO_SESION_EXPIRADA = 'vigiapp:sesion-expirada'
+
 interface Opciones {
   metodo?: 'GET' | 'POST' | 'PATCH' | 'DELETE'
   cuerpo?: unknown
@@ -26,9 +28,10 @@ async function leerMensaje(respuesta: Response): Promise<string> {
   }
 }
 
-// Pedido HTTP genérico a la API. Usa cookies (credentials: 'include') para la sesión.
+// Pedido HTTP genérico a la API. Envía JWT y cookie para las fotos protegidas.
 export async function pedir<T>(ruta: string, { metodo = 'GET', cuerpo }: Opciones = {}): Promise<T> {
   let respuesta: Response
+  const token = sessionStorage.getItem('vigiapp_token')
   try {
     // Con FormData (subida de archivos) el navegador pone solo el Content-Type con su boundary
     const esFormulario = cuerpo instanceof FormData
@@ -36,7 +39,7 @@ export async function pedir<T>(ruta: string, { metodo = 'GET', cuerpo }: Opcione
       method: metodo,
       headers: {
         ...(cuerpo !== undefined && !esFormulario ? { 'Content-Type': 'application/json' } : {}),
-        ...(sessionStorage.getItem('vigiapp_token') ? { Authorization: `Bearer ${sessionStorage.getItem('vigiapp_token')}` } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: cuerpo === undefined ? undefined : esFormulario ? cuerpo : JSON.stringify(cuerpo),
       credentials: 'include',
@@ -44,7 +47,13 @@ export async function pedir<T>(ruta: string, { metodo = 'GET', cuerpo }: Opcione
   } catch {
     throw new ApiError('No hay conexión con el servidor.', 0)
   }
-  if (!respuesta.ok) throw new ApiError(await leerMensaje(respuesta), respuesta.status)
+  if (!respuesta.ok) {
+    if (respuesta.status === 401 && token && sessionStorage.getItem('vigiapp_token') === token && ruta !== '/auth/login') {
+      sessionStorage.removeItem('vigiapp_token')
+      window.dispatchEvent(new Event(EVENTO_SESION_EXPIRADA))
+    }
+    throw new ApiError(await leerMensaje(respuesta), respuesta.status)
+  }
   if (respuesta.status === 204) return undefined as T
   return (await respuesta.json()) as T
 }

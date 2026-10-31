@@ -1,6 +1,6 @@
 # Contrato del frontend con la API NestJS
 
-Base: `VITE_API_URL=http://localhost:3000/api`. Las rutas se implementan en `api-vigiapp`; esta lista describe las llamadas reales de [`real.ts`](real.ts).
+Base predeterminada: `http://localhost:3000/api`. Se puede cambiar con `VITE_API_URL`; `VITE_API_MODE=mock` activa los datos de ejemplo. Las rutas se implementan en `api-vigiapp`; esta lista describe las llamadas reales de [`real.ts`](real.ts).
 
 | Recurso | Rutas |
 |---|---|
