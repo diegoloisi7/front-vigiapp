@@ -1,0 +1,63 @@
+/* ===== Estilos base y reseteo ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+/* Scroll suave solo si la persona no pidió reducir animaciones */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+html { overflow-x: clip; }
+body {
+  overflow-x: clip; /* nada se sale del ancho del celular */
+  margin: 0;
+  font-family: var(--font-base);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1, h2, h3, h4 { color: var(--color-primary); line-height: 1.2; margin: 0 0 var(--space-3); }
+h1 { font-size: var(--text-2xl); }
+h2 { font-size: var(--text-xl); }
+h3 { font-size: var(--text-lg); }
+p  { margin: 0 0 var(--space-3); }
+a  { color: var(--color-primary); }
+img, svg { max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* Foco visible para navegación con teclado */
+:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+
+/* Texto solo para lectores de pantalla */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* Enlace "Saltar al contenido" */
+.skip-link {
+  position: absolute; left: var(--space-3); top: -100px; z-index: 200;
+  background: var(--color-primary); color: var(--color-on-primary); text-decoration: none;
+  padding: var(--space-3) var(--space-4); border-radius: var(--radius-md);
+}
+.skip-link:focus { top: var(--space-3); }
+
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--space-4); }
+
+@media (min-width: 768px) {
+  h1 { font-size: var(--text-3xl); }
+  .container { padding-inline: var(--space-6); }
+}
+
+/* Respetar "reducir movimiento" */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* Celular: sin demora ni zoom accidental al tocar dos veces botones y enlaces */
+button, a, .btn, summary, [role="switch"] { touch-action: manipulation; }
+@media (max-width: 380px) {
+  .app-topbar__tools .selector-grupo { max-width: 38vw; }
+  .container { padding-inline: var(--space-3); }
+}
