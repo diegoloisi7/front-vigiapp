@@ -1,0 +1,117 @@
+/* =========================================================================
+   Panel de administración con la misma identidad que la vista del vecino.
+   Reusa tokens.css, vecino.css y vecino-pantallas.css (todo vive bajo .vg-app);
+   acá solo va lo propio del admin, acotado a .vg-admin.
+   ========================================================================= */
+.vg-admin { padding-bottom: 0; }
+
+/* ---------- Barra superior y tira de secciones ---------- */
+.vg-marca__admin {
+  padding: 3px 8px; background: var(--vg-senda); color: var(--vg-sobre-senda);
+  font-size: 0.75rem; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.vg-admin .vg-nav__secciones, .vg-admin .vg-avatar { display: none; }
+.vg-admin .vg-nav__link { padding: 0 11px; }
+.vg-admin .vg-nav__link.is-active::after { left: 11px; right: 11px; }
+.vg-admin__salir { min-height: 40px; padding: 0 14px; }
+
+.vg-admin__tira {
+  position: sticky; top: calc(var(--vg-nav-alto) + env(safe-area-inset-top, 0px)); z-index: 40;
+  background: var(--vg-superficie); box-shadow: 0 2px 10px rgb(14 27 46 / 0.08);
+}
+.vg-admin__tira ul {
+  display: flex; gap: 4px; max-width: var(--vg-ancho-max); margin-inline: auto; padding: 8px var(--vg-margen);
+  overflow-x: auto; scrollbar-width: none;
+}
+.vg-admin__tira ul::-webkit-scrollbar { display: none; }
+.vg-admin__tira-link {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px;
+  color: var(--vg-tinta-2); border-radius: var(--vg-radio-pill); text-decoration: none; white-space: nowrap;
+  font-family: var(--vg-fuente-titulos); font-size: 0.9375rem; font-weight: 700;
+}
+.vg-admin__tira-link:hover { background: var(--vg-superficie-2); }
+.vg-admin__tira-link.is-active { background: var(--vg-boton-farol); color: #fff; }
+
+.vg-cabecera__etiqueta { margin: 0 0 6px; color: var(--vg-senda); font-family: var(--vg-fuente-titulos); font-size: var(--vg-t-meta); font-weight: 800; }
+
+/* ---------- Dashboard ---------- */
+.vg-admin .saludo { margin: 0 0 var(--vg-esp-5); color: var(--vg-tinta-2); font-size: var(--vg-t-texto); }
+.vg-admin .vg-admin-cifras { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 0 0 var(--vg-esp-5); padding: 0; list-style: none; }
+.vg-admin-cifra {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0 14px; height: 100%;
+  padding: 16px 18px; background: var(--vg-superficie); color: var(--vg-tinta);
+  border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); text-decoration: none; transition: box-shadow 150ms ease;
+}
+.vg-admin-cifra:hover { box-shadow: var(--vg-sombra-alta); }
+.vg-admin-cifra__icono { grid-row: span 3; width: 48px; height: 48px; }
+.vg-admin-cifra__valor { font-family: var(--vg-fuente-titulos); font-size: 2.125rem; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+.vg-admin-cifra__texto { color: var(--vg-tinta-2); font-size: var(--vg-t-meta); font-weight: 700; line-height: 1.25; }
+.vg-admin-cifra__detalle { color: var(--vg-tinta-2); font-size: 0.8125rem; }
+/* Lo que pide atención se pinta: rojo si hay pedidos de ayuda, amarillo si hay mensajes sin leer */
+.vg-admin-cifra--alerta { background: var(--vg-emergencia-bloque); color: #fff; }
+.vg-admin-cifra--alerta .vg-admin-cifra__texto { color: #fff; }
+.vg-admin-cifra--alerta .vg-admin-cifra__icono { background: #fff; color: var(--vg-emergencia); }
+.vg-admin-cifra--pendiente { background: var(--vg-senda); color: var(--vg-sobre-senda); }
+.vg-admin-cifra--pendiente .vg-admin-cifra__texto { color: var(--vg-sobre-senda); }
+.vg-admin-cifra--pendiente .vg-admin-cifra__icono { background: var(--vg-sobre-senda); color: var(--vg-senda); }
+
+.vg-admin .paneles { display: grid; gap: var(--vg-esp-5); }
+.vg-admin .paneles h2 { margin: 0 0 14px; font-size: var(--vg-t-subtitulo); font-weight: 800; }
+.vg-admin .barra { grid-template-columns: minmax(110px, 200px) minmax(0, 1fr) auto; gap: 12px; padding-block: 7px; font-size: 0.9375rem; }
+.vg-admin .barra__etiqueta { display: inline-flex; align-items: center; gap: 8px; min-width: 0; font-weight: 700; }
+.vg-admin .barra__pista { height: 14px; background: var(--vg-superficie-2); border: 0; border-radius: 0; }
+.vg-admin .barra__relleno { background: var(--barra, var(--vg-boton-farol)); border-radius: 0; }
+.vg-admin .barra__valor { min-width: 2ch; font-family: var(--vg-fuente-titulos); font-weight: 900; text-align: right; font-variant-numeric: tabular-nums; }
+.vg-admin .columnas { height: 190px; gap: 8px; }
+.vg-admin .columna__barra { max-width: 44px; background: var(--vg-boton-farol); border-radius: 0; }
+.vg-admin .columna:last-child .columna__barra { background: var(--vg-senda); } /* hoy */
+.vg-admin .columna__valor { font-family: var(--vg-fuente-titulos); font-weight: 900; }
+.vg-admin .columna__dia { color: var(--vg-tinta-2); font-size: 0.8125rem; }
+
+/* ---------- Tablas ---------- */
+.vg-admin .tabla-envoltorio { overflow-x: auto; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-admin .tabla { border-collapse: separate; border-spacing: 0; font-size: 0.9375rem; }
+.vg-admin .tabla th {
+  padding: 14px 16px; background: var(--vg-superficie-2); color: var(--vg-tinta-2); border: 0;
+  font-family: var(--vg-fuente-titulos); font-size: 0.8125rem; font-weight: 800; white-space: nowrap;
+}
+.vg-admin .tabla td { padding: 12px 16px; color: var(--vg-tinta); border-bottom: 2px dashed var(--vg-borde); }
+.vg-admin .tabla tbody tr:last-child td { border-bottom: 0; }
+.vg-admin .tabla tbody tr:hover td { background: var(--vg-superficie-2); }
+.vg-admin .tabla td strong { color: var(--vg-tinta); font-family: var(--vg-fuente-titulos); font-weight: 800; }
+.vg-admin .tabla td small { color: var(--vg-tinta-2); }
+.vg-admin .tabla__icono { display: grid; }
+
+/* ---------- Filtros, buscador y otros bloques ---------- */
+.vg-admin .admin-filtros, .vg-admin .admin-buscador {
+  max-width: none; margin-bottom: var(--vg-esp-4); padding: 18px 18px 2px;
+  background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra);
+}
+.vg-admin .mensaje-contacto { background: var(--vg-superficie-2); color: var(--vg-tinta); border-radius: var(--vg-radio-m); }
+.vg-admin .sugerencia-ok { background: var(--vg-resuelto-fondo); color: var(--vg-resuelto-texto); border-radius: var(--vg-radio-m); font-weight: 700; }
+.vg-previa-categoria { display: flex; align-items: center; gap: 12px; margin: 0 0 var(--vg-esp-4); padding: 12px 14px; background: var(--vg-superficie-2); border-radius: var(--vg-radio-m); }
+.vg-previa-categoria span { display: grid; color: var(--vg-tinta-2); font-size: var(--vg-t-meta); }
+.vg-previa-categoria strong { color: var(--vg-tinta); font-family: var(--vg-fuente-titulos); font-size: 0.9375rem; }
+
+/* ---------- Celular: la tabla pasa a tarjetas ---------- */
+@media (max-width: 767px) {
+  .vg-admin .tabla-envoltorio { overflow: visible; background: transparent; box-shadow: none; }
+  .vg-admin .tabla tr { margin-bottom: 12px; padding: 14px 16px; background: var(--vg-superficie); border: 0; border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+  .vg-admin .tabla td { padding: 7px 0; border-bottom: 0; background: none; }
+  .vg-admin .tabla td + td { border-top: 2px dashed var(--vg-borde); }
+  .vg-admin .tabla tbody tr:hover td { background: none; }
+  .vg-admin .tabla td::before { color: var(--vg-tinta-2); font-family: var(--vg-fuente-titulos); font-size: 0.8125rem; font-weight: 800; }
+}
+@media (min-width: 768px) {
+  .vg-admin .vg-admin-cifras { grid-template-columns: repeat(3, 1fr); }
+  .vg-admin .admin-filtros { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+}
+@media (min-width: 1024px) { .vg-admin .paneles { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1280px) {
+  .vg-admin .vg-nav__secciones { display: block; margin-left: var(--vg-esp-3); }
+  .vg-admin .vg-avatar { display: grid; }
+  .vg-admin__tira { display: none; }
+  .vg-admin .vg-admin-cifras { grid-template-columns: repeat(6, 1fr); }
+  .vg-admin-cifra { grid-template-columns: 1fr; gap: 6px; align-content: start; }
+  .vg-admin-cifra__icono { grid-row: auto; margin-bottom: 6px; }
+}

@@ -1,0 +1,112 @@
+/* =========================================================================
+   Tokens de la vista del vecino — dirección "señalética porteña".
+   Azul farol (carteles de calle) + amarillo senda (sendas peatonales y taxis),
+   con un color por tipo de incidente. Todo lo de vecino.css usa SOLO estos tokens.
+   Claro por defecto; el modo oscuro se activa con :root[data-tema="oscuro"].
+   ========================================================================= */
+:root {
+  /* Marca */
+  --vg-farol: #14315A;          /* principal: barra superior, títulos */
+  --vg-farol-2: #1E4677;        /* campo del encabezado del inicio */
+  --vg-farol-3: #2A5A92;        /* detalles sobre el azul */
+  --vg-senda: #FFC629;          /* acento: acciones, pestaña activa, foco */
+  --vg-senda-hover: #F2B705;
+  --vg-sobre-senda: #14315A;
+  --vg-sobre-farol: #FFFFFF;
+  --vg-sobre-farol-2: #C9D6E8;  /* texto secundario sobre el azul */
+
+  /* Superficies y texto */
+  --vg-fondo: #F2F4F7;          /* "papel": fondo frío */
+  --vg-superficie: #FFFFFF;
+  --vg-superficie-2: #E9EDF3;   /* un paso de tono para separar sin líneas */
+  --vg-borde: #DCE2EA;
+  --vg-tinta: #0E1B2E;          /* texto corrido siempre en tinta plena */
+  --vg-tinta-2: #4A5668;        /* metadatos */
+  --vg-enlace: #1E4677;         /* enlaces y botones secundarios sobre superficie */
+  --vg-boton-farol: #14315A;
+
+  /* Familias de incidente: base (rellenos e íconos) · texto (AA sobre su fondo) · fondo */
+  --vg-emergencia: #D62828;  --vg-emergencia-texto: #9B1515;  --vg-emergencia-fondo: #FDE7E7;
+  --vg-seguridad: #E8650A;   --vg-seguridad-texto: #A2440A;   --vg-seguridad-fondo: #FFEEDF;
+  --vg-servicios: #0B877F;   --vg-servicios-texto: #06635D;   --vg-servicios-fondo: #DDF4F1;
+  --vg-comunidad: #2C7FD1;   --vg-comunidad-texto: #1B5C9E;   --vg-comunidad-fondo: #E3EFFB;
+
+  /* Bloques de color con texto blanco (tiempo del tablero, íconos): AA en ambos temas */
+  --vg-emergencia-bloque: #D62828;
+  --vg-seguridad-bloque: #B9500A;
+  --vg-servicios-bloque: #0A7F78;
+  --vg-comunidad-bloque: #2370BD;
+
+  /* Botón blanco sobre rojo: el texto queda oscuro en ambos temas */
+  --vg-sobre-blanco-sos: #9B1515;
+  --vg-blanco-sos-hover: #FDE7E7;
+
+  /* Fondos suaves para badges: aviso (amarillo) y resuelto (verde) */
+  --vg-senda-fondo: #FFF3C4;  --vg-senda-texto: #6B4E00;
+  --vg-resuelto-fondo: #E3F4EA;  --vg-resuelto-texto: #1E6B40;
+
+  /* Estados: solo el punto del badge lleva color */
+  --vg-estado-reportado: #E0A800;
+  --vg-estado-seguimiento: #2C7FD1;
+  --vg-estado-resuelto: #2E8B57;
+  --vg-estado-cerrado: #8A94A3;
+
+  /* Tipografía */
+  --vg-fuente-titulos: 'Overpass', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --vg-fuente-texto: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --vg-t-display: clamp(2.125rem, 1.4rem + 2.2vw, 2.75rem); /* 34 → 44 px */
+  --vg-t-titulo: clamp(1.375rem, 1.1rem + 0.9vw, 1.75rem);  /* 22 → 28 px */
+  --vg-t-subtitulo: 1.25rem;  /* 20 px */
+  --vg-t-texto: 1.0625rem;    /* 17 px */
+  --vg-t-meta: 0.875rem;      /* 14 px */
+
+  /* Forma, espacio y profundidad */
+  --vg-radio-s: 10px;
+  --vg-radio-m: 16px;
+  --vg-radio-l: 22px;
+  --vg-radio-pill: 999px;
+  --vg-esp-1: 4px;  --vg-esp-2: 8px;  --vg-esp-3: 12px; --vg-esp-4: 16px;
+  --vg-esp-5: 24px; --vg-esp-6: 32px; --vg-esp-7: 48px;
+  --vg-sombra: 0 1px 2px rgb(14 27 46 / 0.06), 0 8px 24px rgb(14 27 46 / 0.07);
+  --vg-sombra-alta: 0 12px 32px rgb(14 27 46 / 0.18);
+  --vg-nav-alto: 64px;
+  --vg-ancho-max: 1360px;
+  --vg-margen: clamp(16px, 3vw, 32px);
+  --vg-toque: 44px; /* tamaño táctil mínimo */
+}
+
+:root[data-tema="oscuro"] {
+  --vg-farol: #0D213F;
+  --vg-farol-2: #16335A;
+  --vg-farol-3: #22477A;
+  --vg-senda: #FFD04D;
+  --vg-senda-hover: #FFC629;
+  --vg-sobre-senda: #0D213F;
+  --vg-sobre-farol: #FFFFFF;
+  --vg-sobre-farol-2: #B7C6DC;
+
+  --vg-fondo: #0B1220;
+  --vg-superficie: #131C2D;
+  --vg-superficie-2: #1B2639;
+  --vg-borde: #27344B;
+  --vg-tinta: #E9EFF8;
+  --vg-tinta-2: #A9B6C9;
+  --vg-enlace: #9CCBFA;
+  --vg-boton-farol: #2A5A92;
+
+  --vg-emergencia: #DC2626;  --vg-emergencia-texto: #FCA5A5;  --vg-emergencia-fondo: #3A1517;
+  --vg-seguridad: #F57C22;   --vg-seguridad-texto: #FDBA74;   --vg-seguridad-fondo: #3A2311;
+  --vg-servicios: #16A89E;   --vg-servicios-texto: #6EE7DA;   --vg-servicios-fondo: #0D2F2D;
+  --vg-comunidad: #4C9BEA;   --vg-comunidad-texto: #9CCBFA;   --vg-comunidad-fondo: #132B45;
+
+  --vg-senda-fondo: #3A3008;  --vg-senda-texto: #FFD04D;
+  --vg-resuelto-fondo: #12301F;  --vg-resuelto-texto: #86EFAC;
+
+  --vg-estado-reportado: #FFD04D;
+  --vg-estado-seguimiento: #6AAEF0;
+  --vg-estado-resuelto: #4ADE80;
+  --vg-estado-cerrado: #8A94A3;
+
+  --vg-sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.3);
+  --vg-sombra-alta: 0 12px 32px rgb(0 0 0 / 0.55);
+}

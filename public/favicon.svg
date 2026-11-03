@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="32" height="32" role="img" aria-labelledby="title"><title id="title">VigiApp: favicon cuadrado</title><rect width="192" height="192" rx="36" fill="#0D213F"/><g transform="translate(22 12) scale(.89)"><path fill="#1E4677" d="M22 132 Q10 132 7 147 L0 179 Q-2 192 13 192 H151 Q166 192 163 179 L155 146 Q153 132 140 132Z"/>
+    <path fill="#FFFFFF" d="M22 132 H48 L78 162 L43 192 H13 Q0 192 1 181 L5 164 L40 143Z M113 132 H140 Q153 132 155 146 L159 164 L120 144Z M81 168 L108 192 H53Z"/>
+    <path fill="none" stroke="#0D213F" stroke-width="7" stroke-linejoin="round" d="M4 165 L51 140 L118 192 M44 192 L119 141 L160 166"/>
+    <path fill="#FFFFFF" stroke="#0D213F" stroke-width="6" stroke-linejoin="round" d="M82 26 C47 26 25 51 25 80 C25 105 49 129 82 166 C115 129 139 105 139 80 C139 51 117 26 82 26Z"/>
+    <circle cx="82" cy="80" r="42" fill="#0D213F"/>
+    <g fill="#FFFFFF"><circle cx="82" cy="65" r="10"/><circle cx="59" cy="77" r="8"/><circle cx="105" cy="77" r="8"/>
+    <path d="M67 114 V96 Q67 83 82 83 Q97 83 97 96 V114Z M43 101 Q43 89 57 89 Q64 89 66 94 L63 116 H48Z M101 94 Q104 89 108 89 Q121 89 121 101 L116 116 H101Z"/></g></g></svg>

@@ -1,0 +1,97 @@
+/* =========================================================================
+   Animaciones de la vista del vecino y del panel de administración.
+   Leves (200–700 ms, sin rebotes) y con propósito: orientar al cambiar de pantalla,
+   mostrar el orden de lo que aparece y responder al toque.
+   TODO va dentro de "no-preference": si el usuario pidió reducir el movimiento
+   en su sistema, la app se ve igual pero sin animaciones.
+   ========================================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  :root { --vg-suave: cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+  /* ---------- Cambio de pantalla ---------- */
+  .vg-transicion { animation: vg-entrar 280ms var(--vg-suave) both; }
+
+  /* La senda amarilla del encabezado se pinta de izquierda a derecha */
+  .vg-hero::after, .vg-cabecera::after { animation: vg-senda 700ms var(--vg-suave) 120ms both; }
+
+  /* ---------- Entrada escalonada de listas, tarjetas y paneles ---------- */
+  .vg-hero__texto > *, .vg-hero__cifras > div,
+  .vg-tablero > *, .vg-app .stack-list > *, .vg-app .mini-lista > li,
+  .vg-inicio__principal > *, .vg-inicio__lateral > *, .vg-dos-columnas__principal > *, .vg-dos-columnas__lateral > *,
+  .vg-grupos > *, .vg-pasos__lista > li, .vg-avisos__lista > li, .vg-telefonos li,
+  .vg-admin-cifras > li, .vg-admin .paneles > *, .vg-admin .tabla tbody tr, .vg-app .opciones-reporte > * {
+    animation: vg-entrar 380ms var(--vg-suave) both;
+  }
+  :is(.vg-hero__texto, .vg-hero__cifras, .vg-tablero, .stack-list, .mini-lista, .vg-inicio__principal, .vg-inicio__lateral,
+      .vg-dos-columnas__principal, .vg-dos-columnas__lateral, .vg-grupos, .vg-pasos__lista, .vg-avisos__lista,
+      .vg-telefonos ul, .vg-admin-cifras, .paneles, tbody, .opciones-reporte) > :nth-child(2) { animation-delay: 50ms; }
+  :is(.vg-hero__texto, .vg-hero__cifras, .vg-tablero, .stack-list, .mini-lista, .vg-inicio__principal, .vg-inicio__lateral,
+      .vg-dos-columnas__principal, .vg-dos-columnas__lateral, .vg-grupos, .vg-pasos__lista, .vg-avisos__lista,
+      .vg-telefonos ul, .vg-admin-cifras, .paneles, tbody, .opciones-reporte) > :nth-child(3) { animation-delay: 100ms; }
+  :is(.vg-hero__texto, .vg-hero__cifras, .vg-tablero, .stack-list, .mini-lista, .vg-inicio__principal, .vg-inicio__lateral,
+      .vg-dos-columnas__principal, .vg-dos-columnas__lateral, .vg-grupos, .vg-pasos__lista, .vg-avisos__lista,
+      .vg-telefonos ul, .vg-admin-cifras, .paneles, tbody, .opciones-reporte) > :nth-child(4) { animation-delay: 150ms; }
+  :is(.vg-hero__texto, .vg-hero__cifras, .vg-tablero, .stack-list, .mini-lista, .vg-inicio__principal, .vg-inicio__lateral,
+      .vg-dos-columnas__principal, .vg-dos-columnas__lateral, .vg-grupos, .vg-pasos__lista, .vg-avisos__lista,
+      .vg-telefonos ul, .vg-admin-cifras, .paneles, tbody, .opciones-reporte) > :nth-child(5) { animation-delay: 200ms; }
+  :is(.vg-hero__texto, .vg-hero__cifras, .vg-tablero, .stack-list, .mini-lista, .vg-inicio__principal, .vg-inicio__lateral,
+      .vg-dos-columnas__principal, .vg-dos-columnas__lateral, .vg-grupos, .vg-pasos__lista, .vg-avisos__lista,
+      .vg-telefonos ul, .vg-admin-cifras, .paneles, tbody, .opciones-reporte) > :nth-child(6) { animation-delay: 250ms; }
+  :is(.vg-hero__texto, .vg-hero__cifras, .vg-tablero, .stack-list, .mini-lista, .vg-inicio__principal, .vg-inicio__lateral,
+      .vg-dos-columnas__principal, .vg-dos-columnas__lateral, .vg-grupos, .vg-pasos__lista, .vg-avisos__lista,
+      .vg-telefonos ul, .vg-admin-cifras, .paneles, tbody, .opciones-reporte) > :nth-child(n + 7) { animation-delay: 300ms; }
+
+  /* ---------- Gráficos del admin: las barras crecen ---------- */
+  .vg-admin .barra__relleno { transform-origin: left center; animation: vg-crecer-x 700ms var(--vg-suave) 200ms both; }
+  .vg-admin .columna__barra { transform-origin: center bottom; animation: vg-crecer-y 700ms var(--vg-suave) both; }
+  .vg-admin .columna:nth-child(2) .columna__barra { animation-delay: 60ms; }
+  .vg-admin .columna:nth-child(3) .columna__barra { animation-delay: 120ms; }
+  .vg-admin .columna:nth-child(4) .columna__barra { animation-delay: 180ms; }
+  .vg-admin .columna:nth-child(5) .columna__barra { animation-delay: 240ms; }
+  .vg-admin .columna:nth-child(6) .columna__barra { animation-delay: 300ms; }
+  .vg-admin .columna:nth-child(7) .columna__barra { animation-delay: 360ms; }
+
+  /* ---------- Mapa: los pines caen en su lugar ---------- */
+  .vg-pin { animation: vg-caer 340ms var(--vg-suave) both; }
+
+  /* ---------- Respuesta al toque ---------- */
+  .vg-btn, .vg-app .btn, .vg-app .chip, .vg-app .tabs__tab, .vg-app .segmented__btn, .vg-nav__link,
+  .vg-tabbar__icono, .vg-app .mini-lista__item, .vg-fila, .vg-telefonos a, .vg-app .lista-acciones > *,
+  .vg-admin__tira-link, .vg-admin-cifra, .vg-app .categoria-op, .vg-app .opcion-grande, .vg-avatar {
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms var(--vg-suave);
+  }
+  .vg-btn:hover, .vg-app .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .vg-btn:active, .vg-app .btn:active:not(:disabled) { transform: translateY(1px); }
+  .vg-admin-cifra:hover, .vg-app .opcion-grande:hover { transform: translateY(-3px); }
+  .vg-telefonos a:hover { transform: translateX(3px); }
+
+  /* La línea amarilla de la pestaña activa se desliza al cambiar de sección */
+  .vg-nav__link::after {
+    content: ""; position: absolute; left: 14px; right: 14px; bottom: 0; height: 4px;
+    background: var(--vg-senda); border-radius: 4px 4px 0 0;
+    transform: scaleX(0); transition: transform 260ms var(--vg-suave);
+  }
+  .vg-admin .vg-nav__link::after { left: 11px; right: 11px; }
+  .vg-nav__link.is-active::after { transform: scaleX(1); }
+  .vg-nav__link:hover::after { transform: scaleX(0.35); }
+  .vg-nav__link.is-active:hover::after { transform: scaleX(1); }
+
+  /* El ícono activo de la barra inferior aparece con un leve pulso */
+  .vg-tabbar__item.is-active .vg-tabbar__icono { animation: vg-pulso-suave 300ms var(--vg-suave); }
+
+  /* ---------- Modales y paneles desplegables ---------- */
+  .vg-app dialog[open] { animation: vg-modal 220ms var(--vg-suave); }
+  .vg-app dialog[open]::backdrop { animation: vg-fundido 220ms ease-out; }
+  .vg-app .campana__panel { transform-origin: top right; animation: vg-desplegar 180ms var(--vg-suave); }
+  .vg-app .vg-singrupo__invitaciones .alerta-card { animation: vg-entrar 380ms var(--vg-suave) both; }
+}
+
+@keyframes vg-entrar { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes vg-senda { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes vg-crecer-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes vg-crecer-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes vg-caer { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes vg-pulso-suave { 50% { transform: scale(1.08); } }
+@keyframes vg-modal { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes vg-fundido { from { opacity: 0; } to { opacity: 1; } }
+@keyframes vg-desplegar { from { opacity: 0; transform: scale(0.96) translateY(-4px); } to { opacity: 1; transform: none; } }

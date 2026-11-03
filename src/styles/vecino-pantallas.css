@@ -1,0 +1,453 @@
+/* =========================================================================
+   Pantallas internas del vecino (Incidentes, Detalle, Reportar, Alertas,
+   Grupos, Perfil). Reviste las piezas existentes SOLO dentro de .vg-app:
+   el panel de administración usa las mismas clases y no cambia.
+   ========================================================================= */
+
+/* ---------- Dos columnas (principal + panel lateral) ---------- */
+.vg-dos-columnas { display: flex; flex-direction: column; gap: var(--vg-esp-5); }
+.vg-dos-columnas__principal, .vg-dos-columnas__lateral { display: flex; flex-direction: column; gap: var(--vg-esp-5); min-width: 0; }
+
+/* ---------- Botones existentes ---------- */
+.vg-app .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--vg-esp-2);
+  min-height: var(--vg-toque); padding: 0 18px; border: 2px solid transparent; border-radius: var(--vg-radio-pill);
+  font-family: var(--vg-fuente-titulos); font-size: 1rem; font-weight: 700; text-decoration: none; cursor: pointer;
+}
+.vg-app .btn-primary { background: var(--vg-boton-farol); color: #fff; }
+.vg-app .btn-primary:hover { background: var(--vg-farol-3); }
+.vg-app .btn-outline { background: transparent; color: var(--vg-enlace); border-color: var(--vg-borde); }
+.vg-app .btn-outline:hover { background: var(--vg-superficie-2); }
+.vg-app .btn-ghost { background: transparent; color: var(--vg-enlace); border-color: transparent; }
+.vg-app .btn-ghost:hover { background: var(--vg-superficie-2); }
+.vg-app .btn-light { background: #fff; color: var(--vg-sobre-blanco-sos); }
+.vg-app .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.vg-app .btn-ancho { width: 100%; }
+
+/* ---------- Formularios ---------- */
+.vg-app .campo { display: grid; gap: 6px; margin-bottom: var(--vg-esp-4); }
+.vg-app .campo > label, .vg-app .campo label:first-child { color: var(--vg-tinta); font-family: var(--vg-fuente-titulos); font-size: 0.9375rem; font-weight: 700; }
+.vg-app .input {
+  width: 100%; min-height: 48px; padding: 10px 14px;
+  background: var(--vg-superficie); color: var(--vg-tinta);
+  border: 2px solid var(--vg-borde); border-radius: var(--vg-radio-s); font: inherit;
+}
+.vg-app .input:focus { border-color: var(--vg-enlace); outline: 3px solid var(--vg-senda); outline-offset: 1px; }
+.vg-app .input[aria-invalid="true"] { border-color: var(--vg-emergencia); }
+.vg-app .textarea { min-height: 120px; resize: vertical; }
+.vg-app .campo__ayuda { margin: 0; color: var(--vg-tinta-2); font-size: var(--vg-t-meta); }
+.vg-app .campo__error { margin: 4px 0 0; color: var(--vg-emergencia-texto); font-size: var(--vg-t-meta); font-weight: 700; }
+
+/* ---------- Pestañas, selector segmentado y chips ---------- */
+.vg-app .tabs {
+  display: flex; gap: 4px; width: fit-content; max-width: 100%; margin-bottom: var(--vg-esp-5); padding: 4px; overflow-x: auto;
+  background: var(--vg-superficie-2); border: 0; border-radius: var(--vg-radio-pill);
+}
+.vg-app .tabs__tab {
+  min-height: var(--vg-toque); padding: 0 22px; background: transparent; color: var(--vg-tinta-2); border: 0; border-radius: var(--vg-radio-pill);
+  font-family: var(--vg-fuente-titulos); font-size: 1rem; font-weight: 800; white-space: nowrap; cursor: pointer;
+}
+.vg-app .tabs__tab.is-active { background: var(--vg-boton-farol); color: #fff; }
+.vg-app .tabs__tab::after { display: none; }
+.vg-app .panel { margin-top: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
+.vg-dos-columnas__principal > .tabs { margin-bottom: 0; }
+
+.vg-app .segmented {
+  display: inline-flex; gap: 2px; margin-bottom: var(--vg-esp-4); padding: 3px;
+  background: var(--vg-superficie); border: 2px solid var(--vg-borde); border-radius: var(--vg-radio-pill);
+}
+.vg-app .segmented__btn {
+  min-height: 40px; padding: 0 18px; background: transparent; color: var(--vg-tinta-2); border: 0; border-radius: var(--vg-radio-pill);
+  font-family: var(--vg-fuente-titulos); font-size: 0.9375rem; font-weight: 700; cursor: pointer;
+}
+.vg-app .segmented__btn.is-active { background: var(--vg-senda); color: var(--vg-sobre-senda); }
+
+.vg-app .chips { display: flex; flex-wrap: wrap; gap: var(--vg-esp-2); margin-bottom: 10px; }
+.vg-app .chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px;
+  background: var(--vg-superficie); color: var(--vg-tinta); border: 2px solid var(--vg-borde); border-radius: var(--vg-radio-pill);
+  font-family: var(--vg-fuente-texto); font-size: var(--vg-t-meta); font-weight: 700; cursor: pointer;
+}
+.vg-app .chip:hover { background: var(--vg-superficie-2); }
+.vg-app .chip.is-active { background: var(--vg-boton-farol); color: #fff; border-color: transparent; }
+.vg-app .chip--categoria svg { color: var(--fam-texto); }
+.vg-app .chip--categoria.is-active { background: var(--fam-bloque); }
+.vg-app .chip--categoria.is-active svg { color: #fff; }
+
+/* ---------- Bloques, tarjetas y textos ---------- */
+.vg-app .card, .vg-app .bloque {
+  padding: 20px; background: var(--vg-superficie); border: 0; border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra);
+}
+.vg-app .bloque { margin: 0 0 var(--vg-esp-5); }
+.vg-dos-columnas .bloque { margin: 0; }
+.vg-app .bloque__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--vg-esp-3); margin-bottom: var(--vg-esp-3); }
+.vg-app .bloque__head h2, .vg-app .card h3 { margin: 0; font-size: var(--vg-t-subtitulo); font-weight: 800; }
+.vg-app .subtitulo { margin: var(--vg-esp-5) 0 var(--vg-esp-3); font-size: var(--vg-t-subtitulo); font-weight: 800; }
+.vg-app .subtitulo-chico { margin: 0; font-size: 1.125rem; font-weight: 800; }
+.vg-app .lead { margin: 0 0 var(--vg-esp-3); color: var(--vg-tinta); font-family: var(--vg-fuente-titulos); font-size: var(--vg-t-subtitulo); font-weight: 800; }
+.vg-app .detalle__meta { display: flex; align-items: center; gap: 6px; margin: 4px 0; color: var(--vg-tinta-2); }
+.vg-app .map-nota { display: flex; align-items: center; gap: 6px; color: var(--vg-tinta-2); font-size: var(--vg-t-meta); }
+.vg-app .volver {
+  display: inline-flex; align-items: center; gap: 6px; min-height: var(--vg-toque); margin-bottom: var(--vg-esp-2); padding: 0;
+  background: none; border: 0; color: var(--vg-enlace); font-family: var(--vg-fuente-titulos); font-weight: 700; text-decoration: none; cursor: pointer;
+}
+
+/* Badges compartidos (Badge), con la paleta del vecino */
+.vg-app .badge {
+  display: inline-flex; align-items: center; padding: 3px 10px; border: 0; border-radius: var(--vg-radio-pill);
+  background: var(--vg-superficie-2); color: var(--vg-tinta); font-family: var(--vg-fuente-texto); font-size: 0.8125rem; font-weight: 700;
+}
+.vg-app .badge--urgente { background: var(--vg-emergencia-bloque); color: #fff; }
+.vg-app .badge--incidencia { background: var(--vg-senda-fondo); color: var(--vg-senda-texto); }
+.vg-app .badge--seguimiento, .vg-app .badge--aviso { background: var(--vg-comunidad-fondo); color: var(--vg-comunidad-texto); }
+.vg-app .badge--resuelto { background: var(--vg-resuelto-fondo); color: var(--vg-resuelto-texto); }
+.vg-app .badge--activo { background: var(--vg-senda); color: var(--vg-sobre-senda); }
+.vg-app .badge--muted { background: var(--vg-superficie-2); color: var(--vg-tinta-2); }
+
+/* Estado vacío */
+.vg-app .empty {
+  display: grid; justify-items: center; gap: var(--vg-esp-2); padding: 36px 24px; text-align: center;
+  background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra);
+}
+.vg-app .empty__icon { display: grid; place-items: center; width: 72px; height: 72px; background: var(--vg-superficie-2); color: var(--vg-enlace); font-size: 2rem; }
+.vg-app .empty h3 { margin: 4px 0 0; font-size: var(--vg-t-subtitulo); }
+.vg-app .empty p { max-width: 46ch; margin: 0; color: var(--vg-tinta-2); }
+.vg-app .empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--vg-esp-2); margin-top: var(--vg-esp-2); }
+
+/* Modal */
+.vg-app .modal { background: var(--vg-superficie); color: var(--vg-tinta); border: 0; border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra-alta); }
+.vg-app .modal__header h2 { font-size: var(--vg-t-titulo); font-weight: 900; }
+.vg-app .modal__cerrar { background: var(--vg-superficie-2); color: var(--vg-tinta); border: 0; border-radius: 50%; }
+
+/* Confirmación de envío */
+.vg-app .ayuda-ok {
+  display: grid; justify-items: center; gap: var(--vg-esp-3); max-width: 640px; margin: 0 auto; padding: var(--vg-esp-6);
+  text-align: center; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra);
+}
+.vg-app .modal .ayuda-ok { padding: var(--vg-esp-2); box-shadow: none; }
+.vg-app .ayuda-ok__icon { display: grid; place-items: center; width: 72px; height: 72px; background: var(--vg-resuelto-fondo); color: var(--vg-resuelto-texto); font-size: 2rem; }
+.vg-app .ayuda-ok h2, .vg-app .ayuda-ok h3 { margin: 0; font-size: var(--vg-t-titulo); font-weight: 900; }
+.vg-app .stack { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--vg-esp-2); }
+
+/* ---------- Listas como tablero (filas de incidentes y avisos) ---------- */
+.vg-app .stack-list { display: grid; gap: var(--vg-esp-3); }
+.vg-app .stack-list:has(> .vg-fila), .vg-app .stack-list:has(> .incidente-item), .vg-app .stack-list:has(> .vg-aviso) {
+  display: block; overflow: hidden; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra);
+}
+.vg-app .incidente-item { position: relative; }
+.vg-app .incidente-item + .incidente-item::before,
+.vg-aviso + .vg-aviso::before { content: ""; position: absolute; top: 0; left: 14px; right: 16px; border-top: 2px dashed var(--vg-borde); }
+.vg-app .incidente-item__aviso { margin: -6px 16px 6px 86px; color: var(--vg-emergencia-texto); font-size: var(--vg-t-meta); font-weight: 700; }
+.vg-app .incidente-item__acciones { display: flex; flex-wrap: wrap; gap: var(--vg-esp-2); padding: 0 16px 16px 86px; }
+
+.vg-aviso { position: relative; display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 4px 16px; padding: 16px 16px 16px 14px; }
+.vg-aviso__indicador { width: 56px; height: 56px; }
+.vg-aviso__cuerpo { display: grid; gap: 4px; min-width: 0; }
+.vg-aviso__tipo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; color: var(--vg-comunidad-texto); font-family: var(--vg-fuente-titulos); font-size: var(--vg-t-meta); font-weight: 800; }
+.vg-aviso__titulo { margin: 0; font-size: 1.1875rem; font-weight: 800; line-height: 1.2; }
+.vg-aviso__texto { margin: 0; color: var(--vg-tinta); }
+.vg-aviso--importante { background: var(--vg-comunidad-fondo); }
+.vg-aviso--importante .vg-marca-importante { background: var(--vg-superficie); }
+.vg-aviso--cerrado { opacity: 0.65; }
+.vg-marca-cerrado {
+  display: inline-block; padding: 1px 8px; background: var(--vg-superficie-2); color: var(--vg-tinta-2);
+  border-radius: var(--vg-radio-pill); font-family: var(--vg-fuente-texto); font-size: 0.75rem; font-weight: 700;
+}
+.vg-acciones { display: flex; flex-wrap: wrap; gap: var(--vg-esp-2); margin-top: 8px; }
+
+/* ---------- Incidentes: mapa ---------- */
+.vg-app .mapa-app { display: grid; gap: var(--vg-esp-4); }
+.vg-app .mapa-app__mapa { position: relative; overflow: hidden; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .map-frame--principal { height: 60vh; min-height: 380px; border: 0; border-radius: 0; }
+.vg-app .mapa-app__reportar { position: absolute; inset: auto 16px 16px auto; z-index: 500; box-shadow: var(--vg-sombra-alta); }
+.vg-app .mapa-app__panel { padding: 18px; background: var(--vg-superficie); border: 0; border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .mapa-app__panel .subtitulo { margin-top: 0; }
+.vg-app .mapa-app__ok {
+  display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+  background: var(--vg-resuelto-fondo); color: var(--vg-resuelto-texto); border-radius: var(--vg-radio-m); font-weight: 700;
+}
+.vg-app .mini-lista { display: grid; margin: 0; padding: 0; list-style: none; }
+.vg-app .mini-lista li { position: relative; }
+.vg-app .mini-lista li + li::before { content: ""; position: absolute; top: 0; left: 6px; right: 6px; border-top: 2px dashed var(--vg-borde); }
+.vg-app .mini-lista__item {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 6px;
+  background: none; color: var(--vg-tinta); border: 0; border-radius: var(--vg-radio-m); font: inherit; text-align: left; cursor: pointer;
+}
+.vg-app .mini-lista__item:hover { background: var(--vg-superficie-2); }
+.vg-app .mini-lista__texto { display: grid; min-width: 0; }
+.vg-app .mini-lista__texto strong { color: var(--vg-tinta); font-family: var(--vg-fuente-titulos); font-weight: 800; }
+.vg-app .mini-lista__texto span { color: var(--vg-tinta-2); font-size: var(--vg-t-meta); }
+
+/* Panel del incidente elegido en el mapa */
+.vg-app .panel-incidente { display: grid; gap: var(--vg-esp-3); padding: 0; background: none; border: 0; box-shadow: none; }
+.vg-app .panel-incidente__head { display: flex; align-items: flex-start; gap: var(--vg-esp-3); }
+.vg-app .panel-incidente__titulo { display: grid; gap: 2px; min-width: 0; }
+.vg-app .panel-incidente__cat { color: var(--fam-texto); font-family: var(--vg-fuente-titulos); font-size: var(--vg-t-meta); font-weight: 800; }
+.vg-app .panel-incidente h3 { margin: 0; font-size: 1.375rem; font-weight: 900; line-height: 1.15; }
+.vg-app .panel-incidente__cerrar {
+  flex: none; width: 40px; height: 40px; margin-left: auto; background: var(--vg-superficie-2); color: var(--vg-tinta);
+  border: 0; border-radius: 50%; cursor: pointer;
+}
+.vg-app .panel-incidente__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.vg-app .panel-incidente__datos { display: grid; gap: var(--vg-esp-2); margin: 0; }
+.vg-app .panel-incidente__datos > div { display: grid; gap: 2px; padding: 10px 12px; background: var(--vg-superficie-2); border-radius: var(--vg-radio-m); }
+.vg-app .panel-incidente__datos dt { display: flex; align-items: center; gap: 6px; color: var(--vg-tinta-2); font-size: 0.8125rem; font-weight: 700; }
+.vg-app .panel-incidente__datos dd { margin: 0; font-weight: 700; }
+.vg-dd-categoria { display: flex; align-items: center; gap: 8px; }
+.vg-app .foto-contenida img { width: 100%; max-height: 240px; object-fit: cover; border-radius: var(--vg-radio-m); }
+
+/* Formulario rápido del mapa */
+.vg-app .reporte-mapa { display: grid; gap: var(--vg-esp-3); }
+.vg-app .reporte-mapa__head { display: flex; align-items: center; justify-content: space-between; gap: var(--vg-esp-2); }
+.vg-app .reporte-mapa__head h2, .vg-app .reporte-mapa__head h3 { margin: 0; font-size: var(--vg-t-subtitulo); font-weight: 900; }
+.vg-app .reporte-mapa__paso { margin: 0; color: var(--vg-tinta-2); font-size: var(--vg-t-meta); font-weight: 700; }
+.vg-app .reporte-mapa__barra { width: 100%; height: 8px; appearance: none; border: 0; background: var(--vg-superficie-2); border-radius: var(--vg-radio-pill); overflow: hidden; }
+.vg-app .reporte-mapa__barra::-webkit-progress-bar { background: var(--vg-superficie-2); }
+.vg-app .reporte-mapa__barra::-webkit-progress-value { background: var(--vg-senda); }
+.vg-app .reporte-mapa__barra::-moz-progress-bar { background: var(--vg-senda); }
+.vg-app .reporte-mapa__botones { display: flex; justify-content: flex-end; gap: var(--vg-esp-2); margin-top: var(--vg-esp-2); }
+.vg-app .categorias-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--vg-esp-2); margin-bottom: var(--vg-esp-3); }
+.vg-app .categoria-op {
+  display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 8px 10px;
+  background: var(--vg-superficie); color: var(--vg-tinta); border: 2px solid var(--vg-borde); border-radius: var(--vg-radio-m);
+  font-family: var(--vg-fuente-titulos); font-size: 0.9375rem; font-weight: 700; text-align: left; cursor: pointer;
+}
+.vg-app .categoria-op.is-active { background: var(--vg-comunidad-fondo); border-color: var(--vg-enlace); }
+.vg-app .map-lugar {
+  display: flex; align-items: center; gap: 6px; padding: 10px 12px; margin: var(--vg-esp-2) 0;
+  background: var(--vg-superficie-2); border-radius: var(--vg-radio-m); font-weight: 700;
+}
+
+/* ---------- Incidentes: lista con filtros ---------- */
+.vg-lista-incidentes { display: grid; gap: var(--vg-esp-4); align-items: start; }
+.vg-app .filtros { display: grid; gap: 0 var(--vg-esp-3); padding: 18px; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .resultados-head { display: flex; align-items: center; justify-content: space-between; gap: var(--vg-esp-3); margin-bottom: 10px; }
+.vg-app .resultados-head p { margin: 0; font-family: var(--vg-fuente-titulos); font-weight: 800; }
+.vg-app .paginacion { display: flex; align-items: center; justify-content: space-between; gap: var(--vg-esp-3); margin-top: var(--vg-esp-4); }
+
+/* ---------- Detalle del incidente ---------- */
+.vg-app .detalle { display: grid; gap: var(--vg-esp-5); }
+.vg-app .detalle__principal { display: grid; grid-template-columns: 1fr; gap: 0; overflow: hidden; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .foto { display: grid; place-items: center; height: auto; aspect-ratio: 16 / 7; padding: 0; background: var(--vg-superficie-2); border: 0; border-radius: 0; font-size: inherit; }
+.vg-app .foto:not(.foto--imagen) { background: var(--fam-fondo, var(--vg-superficie-2)); }
+.vg-app .foto--imagen { overflow: hidden; }
+.vg-app .foto--imagen img { width: 100%; height: 100%; max-height: none; object-fit: cover; }
+.vg-app .detalle__info { display: grid; gap: 10px; padding: 24px; }
+.vg-app .detalle__info h2 { margin: 0; font-size: var(--vg-t-display); font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; }
+.vg-app .detalle__info > p:not([class]) { margin: 4px 0; max-width: 68ch; }
+.vg-app .detalle__tags { display: flex; flex-wrap: wrap; align-items: center; gap: var(--vg-esp-2); }
+.vg-app .tag-categoria { display: inline-flex; align-items: center; gap: 6px; color: var(--vg-tinta); font-family: var(--vg-fuente-titulos); font-size: 0.9375rem; font-weight: 800; }
+.vg-app .confirmar { display: grid; gap: 10px; margin-top: var(--vg-esp-2); padding: 16px; background: var(--vg-superficie-2); border: 0; border-radius: var(--vg-radio-m); }
+.vg-app .confirmar__cuenta { display: flex; align-items: center; gap: 8px; margin: 0; }
+.vg-app .confirmar__botones { display: flex; flex-wrap: wrap; gap: var(--vg-esp-2); }
+.vg-app .panel-gestion { display: grid; gap: 10px; padding: 16px; background: var(--vg-comunidad-fondo); border: 0; border-radius: var(--vg-radio-m); }
+.vg-app .panel-gestion h3 { margin: 0; font-size: 1.125rem; font-weight: 800; }
+.vg-app .detalle__secundario { display: grid; grid-template-columns: 1fr; gap: var(--vg-esp-5); align-content: start; margin-top: 0; }
+.vg-app .detalle__secundario > section { padding: 18px; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .detalle__secundario h3 { margin: 0 0 var(--vg-esp-3); font-size: var(--vg-t-subtitulo); font-weight: 800; }
+.vg-app .map-frame--chico { height: 260px; border: 0; border-radius: var(--vg-radio-m); }
+.vg-app .timeline { margin: 0; padding: 0 0 0 6px; list-style: none; }
+.vg-app .timeline__item { position: relative; display: grid; gap: 2px; padding: 0 0 18px 24px; border-left: 3px solid var(--vg-superficie-2); }
+.vg-app .timeline__item:last-child { padding-bottom: 0; }
+.vg-app .timeline__dot { position: absolute; left: -9px; top: 3px; width: 15px; height: 15px; background: var(--vg-estado-cerrado); border: 3px solid var(--vg-superficie); border-radius: 50%; }
+.vg-app .dot--REPORTADO .timeline__dot { background: var(--vg-estado-reportado); }
+.vg-app .dot--EN_SEGUIMIENTO .timeline__dot { background: var(--vg-estado-seguimiento); }
+.vg-app .dot--RESUELTO .timeline__dot { background: var(--vg-estado-resuelto); }
+.vg-app .timeline__item strong { font-family: var(--vg-fuente-titulos); font-weight: 800; }
+.vg-app .timeline__fecha { color: var(--vg-tinta-2); font-size: var(--vg-t-meta); }
+
+/* ---------- Reportar ---------- */
+.vg-app .opciones-reporte { display: grid; gap: var(--vg-esp-4); }
+.vg-app .opcion-grande {
+  display: grid; justify-items: start; align-content: start; gap: 10px; min-height: 220px; padding: 28px;
+  background: var(--vg-superficie); color: var(--vg-tinta); border: 0; border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra);
+  font: inherit; text-align: left; cursor: pointer; transition: box-shadow 150ms ease;
+}
+.vg-app .opcion-grande:hover { box-shadow: var(--vg-sombra-alta); }
+.vg-app .opcion-grande strong { color: var(--vg-tinta); font-family: var(--vg-fuente-titulos); font-size: 1.625rem; font-weight: 900; letter-spacing: -0.02em; }
+.vg-app .opcion-grande > span:last-child { max-width: 44ch; color: var(--vg-tinta-2); }
+.vg-app .opcion-grande__icono { display: grid; place-items: center; width: 64px; height: 64px; background: var(--vg-senda); color: var(--vg-sobre-senda); }
+.vg-app .opcion-grande--sos { background: var(--vg-emergencia-bloque); color: #fff; }
+.vg-app .opcion-grande--sos > span:last-child, .vg-app .opcion-grande--sos strong { color: #fff; }
+.vg-app .opcion-grande--sos .opcion-grande__icono { background: #fff; color: var(--vg-emergencia); }
+
+.vg-reportar { display: grid; gap: var(--vg-esp-5); align-items: start; }
+.vg-app .formulario { max-width: none; margin: 0; padding: 24px; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .formulario h2 { margin: 0 0 var(--vg-esp-4); font-size: var(--vg-t-titulo); font-weight: 900; }
+.vg-app .categoria-seleccion { display: flex; align-items: center; gap: 10px; }
+.vg-app .categoria-seleccion .input { flex: 1; }
+.vg-app .ubicacion-botones { display: flex; flex-wrap: wrap; gap: var(--vg-esp-2); margin: -6px 0 var(--vg-esp-4); }
+.vg-app .foto-previa { max-width: 100%; margin-bottom: var(--vg-esp-4); border-radius: var(--vg-radio-m); }
+.vg-reportar__lateral { display: grid; gap: var(--vg-esp-5); }
+.vg-reportar__lateral h2 { margin: 0 0 var(--vg-esp-3); font-size: 1.125rem; font-weight: 800; }
+.vg-tablero--previa { box-shadow: none; border-radius: var(--vg-radio-m); }
+/* En el panel angosto la fila destacada se apila: indicador a la izquierda, estado debajo del texto */
+.vg-tablero--previa .vg-fila--destacada { grid-template-columns: 64px minmax(0, 1fr); padding: 16px; }
+.vg-tablero--previa .vg-fila--destacada .vg-fila__indicador { align-self: start; width: 64px; height: 64px; }
+.vg-tablero--previa .vg-fila--destacada .vg-fila__titulo { font-size: 1.375rem; }
+.vg-tablero--previa .vg-fila__lado { grid-column: 2; flex-direction: row; justify-content: flex-start; }
+.vg-tablero--previa .vg-meta li:first-child { flex-basis: 100%; }
+.vg-consejos ul { display: grid; gap: 10px; }
+.vg-consejos li { display: flex; gap: 8px; }
+.vg-consejos svg { flex: none; margin-top: 3px; color: var(--vg-estado-resuelto); }
+.vg-consejo-sos { background: var(--vg-emergencia-fondo); }
+.vg-consejo-sos h2 { color: var(--vg-emergencia-texto); }
+.vg-consejo-sos p { margin: 0 0 var(--vg-esp-3); }
+
+/* ---------- Alertas y avisos: resumen lateral ---------- */
+.vg-resumen .vg-btn { width: 100%; }
+.vg-resumen__nota { margin: var(--vg-esp-3) 0; color: var(--vg-tinta-2); font-size: 0.9375rem; }
+.vg-resumen__nota strong { color: var(--vg-tinta); }
+.vg-datos .vg-datos--alerta { background: var(--vg-emergencia-bloque); }
+.vg-datos .vg-datos--alerta dd, .vg-datos .vg-datos--alerta dt { color: #fff; }
+
+/* ---------- Mis grupos ---------- */
+.vg-grupos { display: grid; gap: var(--vg-esp-4); }
+.vg-app .grupo-card { display: grid; align-content: start; gap: 10px; }
+.vg-app .grupo-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.vg-app .grupo-card__head h2, .vg-app .grupo-card__head h3 { margin: 0; font-size: var(--vg-t-subtitulo); font-weight: 900; }
+.vg-app .grupo-card__acciones { display: flex; flex-wrap: wrap; gap: var(--vg-esp-2); margin-top: 4px; }
+.vg-app .grupo-card--activo { background: var(--vg-farol-2); color: var(--vg-sobre-farol); }
+.vg-app .grupo-card--activo h3 { color: var(--vg-sobre-farol); }
+.vg-app .grupo-card--activo .vg-meta { color: var(--vg-sobre-farol-2); }
+.vg-app .grupo-card--activo .grupo-card__indicador { background: var(--vg-senda); color: var(--vg-sobre-senda); }
+.vg-app .grupo-card--activo .btn-ghost, .vg-app .grupo-card--activo .btn-outline { color: var(--vg-sobre-farol); border-color: rgb(255 255 255 / 0.4); }
+.vg-app .grupo-card--activo .btn-ghost:hover, .vg-app .grupo-card--activo .btn-outline:hover { background: rgb(255 255 255 / 0.12); }
+/* Invitaciones recibidas: en amarillo, como en el inicio */
+.vg-app .alerta-card { display: grid; gap: 8px; padding: 20px; background: var(--vg-senda); color: var(--vg-sobre-senda); border: 0; border-radius: var(--vg-radio-l); }
+.vg-app .alerta-card__tag { display: flex; align-items: center; gap: 6px; margin: 0; font-family: var(--vg-fuente-titulos); font-size: var(--vg-t-meta); font-weight: 800; }
+.vg-app .alerta-card h3 { margin: 0; color: var(--vg-sobre-senda); font-size: var(--vg-t-subtitulo); font-weight: 900; }
+.vg-app .alerta-card p { margin: 0; }
+.vg-app .alerta-card__tag, .vg-app .alerta-card p { color: var(--vg-sobre-senda); }
+.vg-app .alerta-card .btn-primary { background: var(--vg-sobre-senda); }
+.vg-app .alerta-card .btn-outline { color: var(--vg-sobre-senda); border-color: rgb(20 49 90 / 0.35); }
+
+/* ---------- Detalle de grupo ---------- */
+.vg-grupo-cabecera { display: grid; justify-items: start; gap: 10px; margin-bottom: var(--vg-esp-5); padding: 20px; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-grupo-cabecera .grupo-card__head h2 { font-size: var(--vg-t-titulo); }
+.vg-app .miembros { display: grid; gap: var(--vg-esp-2); margin: 0; padding: 0; list-style: none; }
+.vg-app .miembro { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--vg-superficie-2); border-radius: var(--vg-radio-m); }
+.vg-app .miembro__avatar {
+  display: grid; place-items: center; flex: none; width: 36px; height: 36px; background: var(--vg-boton-farol); color: #fff;
+  border-radius: 50%; font-family: var(--vg-fuente-titulos); font-size: 0.875rem; font-weight: 800;
+}
+.vg-app .miembro__nombre { flex: 1; font-weight: 700; }
+.vg-app .invitar { display: grid; gap: var(--vg-esp-2); }
+.vg-app .lista-invitaciones { display: grid; margin: 0; padding: 0; list-style: none; }
+.vg-app .fila-invitacion { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--vg-esp-2); padding: 10px 0; }
+.vg-app .fila-invitacion + .fila-invitacion { border-top: 2px dashed var(--vg-borde); }
+.vg-app .fila-invitacion__estado { display: flex; align-items: center; gap: var(--vg-esp-2); }
+
+/* ---------- Perfil ---------- */
+.vg-app .perfil-head { display: flex; align-items: center; gap: var(--vg-esp-4); margin-bottom: var(--vg-esp-5); padding: 20px; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .perfil-head .avatar {
+  display: grid; place-items: center; flex: none; width: 72px; height: 72px; background: var(--vg-senda); color: var(--vg-sobre-senda);
+  border-radius: 50%; font-family: var(--vg-fuente-titulos); font-size: 1.75rem; font-weight: 900;
+}
+.vg-app .perfil-head h2 { margin: 0; font-size: var(--vg-t-titulo); font-weight: 900; }
+.vg-app .perfil-head p { margin: 0; color: var(--vg-tinta-2); }
+.vg-app .perfil-grid { display: grid; gap: var(--vg-esp-5); }
+.vg-app .perfil-grid .card { display: grid; align-content: start; justify-items: start; gap: var(--vg-esp-3); }
+.vg-app .datos { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; width: 100%; margin: 0; }
+.vg-app .datos dt { color: var(--vg-tinta-2); font-size: var(--vg-t-meta); }
+.vg-app .datos dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.vg-app .lista-acciones { display: grid; margin-top: var(--vg-esp-5); overflow: hidden; background: var(--vg-superficie); border-radius: var(--vg-radio-l); box-shadow: var(--vg-sombra); }
+.vg-app .lista-acciones > a, .vg-app .lista-acciones > button {
+  position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 0 20px;
+  background: none; color: var(--vg-tinta); border: 0; font-family: var(--vg-fuente-titulos); font-size: 1.0625rem; font-weight: 700;
+  text-align: left; text-decoration: none; cursor: pointer;
+}
+.vg-app .lista-acciones > * + *::before { content: ""; position: absolute; top: 0; left: 20px; right: 20px; border-top: 2px dashed var(--vg-borde); }
+.vg-app .lista-acciones > a:hover, .vg-app .lista-acciones > button:hover { background: var(--vg-superficie-2); }
+.vg-app .lista-acciones__flecha { margin-left: auto; color: var(--vg-tinta-2); }
+.vg-app .lista-acciones__salir { color: var(--vg-emergencia-texto) !important; }
+
+/* ---------- Escritorio ---------- */
+@media (min-width: 640px) {
+  .vg-app .incidente-item__aviso { margin-left: 94px; }
+  .vg-app .incidente-item__acciones { padding-left: 94px; }
+}
+@media (min-width: 768px) {
+  .vg-app .opciones-reporte { grid-template-columns: repeat(2, 1fr); }
+  .vg-grupos { grid-template-columns: repeat(2, 1fr); }
+  .vg-app .perfil-grid { grid-template-columns: repeat(2, 1fr); }
+  .vg-app .filtros { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .vg-dos-columnas { display: grid; grid-template-columns: minmax(0, 1fr) 360px; align-items: start; }
+  .vg-app .mapa-app { grid-template-columns: minmax(0, 1fr) 380px; align-items: start; }
+  .vg-app .map-frame--principal { height: calc(100dvh - 330px); min-height: 520px; }
+  .vg-app .mapa-app__panel { max-height: max(520px, calc(100dvh - 330px)); overflow-y: auto; }
+  .vg-lista-incidentes { grid-template-columns: 300px minmax(0, 1fr); }
+  .vg-app .filtros { grid-template-columns: 1fr; position: sticky; top: calc(var(--vg-nav-alto) + 16px); }
+  .vg-app .detalle { grid-template-columns: minmax(0, 1fr) 400px; align-items: start; }
+  .vg-app .detalle > .volver { grid-column: 1 / -1; margin-bottom: -12px; }
+  .vg-reportar { grid-template-columns: minmax(0, 1fr) 400px; }
+  .vg-reportar__lateral { position: sticky; top: calc(var(--vg-nav-alto) + 16px); }
+  .vg-app .foto { aspect-ratio: 16 / 6; }
+}
+@media (min-width: 1200px) {
+  .vg-grupos { grid-template-columns: repeat(3, 1fr); }
+  .vg-app .grupo-card--activo { grid-column: span 2; }
+}
+
+/* Cifras del resumen: el número siempre arriba, aunque la etiqueta ocupe dos líneas */
+.vg-datos div { justify-content: flex-end; }
+
+/* Celular: los chips se deslizan de costado, para que el mapa aparezca enseguida */
+@media (max-width: 767px) {
+  .vg-app .chips {
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+    margin-inline: calc(-1 * var(--vg-margen)); padding: 2px var(--vg-margen);
+  }
+  .vg-app .chips::-webkit-scrollbar { display: none; }
+  .vg-app .chip { flex: none; }
+}
+
+/* ---------- Vecino sin grupo ---------- */
+.vg-singrupo__lead { max-width: 56ch; margin: 14px 0 0; color: var(--vg-sobre-farol-2); font-size: 1.125rem; }
+.vg-singrupo__lista { display: grid; gap: var(--vg-esp-3); }
+.vg-singrupo--compacto { display: grid; gap: var(--vg-esp-5); }
+.vg-singrupo__aviso { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--vg-esp-5); padding: 24px; }
+.vg-singrupo__aviso h2 { margin: 0 0 6px; }
+.vg-singrupo__aviso p { max-width: 60ch; margin: 0; color: var(--vg-tinta-2); }
+.vg-singrupo__indicador { width: 72px; height: 72px; }
+.vg-pasos__lista { display: grid; gap: var(--vg-esp-5); margin: 0; padding: 0; list-style: none; }
+.vg-pasos__lista li { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: start; gap: var(--vg-esp-4); }
+.vg-pasos__lista .vg-indicador { width: 64px; height: 64px; }
+.vg-pasos__lista h3 { margin: 0; font-size: 1.1875rem; font-weight: 800; }
+.vg-pasos__lista p { margin: 4px 0 0; color: var(--vg-tinta-2); }
+.vg-mini-pasos { display: grid; gap: var(--vg-esp-2); margin: 0 0 var(--vg-esp-4); padding-left: 1.3rem; }
+.vg-mini-pasos li::marker { color: var(--vg-enlace); font-family: var(--vg-fuente-titulos); font-weight: 900; }
+.vg-crear-grupo .vg-btn { width: 100%; }
+@media (min-width: 768px) {
+  .vg-pasos__lista { grid-template-columns: repeat(3, 1fr); }
+  .vg-pasos__lista li { grid-template-columns: 1fr; }
+}
+@media (max-width: 479px) {
+  .vg-singrupo__aviso { grid-template-columns: 1fr; }
+}
+
+/* ---------- Regla de imágenes (toda la vista del vecino) ----------
+   Todo lo que es imagen va en un bloque de ESQUINAS RECTAS: indicadores, íconos en bloque, pines,
+   fotos, mapas, avatares y el logo. El redondeo queda para lo que se toca o agrupa (tarjetas,
+   paneles, botones y chips). Los puntos de estado siguen siendo círculos: son marcas, no imágenes. */
+.vg-app .vg-marca__simbolo, .vg-app .vg-avatar, .vg-app .vg-tile, .vg-app .vg-invitacion__icono, .vg-app .vg-indicador,
+.vg-app .empty__icon, .vg-app .ayuda-ok__icon, .vg-app .opcion-grande__icono, .vg-app .miembro__avatar,
+.vg-app .perfil-head .avatar, .vg-app .panel-incidente__icono, .vg-app .sos-banner__icono, .vg-app .vg-sos__icono,
+.vg-app .campana__icono, .vg-app .vg-fila__foto, .vg-app .foto-contenida img, .vg-app .foto-previa,
+.vg-app .map-frame, .vg-app .leaflet-container { border-radius: 0; }
+.vg-app .panel-incidente__icono { border: 0; }
+.vg-app .sos-banner__icono { color: var(--vg-emergencia); }
+.vg-app .sos-banner__icono::after { border-radius: 0; }
+.vg-app .campana__icono { display: grid; place-items: center; width: 32px; height: 32px; background: var(--vg-superficie-2); color: var(--vg-enlace); }
+.vg-app .campana__icono--sos { background: var(--vg-emergencia-bloque); color: #fff; }
+.vg-girar-abajo { transform: rotate(90deg); }
+.vg-app .tema-toggle__fondo span, .vg-app .tema-toggle__perilla { display: grid; place-items: center; }
+.vg-app .tema-toggle__perilla { color: var(--vg-farol); }
+.vg-app .tema-toggle__perilla { background: var(--vg-senda); color: var(--vg-sobre-senda); }
+.vg-app .tema-toggle__fondo { color: var(--vg-sobre-farol-2); }
+
+/* Funciones todavía no disponibles: el botón no se apaga del todo, para que la etiqueta se lea */
+.vg-app .etiqueta-proximamente { background: var(--vg-senda-fondo); color: var(--vg-senda-texto); font-family: var(--vg-fuente-texto); }
+.vg-app .btn:disabled:has(.etiqueta-proximamente) { opacity: 1; color: var(--vg-tinta-2); }
