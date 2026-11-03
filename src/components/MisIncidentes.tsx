@@ -21,7 +21,7 @@ export default function MisIncidentes() {
   const [alcance, setAlcance] = useState<Alcance>('mios')
   const alcanceReal: Alcance = esOwner ? alcance : 'mios'
   const { datos, cargando, error, recargar } = useConsulta(
-    () => (alcanceReal === 'mios' ? api.incidencias.listarMias() : api.incidencias.listar(grupoId)),
+    () => (alcanceReal === 'mios' ? api.incidencias.listarMias(grupoId) : api.incidencias.listar(grupoId)),
     [alcanceReal, grupoId],
   )
 

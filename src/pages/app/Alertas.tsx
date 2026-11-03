@@ -36,11 +36,11 @@ export default function Alertas() {
   const [cerrando, setCerrando] = useState<Aviso | null>(null)
 
   const consultaIncidentes = useConsulta(
-    () => (alcance === 'grupo' ? api.incidencias.listar(grupoId) : api.incidencias.listarMias()),
+    () => (alcance === 'grupo' ? api.incidencias.listar(grupoId) : api.incidencias.listarMias(grupoId)),
     [alcance, grupoId],
   )
   const consultaAvisos = useConsulta(
-    () => (alcance === 'grupo' ? api.avisos.listar(grupoId) : api.avisos.listarMios()),
+    () => (alcance === 'grupo' ? api.avisos.listar(grupoId) : api.avisos.listarMios(grupoId)),
     [alcance, grupoId],
   )
 

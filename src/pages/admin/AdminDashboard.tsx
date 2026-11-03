@@ -9,6 +9,7 @@ import Icono, { type NombreIcono } from '../../components/vecino/Icono'
 import Indicador from '../../components/vecino/Indicador'
 import NumeroAnimado from '../../components/vecino/NumeroAnimado'
 import { familiaDeCategoria, iconoDeCategoria } from '../../utils/familias'
+import { capitalizarInicial } from '../../utils/formato'
 import { ESTADOS } from '../../data/mock'
 import type { EstadoIncidencia } from '../../types'
 
@@ -96,7 +97,7 @@ export default function AdminDashboard() {
               <ul className="barras">
                 {e.porCategoria.map((c) => (
                   <Barra key={c.categoriaId || 'sin'} valor={c.cantidad} color={`var(--vg-${familiaDeCategoria(c.nombre)}-bloque)`}
-                    etiqueta={<><Indicador familia={familiaDeCategoria(c.nombre)} icono={iconoDeCategoria(c.nombre)} tamano={14} className="vg-indicador--mini" />{c.nombre}</>}
+                    etiqueta={<><Indicador familia={familiaDeCategoria(c.nombre)} icono={iconoDeCategoria(c.nombre)} tamano={14} className="vg-indicador--mini" />{capitalizarInicial(c.nombre)}</>}
                     maximo={Math.max(1, ...e.porCategoria.map((x) => x.cantidad))} />
                 ))}
               </ul>

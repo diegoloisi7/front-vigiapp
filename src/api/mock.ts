@@ -213,7 +213,11 @@ export const apiMock: Api = {
   },
   incidencias: {
     listar: async (grupoId) => { await esperar(); expirarVencidos(); return deGrupo(incidencias, grupoId).map(vista) },
-    listarMias: async () => { await esperar(); expirarVencidos(); return incidencias.filter((i) => i.autorId === YO).map(vista) },
+    listarMias: async (grupoId) => {
+      await esperar()
+      expirarVencidos()
+      return incidencias.filter((i) => i.autorId === YO && (grupoId === undefined || i.grupoId === grupoId)).map(vista)
+    },
     obtener: async (id) => {
       await esperar()
       expirarVencidos()
@@ -325,7 +329,11 @@ export const apiMock: Api = {
   },
   avisos: {
     listar: async (grupoId) => { await esperar(); expirarAvisos(); return deGrupo(avisos, grupoId).map(copia) },
-    listarMios: async () => { await esperar(); expirarAvisos(); return avisos.filter((a) => a.autorId === YO).map(copia) },
+    listarMios: async (grupoId) => {
+      await esperar()
+      expirarAvisos()
+      return avisos.filter((a) => a.autorId === YO && (grupoId === undefined || a.grupoId === grupoId)).map(copia)
+    },
     crear: async (datos) => {
       await esperar(400)
       if (datos.grupoId !== undefined && !grupos.some((g) => g.id === datos.grupoId && miRol(g))) {

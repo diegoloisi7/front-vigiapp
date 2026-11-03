@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { api } from '../api'
 import type { Categoria } from '../types'
+import { capitalizarInicial } from '../utils/formato'
 
 interface CategoriasValor {
   categorias: Categoria[]
@@ -16,7 +17,11 @@ export function CategoriasProvider({ children }: { children: ReactNode }) {
 
   const recargar = useCallback(async () => {
     try {
-      setCategorias(await api.categorias.listar())
+      const categorias = await api.categorias.listar()
+      setCategorias(categorias.map((categoria) => ({
+        ...categoria,
+        nombre: capitalizarInicial(categoria.nombre),
+      })))
     } catch {
       /* sin categorías la app sigue funcionando, solo sin íconos */
     }
