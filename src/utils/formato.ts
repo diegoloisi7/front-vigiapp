@@ -19,6 +19,13 @@ export function normalizar(texto: string): string {
   return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
+// Presenta los nombres de categorías con mayúscula inicial sin alterar su valor interno.
+export function capitalizarInicial(texto: string): string {
+  const recortado = texto.trim()
+  if (!recortado) return texto
+  return recortado.charAt(0).toLocaleUpperCase('es-AR') + recortado.slice(1)
+}
+
 export const textoVecinos = (n: number): string => (n === 1 ? '1 vecino lo vio' : `${n} vecinos lo vieron`)
 export const textoConfirmaciones = (n: number): string => (n === 1 ? '1 vecino lo confirmó' : `${n} vecinos lo confirmaron`)
 export const textoDistancia = (m: number): string => (m < 1000 ? `a ${m} m` : `a ${(m / 1000).toFixed(1)} km`)

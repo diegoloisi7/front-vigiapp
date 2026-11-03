@@ -25,7 +25,7 @@ export const apiReal: Api = {
   },
   incidencias: {
     listar: (grupoId) => pedirIncidencias(`/incidencias${filtroGrupo(grupoId)}`),
-    listarMias: () => pedirIncidencias('/incidencias/mias'),
+    listarMias: (grupoId) => pedirIncidencias(`/incidencias/mias${filtroGrupo(grupoId)}`),
     obtener: async (id) => {
       try {
         return await pedirIncidencia(`/incidencias/${id}`)
@@ -53,7 +53,7 @@ export const apiReal: Api = {
   },
   avisos: {
     listar: (grupoId) => pedir<Aviso[]>(`/avisos${filtroGrupo(grupoId)}`),
-    listarMios: () => pedir<Aviso[]>('/avisos/mios'),
+    listarMios: (grupoId) => pedir<Aviso[]>(`/avisos/mios${filtroGrupo(grupoId)}`),
     crear: (datos) => pedir<Aviso>('/avisos', { metodo: 'POST', cuerpo: datos }),
     actualizar: (id, cambios) => pedir<Aviso>(`/avisos/${id}`, { metodo: 'PATCH', cuerpo: cambios }),
     cerrar: (id) => pedir<Aviso>(`/avisos/${id}/cierre`, { metodo: 'POST' }),

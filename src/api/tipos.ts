@@ -91,7 +91,7 @@ export interface Api {
   }
   incidencias: {
     listar(grupoId?: number): Promise<Incidencia[]>
-    listarMias(): Promise<Incidencia[]>
+    listarMias(grupoId?: number): Promise<Incidencia[]>
     obtener(id: number): Promise<Incidencia | null> // null si no existe
     confirmar(id: number): Promise<Incidencia> // "Yo también lo vi"
     desconfirmar(id: number): Promise<Incidencia>
@@ -104,7 +104,7 @@ export interface Api {
   // Las alertas son los reportes urgentes (tipo URGENTE): se obtienen con incidencias.listar / listarMias
   avisos: {
     listar(grupoId?: number): Promise<Aviso[]>
-    listarMios(): Promise<Aviso[]>
+    listarMios(grupoId?: number): Promise<Aviso[]>
     crear(datos: NuevoAviso): Promise<Aviso>
     actualizar(id: number, cambios: CambiosAviso): Promise<Aviso> // creador u owner del grupo
     cerrar(id: number): Promise<Aviso> // creador u owner del grupo
