@@ -406,3 +406,6 @@
   .valores { grid-template-columns: repeat(3, 1fr); }
 }
 
+
+/* Fotos del equipo: en círculo (las tarjetas sin foto conservan el cuadrado con iniciales) */
+.persona img.persona__foto { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 4px var(--color-surface), 0 0 0 6px var(--color-primary-soft); }
