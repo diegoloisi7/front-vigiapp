@@ -116,7 +116,14 @@ function BarrioEquipo() {
               <g className="barrio-equipo__pin" style={{ '--i': i } as CSSProperties}>
                 <ellipse className="barrio-equipo__sombra" cx={0} cy={4} rx={12} ry={4} />
                 <path d="M0 0 C -6 -14 -26 -26 -26 -48 A 26 26 0 1 1 26 -48 C 26 -26 6 -14 0 0 Z" fill={TONOS[i % TONOS.length]} />
-                <text className="barrio-equipo__iniciales" x={0} y={-42}>{iniciales(m.nombre)}</text>
+                {m.foto ? (
+                  <>
+                    <clipPath id={`pin-foto-${m.id}`}><circle cx={0} cy={-48} r={21} /></clipPath>
+                    <image href={m.foto} x={-21} y={-69} width={42} height={42} preserveAspectRatio="xMidYMid slice" clipPath={`url(#pin-foto-${m.id})`} />
+                  </>
+                ) : (
+                  <text className="barrio-equipo__iniciales" x={0} y={-42}>{iniciales(m.nombre)}</text>
+                )}
                 <rect className="barrio-equipo__etiqueta" x={-ancho / 2} y={12} width={ancho} height={26} rx={13} />
                 <text className="barrio-equipo__nombre" x={0} y={30}>{nombre}</text>
               </g>
