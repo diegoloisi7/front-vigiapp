@@ -34,10 +34,100 @@ const NUMEROS = [
   { valor: '3 s', texto: 'para pedir ayuda' },
 ]
 
-// Posiciones de los integrantes sobre el mapa ilustrado del encabezado (en %)
-const PINES = [{ x: 34, y: 38 }, { x: 64, y: 30 }, { x: 42, y: 68 }, { x: 70, y: 62 }]
 
 const iniciales = (nombre: string) => nombre.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase()
+
+// Plano real alrededor de la UTN Facultad Regional Haedo, redibujado solo con líneas (sin fondo ni puntos
+// de interés): calles con su nombre, la plaza, la manzana de la facultad al centro y un círculo alrededor.
+// Cada integrante es un pin dentro del círculo, con sus iniciales y su nombre.
+// Las calles casi horizontales bajan 0,19 px por cada px hacia la derecha; las verticales se corren 0,11–0,19 por px hacia abajo.
+const horizontal = (base: number) => ({ x1: -40, y1: base + 0.19 * 40, x2: 1520, y2: base - 0.19 * 1520 })
+const vertical = (arriba: number, inclinacion: number) => ({ x1: arriba - inclinacion * 40, y1: -40, x2: arriba + inclinacion * 1100, y2: 1100 })
+const CALLES = [
+  { nombre: 'Vuelta de Obligado', ...horizontal(283), etiqueta: { x: 900, giro: -10.8 } },
+  { nombre: 'Los Andes', ...horizontal(517), etiqueta: { x: 1185, giro: -10.8 } },
+  { nombre: 'Directorio', ...horizontal(705), etiqueta: { x: 290, giro: -10.8 } },
+  { nombre: 'Defensa', x1: 400, y1: 930, x2: 1520, y2: 1005 - 0.19 * 1520, etiqueta: { x: 980, giro: -10.8 } },
+  { nombre: '', x1: 240, y1: 790, x2: 1520, y2: 548, etiqueta: null },
+  { nombre: 'París', ...vertical(745, 0.109), etiqueta: { y: 250, giro: 83.8 } },
+  { nombre: 'Roberto Ruiz', x1: 531, y1: -40, x2: 655, y2: 595, etiqueta: { y: 230, giro: 79 } },
+  { nombre: 'Conesa', x1: 293, y1: -40, x2: 410, y2: 640, etiqueta: { y: 250, giro: 80.2 } },
+  { nombre: 'Las Flores', ...vertical(1050, 0.156), etiqueta: { y: 700, giro: 81.1 } },
+  { nombre: 'Primera Junta', x1: 1150, y1: 0, x2: 1500, y2: 458, etiqueta: null },
+  { nombre: 'Int. Cayo Eliseo Goria', x1: -40, y1: 757, x2: 640, y2: 1057, etiqueta: null },
+]
+// Punto de una calle a cierta x (horizontales) o a cierta y (verticales)
+const enX = (c: (typeof CALLES)[number], x: number) => c.y1 + ((x - c.x1) * (c.y2 - c.y1)) / (c.x2 - c.x1)
+const enY = (c: (typeof CALLES)[number], y: number) => c.x1 + ((y - c.y1) * (c.x2 - c.x1)) / (c.y2 - c.y1)
+// Manzanas a partir de los cruces reales de sus cuatro calles, achicadas para que queden dentro de la cuadra
+type Calle = (typeof CALLES)[number]
+const calle = (nombre: string) => CALLES.find((c) => c.nombre === nombre) as Calle
+const cruce = (a: Calle, b: Calle) => {
+  const d = (a.x1 - a.x2) * (b.y1 - b.y2) - (a.y1 - a.y2) * (b.x1 - b.x2)
+  const t = ((a.x1 - b.x1) * (b.y1 - b.y2) - (a.y1 - b.y1) * (b.x1 - b.x2)) / d
+  return { x: a.x1 + t * (a.x2 - a.x1), y: a.y1 + t * (a.y2 - a.y1) }
+}
+function manzana(arriba: string, abajo: string, izquierda: string, derecha: string, margen = 22) {
+  const [ar, ab, iz, de] = [arriba, abajo, izquierda, derecha].map(calle)
+  const esquinas = [cruce(ar, iz), cruce(ar, de), cruce(ab, de), cruce(ab, iz)]
+  const cx = esquinas.reduce((s, p) => s + p.x, 0) / 4, cy = esquinas.reduce((s, p) => s + p.y, 0) / 4
+  const puntos = esquinas.map(({ x, y }) => { const dx = cx - x, dy = cy - y, l = Math.hypot(dx, dy); return `${x + (dx / l) * margen},${y + (dy / l) * margen}` })
+  return { puntos: puntos.join(' '), centro: { x: cx, y: cy } }
+}
+const MANZANA_UTN = manzana('Los Andes', 'Directorio', 'Roberto Ruiz', 'París')
+const PLAZA = manzana('Los Andes', 'Directorio', 'Conesa', 'Roberto Ruiz')
+const UTN = { x: MANZANA_UTN.centro.x, y: MANZANA_UTN.centro.y - 20 }
+const POSICIONES = [{ x: 500, y: 330 }, { x: 990, y: 300 }, { x: 545, y: 735 }, { x: 1000, y: 650 }]
+const TONOS = ['#1F4E79', '#2F7DC1', '#163A5A', '#3D5A80']
+
+function BarrioEquipo() {
+  return (
+    <figure className="barrio-equipo reveal" style={demora(1)} aria-hidden="true">
+      <svg viewBox="180 120 1100 780" className="barrio-equipo__plano">
+        {/* Calles: borde gris y centro blanco (se ven como corredores, sin fondo) */}
+        {CALLES.map((c, i) => <path key={`b${i}`} className="barrio-equipo__calle-borde" d={`M ${c.x1} ${c.y1} L ${c.x2} ${c.y2}`} />)}
+        {CALLES.map((c, i) => <path key={`c${i}`} className="barrio-equipo__calle" d={`M ${c.x1} ${c.y1} L ${c.x2} ${c.y2}`} />)}
+        <polygon className="barrio-equipo__plaza" points={PLAZA.puntos} />
+        {[[-50, -25], [15, -45], [-25, 30], [45, 15]].map(([dx, dy]) => (
+          <circle key={`${dx}`} className="barrio-equipo__arbol" cx={PLAZA.centro.x + dx} cy={PLAZA.centro.y + dy} r={14} />
+        ))}
+        <polygon className="barrio-equipo__manzana-utn" points={MANZANA_UTN.puntos} />
+        {CALLES.filter((c) => c.etiqueta).map((c) => {
+          const e = c.etiqueta as { x?: number; y?: number; giro: number }
+          const x = e.x ?? enY(c, e.y as number)
+          const y = e.y ?? enX(c, e.x as number)
+          return <text key={c.nombre} className="barrio-equipo__nombre-calle" transform={`translate(${x} ${y}) rotate(${e.giro})`} y={-18}>{c.nombre}</text>
+        })}
+        {/* Zona del grupo alrededor de la facultad */}
+        <circle className="barrio-equipo__zona" cx={UTN.x} cy={UTN.y} r={330} />
+        {/* La facultad */}
+        <g transform={`translate(${UTN.x} ${UTN.y})`} className="barrio-equipo__utn">
+          <rect x={-46} y={-46} width={92} height={70} rx={14} />
+          <text className="barrio-equipo__utn-sigla" x={0} y={-8}>UTN</text>
+          <rect className="barrio-equipo__etiqueta" x={-190} y={36} width={380} height={52} rx={26} />
+          <text className="barrio-equipo__nombre barrio-equipo__nombre--utn" x={0} y={70}>UTN Facultad Regional Haedo</text>
+        </g>
+        {EQUIPO.map((m, i) => {
+          const { x, y } = POSICIONES[i % POSICIONES.length]
+          const nombre = m.nombre.split(/\s+/)[0]
+          const ancho = 22 + nombre.length * 8.4
+          return (
+            <g key={m.id} transform={`translate(${x} ${y}) scale(1.9)`}>
+              <g className="barrio-equipo__pin" style={{ '--i': i } as CSSProperties}>
+                <ellipse className="barrio-equipo__sombra" cx={0} cy={4} rx={12} ry={4} />
+                <path d="M0 0 C -6 -14 -26 -26 -26 -48 A 26 26 0 1 1 26 -48 C 26 -26 6 -14 0 0 Z" fill={TONOS[i % TONOS.length]} />
+                <text className="barrio-equipo__iniciales" x={0} y={-42}>{iniciales(m.nombre)}</text>
+                <rect className="barrio-equipo__etiqueta" x={-ancho / 2} y={12} width={ancho} height={26} rx={13} />
+                <text className="barrio-equipo__nombre" x={0} y={30}>{nombre}</text>
+              </g>
+            </g>
+          )
+        })}
+      </svg>
+      <figcaption className="barrio-equipo__leyenda">{EQUIPO.length} integrantes alrededor de la UTN Haedo</figcaption>
+    </figure>
+  )
+}
 
 function Foto({ miembro, indice, clase }: { miembro: MiembroEquipo; indice: number; clase: string }) {
   // La foto es decorativa: el nombre ya está escrito al lado
@@ -66,7 +156,8 @@ export default function Nosotros() {
             <p className="etiqueta-seccion">Nosotros</p>
             <h1 id="nosotros-titulo">Somos VigiApp <span aria-hidden="true">👋</span></h1>
             <p className="section-lead">
-              Somos un equipo de cuatro estudiantes de la Tecnicatura Universitaria en Programación de la UTN.
+              Somos un equipo de cuatro estudiantes de la Tecnicatura Universitaria en Programación de la UTN Facultad
+              Regional Haedo, y VigiApp es nuestro proyecto final de la carrera.
               Creamos VigiApp para que los vecinos dejen de perder alertas importantes entre cientos de mensajes
               y puedan cuidarse entre todos, con información ordenada y en tiempo real.
             </p>
@@ -75,14 +166,7 @@ export default function Nosotros() {
               <a href="#historia" className="btn btn-outline">Nuestra historia</a>
             </div>
           </div>
-          <div className="equipo-mapa reveal" style={demora(1)} aria-hidden="true">
-            {EQUIPO.map((m, i) => (
-              <span key={m.id} className="equipo-mapa__pin" style={{ left: `${PINES[i % PINES.length].x}%`, top: `${PINES[i % PINES.length].y}%` }}>
-                <Foto miembro={m} indice={i} clase="equipo-mapa__foto" />
-              </span>
-            ))}
-            <span className="equipo-mapa__leyenda">🏘️ 4 integrantes, un mismo barrio</span>
-          </div>
+          <BarrioEquipo />
         </div>
       </section>
 
@@ -142,7 +226,7 @@ export default function Nosotros() {
           <div className="historia__texto reveal">
             <h2 id="historia-titulo">Nuestra historia</h2>
             <p>
-              Todo empezó en la materia Programación 4 con una pregunta simple: ¿por qué una alerta importante
+              Todo empezó como el proyecto final de nuestra carrera, con una pregunta simple: ¿por qué una alerta importante
               del barrio se pierde entre cientos de mensajes del grupo de WhatsApp?
             </p>
             <p>

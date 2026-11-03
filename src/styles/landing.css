@@ -23,6 +23,26 @@
 
 /* ---------- Hero ---------- */
 .hero { position: relative; overflow: hidden; padding-block: var(--space-6) var(--space-7); text-align: center; }
+/* Foto de la ciudad como fondo del hero: con presencia, apenas suavizada */
+.hero::before {
+  content: ""; position: absolute; inset: -12px; z-index: 0; pointer-events: none;
+  background: url('../assets/landing/barrio-ciudad.webp') center 30% / cover no-repeat;
+  filter: blur(1px) saturate(0.95);
+  opacity: 0.95;
+}
+/* Velo del color de fondo: denso solo detrás del texto, liviano en los bordes (se ve la ciudad) y fundido abajo */
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 46% 44% at 50% 30%,
+      color-mix(in srgb, var(--color-bg) 86%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 70%, transparent) 55%,
+      color-mix(in srgb, var(--color-bg) 0%, transparent) 100%),
+    linear-gradient(to bottom,
+      color-mix(in srgb, var(--color-bg) 30%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 18%, transparent) 55%,
+      var(--color-bg) 100%);
+}
 .hero__fondo { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .hero__fondo span { position: absolute; border-radius: 50%; filter: blur(48px); opacity: 0.7; animation: deriva 14s ease-in-out infinite alternate; }
 .hero__fondo span:nth-child(1) { top: -80px; left: -60px; width: 280px; height: 280px; background: var(--color-primary-soft); }
@@ -292,26 +312,29 @@
   background: var(--color-primary-soft); color: var(--color-primary); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600;
 }
 
-/* Mapa ilustrado con el equipo como pines dentro de la zona */
-.equipo-mapa {
-  position: relative; aspect-ratio: 4 / 3; overflow: hidden;
-  background-color: var(--color-bg-soft);
-  background-image: linear-gradient(var(--color-border) 2px, transparent 2px), linear-gradient(90deg, var(--color-border) 2px, transparent 2px);
-  background-size: 56px 56px; border: 1px solid var(--color-border); border-radius: 24px; box-shadow: var(--shadow-md);
+/* Plano real alrededor de la UTN, solo líneas y sin fondo */
+.barrio-equipo { margin: 0; }
+.barrio-equipo__plano { display: block; width: 100%; height: auto; overflow: hidden; }
+.barrio-equipo__calle-borde { fill: none; stroke: #C9D2DD; stroke-width: 30; stroke-linecap: round; }
+.barrio-equipo__calle { fill: none; stroke: var(--color-bg); stroke-width: 24; stroke-linecap: round; }
+.barrio-equipo__nombre-calle { fill: #7C8A99; font-size: 24px; font-weight: 600; text-anchor: middle; letter-spacing: 0.02em; }
+.barrio-equipo__plaza { fill: none; stroke: var(--color-success); stroke-width: 3; stroke-dasharray: 8 7; opacity: 0.75; }
+.barrio-equipo__arbol { fill: none; stroke: var(--color-success); stroke-width: 3.5; opacity: 0.75; }
+.barrio-equipo__manzana-utn { fill: var(--color-primary-soft); stroke: var(--color-primary); stroke-width: 2.5; opacity: 0.9; }
+.barrio-equipo__zona { fill: none; stroke: var(--color-primary); stroke-width: 4; stroke-dasharray: 14 12; opacity: 0.7; }
+.barrio-equipo__utn > rect:first-child { fill: #C62828; stroke: #FFFFFF; stroke-width: 5; }
+.barrio-equipo__utn-sigla { fill: #FFFFFF; font-size: 30px; font-weight: 900; text-anchor: middle; dominant-baseline: middle; letter-spacing: 0.04em; }
+.barrio-equipo__nombre.barrio-equipo__nombre--utn { font-size: 28px; font-weight: 800; }
+.barrio-equipo__sombra { fill: rgb(14 27 46 / 0.18); }
+.barrio-equipo__pin path { stroke: #FFFFFF; stroke-width: 3; }
+.barrio-equipo__iniciales { fill: #FFFFFF; font-size: 17px; font-weight: 800; text-anchor: middle; dominant-baseline: middle; }
+.barrio-equipo__etiqueta { fill: var(--color-surface); stroke: var(--color-border); stroke-width: 1; }
+.barrio-equipo__nombre { fill: var(--color-text); font-size: 13.5px; font-weight: 700; text-anchor: middle; }
+.barrio-equipo__leyenda { margin-top: var(--space-2); color: var(--color-text-muted); font-size: var(--text-sm); font-weight: 600; text-align: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .barrio-equipo__pin { transform-box: fill-box; animation: barrio-caer 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 140ms + 350ms); }
 }
-.equipo-mapa::before {
-  content: ""; position: absolute; inset: 14% 18%; border: 3px dashed var(--color-primary); border-radius: 50%;
-  background: var(--color-primary-soft); opacity: 0.6;
-}
-.equipo-mapa__pin { position: absolute; transform: translate(-50%, -50%); }
-.equipo-mapa__foto {
-  display: grid; place-items: center; width: 64px; height: 64px; object-fit: cover;
-  border: 4px solid var(--color-surface); border-radius: 50%; box-shadow: var(--shadow-md); color: #fff; font-weight: 700;
-}
-.equipo-mapa__leyenda {
-  position: absolute; left: 16px; bottom: 16px; padding: 6px 14px;
-  background: var(--color-surface); color: var(--color-text); border-radius: var(--radius-full); box-shadow: var(--shadow-sm); font-size: var(--text-sm); font-weight: 600;
-}
+@keyframes barrio-caer { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: none; } }
 
 /* Tonos fijos (texto blanco legible en tema claro y oscuro) para las iniciales */
 .avatar-tono--0 { background: #1F4E79; }
@@ -382,3 +405,4 @@
   .equipo-grid { grid-template-columns: repeat(4, 1fr); }
   .valores { grid-template-columns: repeat(3, 1fr); }
 }
+

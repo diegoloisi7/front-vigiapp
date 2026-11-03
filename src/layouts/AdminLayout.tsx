@@ -3,6 +3,7 @@ import RoleSwitcher from '../components/RoleSwitcher'
 import ToggleTema from '../components/ToggleTema'
 import Icono, { type NombreIcono } from '../components/vecino/Icono'
 import { ModoVecinoContext } from '../components/vecino/modoVecino'
+import MarcaVigiApp from '../components/marca/MarcaVigiApp'
 import { useAuth } from '../context/AuthContext'
 import { NAV_ADMIN } from '../data/navItems'
 
@@ -41,8 +42,8 @@ export default function AdminLayout() {
         <header className="vg-nav">
           <div className="vg-nav__inner">
             <Link to="/admin" className="vg-marca" aria-label="VigiApp, panel de administración">
-              <span className="vg-marca__simbolo"><Icono nombre="pin" tamano={20} /></span>
-              <span className="vg-marca__nombre">VigiApp</span>
+              <MarcaVigiApp variante="horizontal" tono="oscuro" decorativo className="vg-marca__completa" />
+              <MarcaVigiApp variante="simbolo" tono="oscuro" decorativo className="vg-marca__corta" />
               <span className="vg-marca__admin">Admin</span>
             </Link>
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import Logo from '../components/Logo'
+import MarcaVigiApp from '../components/marca/MarcaVigiApp'
 import RoleSwitcher from '../components/RoleSwitcher'
-import ToggleTema from '../components/ToggleTema'
+import { useTema } from '../context/TemaContext'
 
 // Scroll suave a una sección (respeta "reducir movimiento")
 function irASeccion(hash: string) {
@@ -24,6 +24,14 @@ export default function PublicLayout() {
     else window.scrollTo(0, 0)
   }, [pathname, hash])
 
+  // Las páginas públicas se ven siempre en modo claro (no tienen interruptor de tema).
+  // Al entrar a la app se restaura la preferencia del usuario.
+  const { forzarTema } = useTema()
+  useEffect(() => {
+    forzarTema('claro')
+    return () => forzarTema(null)
+  }, [forzarTema])
+
   // Con el menú abierto, Escape lo cierra
   useEffect(() => {
     if (!menuAbierto) return
@@ -40,8 +48,7 @@ export default function PublicLayout() {
       <li><NavLink to="/" end className={claseLink}>Inicio</NavLink></li>
       <li><NavLink to="/nosotros" className={claseLink}>Nosotros</NavLink></li>
       <li><NavLink to="/contacto" className={claseLink}>Contacto</NavLink></li>
-      <li><NavLink to="/login" className={claseLink}>Ingresar</NavLink></li>
-      <li><Link to="/registro" className="btn btn-primary">Registrarse</Link></li>
+      <li><Link to="/login" className="btn btn-primary">Ingresar</Link></li>
     </ul>
   )
 
@@ -51,15 +58,13 @@ export default function PublicLayout() {
 
       <header className="public-header">
         <div className="container public-header__bar">
-          <Link to="/" className="brand">
-            <Logo />
-            <span>VigiApp</span>
+          <Link to="/" className="brand" aria-label="VigiApp, ir al inicio">
+            <MarcaVigiApp variante="horizontal" tono="claro" decorativo className="marca-header" />
           </Link>
 
           <nav className="public-nav" aria-label="Navegación principal">{enlaces}</nav>
 
           <div className="public-header__tools">
-            <ToggleTema />
             <button
               type="button"
               className="menu-toggle"
@@ -89,17 +94,39 @@ export default function PublicLayout() {
 
       <footer className="public-footer">
         <div className="container public-footer__inner">
-          <div>
-            <Link to="/" className="brand"><Logo /><span>VigiApp</span></Link>
-            <p className="public-footer__note">Proyecto universitario — Programación 4</p>
+          <div className="public-footer__marca">
+            <Link to="/" className="brand" aria-label="VigiApp, ir al inicio">
+              <MarcaVigiApp variante="vertical" tono="oscuro" decorativo className="marca-footer" />
+            </Link>
+            <p className="public-footer__texto">
+              Reportá incidentes, mirá qué pasa cerca tuyo en el mapa y seguí cada problema hasta que se resuelve.
+            </p>
+            <Link to="/login" className="btn btn-light">Ingresar</Link>
           </div>
-          <ul className="public-footer__links">
-            <li><Link to="/">Inicio</Link></li>
-            <li><Link to="/nosotros">Nosotros</Link></li>
-            <li><Link to="/contacto">Contacto</Link></li>
-            <li><Link to="/login">Ingresar</Link></li>
-            <li><Link to="/registro">Registrarse</Link></li>
-          </ul>
+
+          <nav className="public-footer__col" aria-label="Secciones">
+            <h2 className="public-footer__titulo">Explorar</h2>
+            <ul className="public-footer__links">
+              <li><Link to="/#como-funciona">Cómo funciona</Link></li>
+              <li><Link to="/#funcionalidades">Funcionalidades</Link></li>
+              <li><Link to="/contacto">Dónde estamos</Link></li>
+              <li><Link to="/nosotros">Nosotros</Link></li>
+            </ul>
+          </nav>
+
+          <nav className="public-footer__col" aria-label="Tu cuenta y ayuda">
+            <h2 className="public-footer__titulo">Tu cuenta</h2>
+            <ul className="public-footer__links">
+              <li><Link to="/registro">Crear cuenta</Link></li>
+              <li><Link to="/contacto">Contacto</Link></li>
+            </ul>
+            <p className="public-footer__emergencia">Si es una emergencia, llamá al <a href="tel:911">911</a>.</p>
+          </nav>
+        </div>
+
+        <div className="container public-footer__base">
+          <p>© {new Date().getFullYear()} VigiApp</p>
+          <p>Proyecto final de la Tecnicatura Universitaria en Programación · UTN Facultad Regional Haedo</p>
         </div>
       </footer>
 

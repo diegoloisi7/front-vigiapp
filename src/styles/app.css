@@ -665,6 +665,17 @@
 .contacto__aviso { margin: 0; padding: var(--space-3) var(--space-4); background: var(--color-emergency-bg); color: var(--color-emergency-text); border-radius: var(--radius-md); font-weight: 600; }
 .contacto__aviso a { color: inherit; }
 .contacto__tarjeta { max-width: none; }
+/* Dónde estamos: tarjeta chica debajo del título. Mapa recortado a la izquierda, datos a la derecha. */
+.ubicacion {
+  display: grid; grid-template-columns: minmax(120px, 42%) minmax(0, 1fr); align-items: stretch;
+  height: 150px; margin-top: var(--space-4); overflow: hidden;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+}
+.ubicacion__mapa { display: block; width: 100%; height: 100%; border: 0; background: var(--color-bg-soft); }
+.ubicacion__texto { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; padding: var(--space-3) var(--space-4); }
+.ubicacion__texto h2 { margin: 0; color: var(--color-primary); font-size: var(--text-lg); line-height: 1.2; }
+.ubicacion__texto p { margin: 0; color: var(--color-text); font-weight: 600; }
+.ubicacion__texto a { display: inline-flex; align-items: center; align-self: flex-start; min-height: var(--tap-min); color: var(--color-primary); font-size: var(--text-sm); font-weight: 700; }
 .contacto__form-titulo { margin-bottom: var(--space-4); font-size: var(--text-xl); }
 .contacto__contador { margin: 0; color: var(--color-text-muted); font-size: var(--text-sm); text-align: right; }
 @media (min-width: 900px) { .contacto { grid-template-columns: 1fr 1fr; align-items: start; gap: var(--space-7); } }
@@ -686,3 +697,68 @@
 .auth-proximamente .etiqueta-proximamente { margin-left: 0; }
 .auth-proximamente p { margin: 0; }
 .auth-proximamente .btn { margin-top: var(--space-3); }
+
+/* Ingresar: el registro bien visible, sin competir con el botón principal */
+.auth-registro {
+  display: grid; gap: var(--space-2); margin-top: var(--space-5); padding: var(--space-4);
+  background: var(--color-primary-soft); border-radius: var(--radius-md); text-align: center;
+}
+.auth-registro__texto { margin: 0; color: var(--color-text); font-weight: 700; }
+.auth__tarjeta .auth-registro .btn-ancho { margin-top: 0; background: var(--color-surface); }
+
+/* Ingresar: la foto cubre todo el panel azul. Un velo azul la integra: liviano arriba (se ve el
+   celular con la app) y pleno abajo, donde van el título y los beneficios. */
+.auth--con-imagen .auth__marca {
+  --velo: var(--color-primary);
+  background-color: var(--velo);
+  background-image:
+    linear-gradient(to bottom,
+      color-mix(in srgb, var(--velo) 25%, transparent) 0%,
+      color-mix(in srgb, var(--velo) 45%, transparent) 40%,
+      color-mix(in srgb, var(--velo) 92%, transparent) 72%,
+      var(--velo) 100%),
+    var(--auth-foto);
+  background-repeat: no-repeat;
+  background-size: cover, cover;
+  background-position: center, 58% 38%;
+}
+.auth--con-imagen .auth__marca-titulo, .auth--con-imagen .auth__beneficios { text-shadow: 0 1px 14px rgb(0 0 0 / 0.25); }
+/* Modo oscuro: velo azul profundo y texto blanco (el azul claro del tema lavaba la foto) */
+:root[data-tema="oscuro"] .auth--con-imagen .auth__marca { --velo: #16314D; color: #FFFFFF; }
+@media (max-width: 899px) {
+  .auth--con-imagen .auth__marca {
+    display: flex; flex-direction: column; justify-content: flex-end; min-height: 230px;
+    padding: var(--space-5) var(--space-4) var(--space-4); color: var(--color-on-primary, #fff);
+    background-position: center, 58% 42%;
+  }
+  .auth--con-imagen .auth__marca-titulo {
+    max-width: 16ch; margin: 0; color: inherit; font-size: 1.625rem; font-weight: 800; line-height: 1.12;
+  }
+  .auth--con-imagen .auth__beneficios { display: none; }
+}
+@media (min-width: 900px) {
+  .auth--con-imagen .auth__marca { justify-content: flex-end; padding-bottom: var(--space-8); }
+}
+
+/* ---------- Logo de VigiApp (MarcaVigiApp) ----------
+   Dos tonos: "claro" para fondos claros y "oscuro" para fondos oscuros.
+   --logo-fondo es el color del fondo donde se apoya el logo: con él se recortan las calles y el círculo del pin. */
+.marca { display: block; width: auto; }
+.marca--claro {
+  --logo-tinta: #14315A; --logo-mapa: #1E4677; --logo-ondas: #1E4677; --logo-acento: #1E4677; --logo-lema: #4A5668;
+  --logo-corte: var(--logo-fondo, #FFFFFF);
+}
+.marca--oscuro {
+  --logo-tinta: #FFFFFF; --logo-mapa: #2A5A92; --logo-ondas: #FFC629; --logo-acento: #FFC629; --logo-lema: #C9D6E8;
+  --logo-corte: var(--logo-fondo, #14315A);
+}
+.marca-header { height: 40px; }
+.public-footer { --logo-fondo: #0F2238; }
+.marca-footer { width: 180px; height: auto; }
+.auth__logo-svg { height: 52px; }
+@media (max-width: 479px) { .marca-header { height: 34px; } }
+
+/* Configuración en Perfil (único lugar del modo oscuro en la app) */
+.vg-config__fila { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; }
+.vg-config__titulo { margin: 0; font-weight: 700; }
+.vg-config__ayuda { margin: 2px 0 0; color: var(--vg-tinta-2, var(--color-text-muted)); font-size: 0.875rem; }

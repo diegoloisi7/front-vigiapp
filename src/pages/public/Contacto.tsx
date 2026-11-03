@@ -69,6 +69,22 @@ export default function Contacto() {
       <div className="contacto__intro">
         <h1 id="contacto-titulo">Contacto</h1>
         <p className="section-lead">¿Tenés una duda, querés sumar a tu barrio o encontraste un problema? Escribinos.</p>
+        <section className="ubicacion" aria-labelledby="ubicacion-titulo">
+          <iframe
+            className="ubicacion__mapa"
+            title="Mapa de la UTN Facultad Regional Haedo"
+            src="https://www.google.com/maps?q=UTN+Facultad+Regional+Haedo&z=15&output=embed"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          <div className="ubicacion__texto">
+            <h2 id="ubicacion-titulo">Dónde estamos</h2>
+            <p>UTN Facultad Regional Haedo</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=UTN+Facultad+Regional+Haedo" target="_blank" rel="noreferrer">
+              Ver en Google Maps
+            </a>
+          </div>
+        </section>
         <ul className="contacto__motivos">
           <li><span aria-hidden="true">🏘️</span> Sumar a tu barrio o crear un grupo vecinal</li>
           <li><span aria-hidden="true">🔑</span> Problemas para ingresar o con tu cuenta</li>

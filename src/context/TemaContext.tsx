@@ -10,6 +10,7 @@ interface TemaValor {
   tema: Tema
   esOscuro: boolean
   alternar: () => void
+  forzarTema: (forzado: Tema | null) => void // una sección puede imponer un tema mientras está abierta (null = libera)
 }
 
 const TemaContext = createContext<TemaValor | null>(null)
@@ -24,12 +25,15 @@ function leerTema(): Tema {
 
 export function TemaProvider({ children }: { children: ReactNode }) {
   const [tema, setTema] = useState<Tema>(leerTema)
+  const [forzado, setForzado] = useState<Tema | null>(null)
+  const aplicado = forzado ?? tema
 
-  // Aplica el tema a toda la página (los colores salen de variables.css)
+  // Aplica el tema a toda la página (los colores salen de variables.css).
+  // Si una sección lo fuerza (por ejemplo, las páginas públicas en claro), manda ese; la elección del usuario no se pierde.
   useEffect(() => {
-    document.documentElement.dataset.tema = tema
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', COLOR_BARRA[tema])
-  }, [tema])
+    document.documentElement.dataset.tema = aplicado
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', COLOR_BARRA[aplicado])
+  }, [aplicado])
 
   const alternar = useCallback(() => {
     const raiz = document.documentElement
@@ -42,7 +46,7 @@ export function TemaProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const valor = useMemo(() => ({ tema, esOscuro: tema === 'oscuro', alternar }), [tema, alternar])
+  const valor = useMemo(() => ({ tema: aplicado, esOscuro: aplicado === 'oscuro', alternar, forzarTema: setForzado }), [aplicado, alternar])
   return <TemaContext.Provider value={valor}>{children}</TemaContext.Provider>
 }
 

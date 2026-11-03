@@ -6,6 +6,7 @@ import Card from '../../components/Card'
 import Campo from '../../components/Campo'
 import Modal from '../../components/Modal'
 import Icono from '../../components/vecino/Icono'
+import ToggleTema from '../../components/ToggleTema'
 import { pedir, mensajeDeError } from '../../api/cliente'
 import { USAR_MOCK } from '../../api/config'
 
@@ -97,6 +98,17 @@ export default function Perfil() {
           </Card>
         )}
       </div>
+
+      <section className="card vg-config" aria-labelledby="p-config">
+        <h3 id="p-config">Configuración</h3>
+        <div className="vg-config__fila">
+          <div>
+            <p className="vg-config__titulo">Modo oscuro</p>
+            <p className="vg-config__ayuda">Cambia los colores de la app para usarla de noche o con poca luz.</p>
+          </div>
+          <ToggleTema />
+        </div>
+      </section>
 
       <nav className="lista-acciones" aria-label="Más opciones">
         {!esAdmin && <Link to="/app/grupos"><Icono nombre="grupos" />Mis grupos<Icono nombre="flecha" className="lista-acciones__flecha" /></Link>}

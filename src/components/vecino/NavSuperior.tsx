@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useGrupos } from '../../context/GruposContext'
 import CampanaNotificaciones from '../CampanaNotificaciones'
 import SelectorGrupo from '../SelectorGrupo'
-import ToggleTema from '../ToggleTema'
+import MarcaVigiApp from '../marca/MarcaVigiApp'
 import Icono from './Icono'
 
 const SECCIONES = [
@@ -25,8 +25,8 @@ export default function NavSuperior() {
     <header className="vg-nav">
       <div className="vg-nav__inner">
         <Link to="/app" className="vg-marca" aria-label="VigiApp, ir al inicio">
-          <span className="vg-marca__simbolo"><Icono nombre="pin" tamano={20} /></span>
-          <span className="vg-marca__nombre">VigiApp</span>
+          <MarcaVigiApp variante="horizontal" tono="oscuro" decorativo className="vg-marca__completa" />
+          <MarcaVigiApp variante="simbolo" tono="oscuro" decorativo className="vg-marca__corta" />
         </Link>
 
         <nav className="vg-nav__secciones" aria-label="Secciones">
@@ -44,7 +44,6 @@ export default function NavSuperior() {
 
         <div className="vg-nav__herramientas">
           <SelectorGrupo />
-          <ToggleTema />
           <CampanaNotificaciones />
           {grupoActivo && <Link to="/app/reportar" className="vg-btn vg-btn--senda vg-nav__reportar"><Icono nombre="mas" />Reportar</Link>}
           <Link to="/app/perfil" className="vg-avatar" aria-label={`Tu perfil${usuario ? `, ${usuario.nombre}` : ''}`}>{iniciales}</Link>

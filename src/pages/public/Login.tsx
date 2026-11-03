@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import Campo from '../../components/Campo'
 import CampoClave from '../../components/CampoClave'
 import PantallaAuth from '../../components/PantallaAuth'
+import fotoVecino from '../../assets/landing/vecino-celular.webp'
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 type Errores = { email?: string; password?: string }
@@ -44,8 +45,8 @@ export default function Login() {
     <PantallaAuth
       titulo="Ingresar"
       subtitulo="Entrá para ver lo que pasa en tus grupos."
+      fondo={fotoVecino}
       pie={<>
-        <p>¿Todavía no tenés cuenta? <Link to="/registro">Creá una</Link></p>
         <p>¿Olvidaste tu contraseña? <Link to="/contacto">Escribinos</Link> y te ayudamos.</p>
       </>}
     >
@@ -60,6 +61,12 @@ export default function Login() {
         {error && <p className="campo__error" role="alert">{error}</p>}
         <button className="btn btn-primary btn-ancho" type="submit" disabled={enviando}>{enviando ? 'Ingresando…' : 'Ingresar'}</button>
       </form>
+
+      {/* El registro ya no está en el header: acá tiene que verse claro */}
+      <div className="auth-registro">
+        <p className="auth-registro__texto">¿No tenés una cuenta?</p>
+        <Link to="/registro" className="btn btn-outline btn-ancho">Registrate</Link>
+      </div>
     </PantallaAuth>
   )
 }

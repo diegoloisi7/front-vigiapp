@@ -461,3 +461,13 @@
   .vg-sos__item { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
   .vg-sos__acciones { grid-column: auto; }
 }
+
+/* Logo en la barra: completo desde 640 px; en celular solo el símbolo (barra más liviana) */
+.vg-nav { --logo-fondo: var(--vg-farol); }
+.vg-marca__completa { height: 36px; }
+.vg-marca__corta { display: none; height: 38px; }
+@media (max-width: 639px) {
+  .vg-marca__completa { display: none; }
+  .vg-marca__corta { display: block; }
+}
+.vg-app .vg-config { margin-top: var(--vg-esp-5); }

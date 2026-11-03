@@ -15,10 +15,10 @@ export interface MiembroEquipo {
 export const EQUIPO: MiembroEquipo[] = [
   { id: 1, nombre: 'Franco Tenedini', rol: 'Desarrollo frontend', ubicacion: 'Buenos Aires, Argentina',
     aporte: 'Diseñó y construyó la interfaz: pantallas, mapas, notificaciones en vivo y accesibilidad.' },
-  { id: 2, nombre: 'Integrante 2', rol: 'Desarrollo backend', ubicacion: 'Buenos Aires, Argentina',
-    aporte: 'Completar: qué aportó al proyecto en una frase.' },
-  { id: 3, nombre: 'Integrante 3', rol: 'Rol en el proyecto', ubicacion: 'Buenos Aires, Argentina',
-    aporte: 'Completar: qué aportó al proyecto en una frase.' },
-  { id: 4, nombre: 'Integrante 4', rol: 'Rol en el proyecto', ubicacion: 'Buenos Aires, Argentina',
-    aporte: 'Completar: qué aportó al proyecto en una frase.' },
+  { id: 2, nombre: 'Diego Loisi', rol: 'Desarrollo backend', ubicacion: 'Buenos Aires, Argentina',
+    aporte: 'Desarrolló la API y la lógica del servidor que hacen funcionar la app.' },
+  { id: 3, nombre: 'Leandro Alfonso', rol: 'Team leader y documentación', ubicacion: 'Buenos Aires, Argentina',
+    aporte: 'Coordinó al equipo y llevó la documentación del proyecto.' },
+  { id: 4, nombre: 'Elias Gritti', rol: 'Base de datos y backend', ubicacion: 'Buenos Aires, Argentina',
+    aporte: 'Diseñó la base de datos y participó en el desarrollo del backend.' },
 ]
