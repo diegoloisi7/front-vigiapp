@@ -471,3 +471,26 @@
   .vg-marca__corta { display: block; }
 }
 .vg-app .vg-config { margin-top: var(--vg-esp-5); }
+
+/* ---------- Fondo de la app (vecino y admin): plano de manzanas + íconos de las categorías ----------
+   Capa de plano (2400 × 2700): manzanas sobre una retícula inclinada como la de Haedo, avenidas cada 3 cuadras
+   y plazas; las calles son el espacio entre manzanas (no hay líneas superpuestas) y el mosaico empalma exacto.
+   Capa de íconos (1380 × 1020): cada uno con el color de su familia, como en la app. Los tamaños distintos
+   de las dos capas hacen que la combinación casi no se repita. */
+.vg-app {
+  /* Papel con un toque azul muy leve, y un degradé suave que desvanece el plano hacia abajo */
+  --vg-fondo-app: #EEF3F9;
+  --vg-desvanecer: linear-gradient(to bottom, transparent 50%, color-mix(in srgb, var(--vg-fondo-app) 80%, transparent) 100%);
+  background-color: var(--vg-fondo-app);
+  background-image: var(--vg-desvanecer), url('../assets/fondo/iconos-claro.svg'), url('../assets/fondo/calles-claro.svg');
+  background-size: 100% 100%, 1380px 1020px, 2400px 2700px;
+  background-repeat: no-repeat, repeat, repeat;
+}
+:root[data-tema="oscuro"] .vg-app {
+  --vg-fondo-app: #0A1426;
+  background-image: var(--vg-desvanecer), url('../assets/fondo/iconos-oscuro.svg'), url('../assets/fondo/calles-oscuro.svg');
+}
+/* En computadoras el fondo (y su degradé) queda fijo a la pantalla; en celulares se mueve con la página */
+@media (hover: hover) and (pointer: fine) {
+  .vg-app { background-attachment: fixed, fixed, fixed; }
+}
