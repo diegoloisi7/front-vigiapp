@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import MarcaVigiApp from '../components/marca/MarcaVigiApp'
 import RoleSwitcher from '../components/RoleSwitcher'
+import { useAuth } from '../context/AuthContext'
 import { useTema } from '../context/TemaContext'
 
 // Scroll suave a una sección (respeta "reducir movimiento")
@@ -16,6 +17,8 @@ function irASeccion(hash: string) {
 export default function PublicLayout() {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const { pathname, hash } = useLocation()
+  const { estaLogueado, esAdmin, cargando } = useAuth()
+  const destinoIngreso = !cargando && estaLogueado ? (esAdmin ? '/admin' : '/app') : '/login'
 
   // Al cambiar de ruta: cierra el menú y va a la sección del hash (o arriba de todo)
   useEffect(() => {
@@ -48,7 +51,7 @@ export default function PublicLayout() {
       <li><NavLink to="/" end className={claseLink}>Inicio</NavLink></li>
       <li><NavLink to="/nosotros" className={claseLink}>Nosotros</NavLink></li>
       <li><NavLink to="/contacto" className={claseLink}>Contacto</NavLink></li>
-      <li><Link to="/login" className="btn btn-primary">Ingresar</Link></li>
+      <li><Link to={destinoIngreso} className="btn btn-primary">Ingresar</Link></li>
     </ul>
   )
 
@@ -101,7 +104,7 @@ export default function PublicLayout() {
             <p className="public-footer__texto">
               Reportá incidentes, mirá qué pasa cerca tuyo en el mapa y seguí cada problema hasta que se resuelve.
             </p>
-            <Link to="/login" className="btn btn-light">Ingresar</Link>
+            <Link to={destinoIngreso} className="btn btn-light">Ingresar</Link>
           </div>
 
           <nav className="public-footer__col" aria-label="Secciones">

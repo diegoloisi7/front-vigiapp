@@ -777,44 +777,64 @@
   .auth--con-imagen .auth__marca { justify-content: flex-end; padding-bottom: var(--space-8); }
 }
 
-/* En celular, la foto se desvanece sobre una cuadrícula continua, sin desvanecer el texto. */
+/* La cuadrícula continúa detrás de la foto; se desvanece solo la imagen, no el texto. */
+.auth--con-imagen .auth__panel,
+.contacto-page .contacto__form-panel { background: transparent; }
+
+.auth--con-imagen .auth__marca,
+.contacto-page .contacto__intro { position: relative; background-image: none; background-color: transparent; }
+
+.auth--con-imagen .auth__marca > *,
+.contacto-page .contacto__intro > * { position: relative; z-index: 1; }
+
+.auth--con-imagen .auth__marca::before,
+.contacto-page .contacto__intro::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-size: cover; background-repeat: no-repeat;
+}
+.auth--con-imagen .auth__marca::before {
+  background-color: var(--velo);
+  background-image:
+    linear-gradient(to bottom,
+      color-mix(in srgb, var(--velo) 25%, transparent) 0%,
+      color-mix(in srgb, var(--velo) 45%, transparent) 40%,
+      color-mix(in srgb, var(--velo) 92%, transparent) 72%,
+      var(--velo) 100%),
+    var(--auth-foto);
+  background-position: center, 58% 38%;
+}
+.contacto-page .contacto__intro::before {
+  background-color: #173956;
+  background-image:
+    linear-gradient(to bottom, rgb(13 42 69 / 0.38), rgb(13 42 69 / 0.54) 52%, rgb(13 42 69 / 0.68)),
+    url('../assets/landing/foto-contacto.webp');
+  background-position: center;
+}
+
 @media (max-width: 899px) {
-  .auth--con-imagen .auth__panel,
-  .contacto-page .contacto__form-panel { background: transparent; }
-
-  .auth--con-imagen .auth__marca,
-  .contacto-page .contacto__intro { position: relative; background-image: none; background-color: transparent; }
-
-  .auth--con-imagen .auth__marca > *,
-  .contacto-page .contacto__intro > * { position: relative; z-index: 1; }
-
   .auth--con-imagen .auth__marca { min-height: 260px; padding-bottom: 80px; }
+  .auth--con-imagen .auth__marca::before { background-position: center, 58% 42%; }
   .contacto-page .contacto__intro { padding-bottom: calc(var(--space-7) + 80px); }
-
   .auth--con-imagen .auth__marca::before,
   .contacto-page .contacto__intro::before {
-    content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-    background-size: cover; background-repeat: no-repeat;
     -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 72px), transparent 100%);
     mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 72px), transparent 100%);
   }
-  .auth--con-imagen .auth__marca::before {
-    background-color: var(--velo);
+}
+@media (min-width: 900px) {
+  .auth--con-imagen.public-grid-pattern,
+  .contacto-page.public-grid-pattern {
     background-image:
-      linear-gradient(to bottom,
-        color-mix(in srgb, var(--velo) 25%, transparent) 0%,
-        color-mix(in srgb, var(--velo) 45%, transparent) 40%,
-        color-mix(in srgb, var(--velo) 92%, transparent) 72%,
-        var(--velo) 100%),
-      var(--auth-foto);
-    background-position: center, 58% 42%;
+      linear-gradient(90deg, rgb(255 198 41 / 0.16) 38%, rgb(255 255 255 / 0.02) 66%, rgb(31 78 121 / 0.08) 100%),
+      linear-gradient(90deg, rgb(31 78 121 / 0.10) 1px, transparent 1px),
+      linear-gradient(0deg, rgb(31 78 121 / 0.10) 1px, transparent 1px);
   }
+  .auth--con-imagen .auth__marca { padding-right: 72px; }
+  .contacto-page .contacto__intro { padding-right: 72px; }
+  .auth--con-imagen .auth__marca::before,
   .contacto-page .contacto__intro::before {
-    background-color: #173956;
-    background-image:
-      linear-gradient(to bottom, rgb(13 42 69 / 0.38), rgb(13 42 69 / 0.54) 52%, rgb(13 42 69 / 0.68)),
-      url('../assets/landing/foto-contacto.webp');
-    background-position: center;
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 72px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 72px), transparent 100%);
   }
 }
 

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { ApiError, mensajeDeError } from '../../api/cliente'
 import { USAR_MOCK } from '../../api/config'
 import { useAuth } from '../../context/AuthContext'
@@ -12,7 +12,7 @@ const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 type Errores = { email?: string; password?: string }
 
 export default function Login() {
-  const { iniciarSesion, cambiarRol } = useAuth()
+  const { iniciarSesion, cambiarRol, estaLogueado, esAdmin, cargando } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -40,6 +40,9 @@ export default function Login() {
       setEnviando(false)
     }
   }
+
+  if (cargando) return <div role="status">Cargando sesión…</div>
+  if (estaLogueado) return <Navigate to={esAdmin ? '/admin' : '/app'} replace />
 
   return (
     <PantallaAuth
