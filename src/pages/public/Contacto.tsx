@@ -65,64 +65,68 @@ export default function Contacto() {
   )
 
   return (
-    <section className="contacto container" aria-labelledby="contacto-titulo">
-      <div className="contacto__intro">
-        <h1 id="contacto-titulo">Contacto</h1>
-        <p className="section-lead">¿Tenés una duda, querés sumar a tu barrio o encontraste un problema? Escribinos.</p>
-        <section className="ubicacion" aria-labelledby="ubicacion-titulo">
-          <iframe
-            className="ubicacion__mapa"
-            title="Mapa de la UTN Facultad Regional Haedo"
-            src="https://www.google.com/maps?q=UTN+Facultad+Regional+Haedo&z=15&output=embed"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-          <div className="ubicacion__texto">
-            <h2 id="ubicacion-titulo">Dónde estamos</h2>
-            <p>UTN Facultad Regional Haedo</p>
-            <a href="https://www.google.com/maps/search/?api=1&query=UTN+Facultad+Regional+Haedo" target="_blank" rel="noreferrer">
-              Ver en Google Maps
-            </a>
-          </div>
-        </section>
-        <ul className="contacto__motivos">
-          <li><span aria-hidden="true">🏘️</span> Sumar a tu barrio o crear un grupo vecinal</li>
-          <li><span aria-hidden="true">🔑</span> Problemas para ingresar o con tu cuenta</li>
-          <li><span aria-hidden="true">💡</span> Sugerencias para mejorar la app</li>
-        </ul>
-        <p className="contacto__aviso">🚨 Si es una emergencia, llamá al <a href="tel:911">911</a>. Este formulario no se lee en tiempo real.</p>
-      </div>
-
-      <div className="auth__tarjeta contacto__tarjeta">
-        {enviado ? (
-          <div className="auth-exito" role="status">
-            <span className="auth-exito__icono" aria-hidden="true">✅</span>
-            <h2>¡Mensaje enviado!</h2>
-            <p>Gracias{valores.nombre.trim() ? `, ${valores.nombre.trim()}` : ''}. Lo vamos a leer y te respondemos a <strong>{valores.email.trim()}</strong>.</p>
-            <button type="button" className="btn btn-outline btn-ancho" onClick={otroMensaje}>Enviar otro mensaje</button>
-          </div>
-        ) : (
-          <form onSubmit={enviar} noValidate>
-            <h2 className="contacto__form-titulo">Escribinos</h2>
-            {campo('nombre', 'Nombre', { autoComplete: 'name', maxLength: 150 })}
-            {campo('email', 'Email', { type: 'email', autoComplete: 'email', maxLength: 191, inputMode: 'email' })}
-            {campo('asunto', 'Asunto', { maxLength: 150 })}
-            <Campo id="contacto-mensaje" etiqueta="Mensaje" error={errores.mensaje}>
-              <textarea id="contacto-mensaje" className="input textarea" rows={5} maxLength={MAX_MENSAJE} value={valores.mensaje}
-                aria-invalid={!!errores.mensaje} aria-describedby={`contacto-mensaje-contador${errores.mensaje ? ' contacto-mensaje-error' : ''}`}
-                onChange={(e) => cambiar('mensaje', e.target.value)} />
-              <p id="contacto-mensaje-contador" className="contacto__contador">{valores.mensaje.length} / {MAX_MENSAJE}</p>
-            </Campo>
-            {/* Campo trampa para bots: oculto a la vista y a los lectores de pantalla */}
-            <div className="campo-trampa" aria-hidden="true">
-              <label htmlFor="contacto-sitio">Sitio web</label>
-              <input id="contacto-sitio" tabIndex={-1} autoComplete="off" value={trampa} onChange={(e) => setTrampa(e.target.value)} />
+    <div className="contacto-page public-grid-pattern">
+      <section className="contacto" aria-labelledby="contacto-titulo">
+        <div className="contacto__intro">
+          <h1 id="contacto-titulo">Contacto</h1>
+          <p className="section-lead">¿Tenés una duda, querés sumar a tu barrio o encontraste un problema? Escribinos.</p>
+          <section className="ubicacion" aria-labelledby="ubicacion-titulo">
+            <iframe
+              className="ubicacion__mapa"
+              title="Mapa de la UTN Facultad Regional Haedo"
+              src="https://www.google.com/maps?q=UTN+Facultad+Regional+Haedo&z=15&output=embed"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <div className="ubicacion__texto">
+              <h2 id="ubicacion-titulo">Dónde estamos</h2>
+              <p>UTN Facultad Regional Haedo</p>
+              <a href="https://www.google.com/maps/search/?api=1&query=UTN+Facultad+Regional+Haedo" target="_blank" rel="noreferrer">
+                Ver en Google Maps
+              </a>
             </div>
-            {error && <p className="campo__error" role="alert">{error}</p>}
-            <button className="btn btn-primary btn-ancho" type="submit" disabled={enviando}>{enviando ? 'Enviando…' : 'Enviar mensaje'}</button>
-          </form>
-        )}
-      </div>
-    </section>
+          </section>
+          <ul className="contacto__motivos">
+            <li><span aria-hidden="true">🏘️</span> Sumar a tu barrio o crear un grupo vecinal</li>
+            <li><span aria-hidden="true">🔑</span> Problemas para ingresar o con tu cuenta</li>
+            <li><span aria-hidden="true">💡</span> Sugerencias para mejorar la app</li>
+          </ul>
+          <p className="contacto__aviso">🚨 Si es una emergencia, llamá al <a href="tel:911">911</a>. Este formulario no se lee en tiempo real.</p>
+        </div>
+
+        <div className="contacto__form-panel public-grid-pattern">
+          <div className="auth__tarjeta contacto__tarjeta">
+            {enviado ? (
+              <div className="auth-exito" role="status">
+                <span className="auth-exito__icono" aria-hidden="true">✅</span>
+                <h2>¡Mensaje enviado!</h2>
+                <p>Gracias{valores.nombre.trim() ? `, ${valores.nombre.trim()}` : ''}. Lo vamos a leer y te respondemos a <strong>{valores.email.trim()}</strong>.</p>
+                <button type="button" className="btn btn-outline btn-ancho" onClick={otroMensaje}>Enviar otro mensaje</button>
+              </div>
+            ) : (
+              <form onSubmit={enviar} noValidate>
+                <h2 className="contacto__form-titulo">Escribinos</h2>
+                {campo('nombre', 'Nombre', { autoComplete: 'name', maxLength: 150 })}
+                {campo('email', 'Email', { type: 'email', autoComplete: 'email', maxLength: 191, inputMode: 'email' })}
+                {campo('asunto', 'Asunto', { maxLength: 150 })}
+                <Campo id="contacto-mensaje" etiqueta="Mensaje" error={errores.mensaje}>
+                  <textarea id="contacto-mensaje" className="input textarea" rows={5} maxLength={MAX_MENSAJE} value={valores.mensaje}
+                    aria-invalid={!!errores.mensaje} aria-describedby={`contacto-mensaje-contador${errores.mensaje ? ' contacto-mensaje-error' : ''}`}
+                    onChange={(e) => cambiar('mensaje', e.target.value)} />
+                  <p id="contacto-mensaje-contador" className="contacto__contador">{valores.mensaje.length} / {MAX_MENSAJE}</p>
+                </Campo>
+                {/* Campo trampa para bots: oculto a la vista y a los lectores de pantalla */}
+                <div className="campo-trampa" aria-hidden="true">
+                  <label htmlFor="contacto-sitio">Sitio web</label>
+                  <input id="contacto-sitio" tabIndex={-1} autoComplete="off" value={trampa} onChange={(e) => setTrampa(e.target.value)} />
+                </div>
+                {error && <p className="campo__error" role="alert">{error}</p>}
+                <button className="btn btn-primary btn-ancho" type="submit" disabled={enviando}>{enviando ? 'Enviando…' : 'Enviar mensaje'}</button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }

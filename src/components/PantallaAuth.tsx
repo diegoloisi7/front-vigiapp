@@ -13,7 +13,7 @@ interface Props {
 // panel de marca (solo en escritorio) + tarjeta con el formulario.
 export default function PantallaAuth({ titulo, subtitulo, children, pie, fondo }: Props) {
   return (
-    <section className={`auth${fondo ? ' auth--con-imagen' : ''}`} aria-labelledby="auth-titulo">
+    <section className={`auth${fondo ? ' auth--con-imagen public-grid-pattern' : ''}`} aria-labelledby="auth-titulo">
       <aside className="auth__marca" style={fondo ? ({ '--auth-foto': `url("${fondo}")` } as CSSProperties) : undefined}>
         <p className="auth__marca-titulo">Tu barrio, organizado y más seguro</p>
         <ul className="auth__beneficios">
@@ -22,7 +22,7 @@ export default function PantallaAuth({ titulo, subtitulo, children, pie, fondo }
           <li><span aria-hidden="true">📢</span> Enterate de los avisos de tu comunidad</li>
         </ul>
       </aside>
-      <div className="auth__panel">
+      <div className={`auth__panel${fondo ? ' public-grid-pattern' : ''}`}>
         <div className="auth__tarjeta">
           <span className="auth__logo"><MarcaVigiApp variante="simbolo" tono="claro" className="auth__logo-svg" /></span>
           <h1 id="auth-titulo">{titulo}</h1>

@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import Campo from '../../components/Campo'
 import CampoClave from '../../components/CampoClave'
 import PantallaAuth from '../../components/PantallaAuth'
+import fotoBarrio from '../../assets/landing/barrio-aereo.webp'
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 type Clave = 'nombre' | 'apellido' | 'email' | 'password' | 'confirmacion' | 'terminos'
@@ -72,6 +73,7 @@ export default function Registro() {
     <PantallaAuth
       titulo="Crear cuenta"
       subtitulo="Sumate para reportar, confirmar y seguir lo que pasa en tu barrio."
+      fondo={fotoBarrio}
       pie={<p>¿Ya tenés cuenta? <Link to="/login">Ingresá</Link></p>}
     >
       <form onSubmit={enviar} noValidate>
